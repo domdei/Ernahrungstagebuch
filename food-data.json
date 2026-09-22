@@ -1,0 +1,1347 @@
+[
+  {
+    "name": "Dinkel",
+    "category": "Getreide",
+    "status": "green"
+  },
+  {
+    "name": "Gerste",
+    "category": "Getreide",
+    "status": "green"
+  },
+  {
+    "name": "Gluten",
+    "category": "Getreide",
+    "status": "green"
+  },
+  {
+    "name": "Kamut",
+    "category": "Getreide",
+    "status": "green"
+  },
+  {
+    "name": "Roggen",
+    "category": "Getreide",
+    "status": "green"
+  },
+  {
+    "name": "Weizen",
+    "category": "Getreide",
+    "status": "green"
+  },
+  {
+    "name": "Amaranth",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Buchweizen",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Carob",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Esskastanie",
+    "category": "Glutenfrei",
+    "status": "orange"
+  },
+  {
+    "name": "Fonio",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Hafer (glutenfrei)",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Hirse",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Lupine",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Mais",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Maniok",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Pfeilwurz",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Quinoa",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Reis",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Süßkartoffel",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Tapioka",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Teff",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Topinambur",
+    "category": "Glutenfrei",
+    "status": "green"
+  },
+  {
+    "name": "Gänseei",
+    "category": "Ei",
+    "status": "red"
+  },
+  {
+    "name": "Hühnereidotter",
+    "category": "Ei",
+    "status": "red"
+  },
+  {
+    "name": "Hühnereieiweiß (Eiklar)",
+    "category": "Ei",
+    "status": "red"
+  },
+  {
+    "name": "Wachtelei",
+    "category": "Ei",
+    "status": "orange"
+  },
+  {
+    "name": "Ente",
+    "category": "Fleisch",
+    "status": "orange"
+  },
+  {
+    "name": "Gans",
+    "category": "Fleisch",
+    "status": "orange"
+  },
+  {
+    "name": "Hase",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Hirsch",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Huhn",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Kalb",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Kaninchen",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Lamm",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Reh",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Rind",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Schwein",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Strauß",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Truthahn/Pute",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Wachtel",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Wildschwein",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Ziege",
+    "category": "Fleisch",
+    "status": "green"
+  },
+  {
+    "name": "Hellim (Halloumi)",
+    "category": "Milch",
+    "status": "orange"
+  },
+  {
+    "name": "Kamelmilch",
+    "category": "Milch",
+    "status": "green"
+  },
+  {
+    "name": "Kefir (Kuh)",
+    "category": "Milch",
+    "status": "orange"
+  },
+  {
+    "name": "Labkäse (Kuh)",
+    "category": "Milch",
+    "status": "red"
+  },
+  {
+    "name": "Milch (Kuh)",
+    "category": "Milch",
+    "status": "red"
+  },
+  {
+    "name": "Milch (Kuh gekocht)",
+    "category": "Milch",
+    "status": "orange"
+  },
+  {
+    "name": "Ricotta (Kuh)",
+    "category": "Milch",
+    "status": "red"
+  },
+  {
+    "name": "Sauermilchprod. (Kuh)",
+    "category": "Milch",
+    "status": "red"
+  },
+  {
+    "name": "Schafsmilch/-käse",
+    "category": "Milch",
+    "status": "red"
+  },
+  {
+    "name": "Stutenmilch",
+    "category": "Milch",
+    "status": "green"
+  },
+  {
+    "name": "Ziegenmilch/-käse",
+    "category": "Milch",
+    "status": "red"
+  },
+  {
+    "name": "Ananas",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Apfel",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Aprikose",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Avocado",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Banane",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Birne",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Blaubeere",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Brombeere",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Cranberry",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Dattel",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Erdbeere",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Feige",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Granatapfel",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Grapefruit",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Guave",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Himbeere",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Honigmelone",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Johannisbeere",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Kaktusfeige",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Kirsche",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Kiwi",
+    "category": "Obst",
+    "status": "orange"
+  },
+  {
+    "name": "Limette",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Litschi",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Mandarine",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Mango",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Mirabelle",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Nektarine",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Orange",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Papaya",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Pfirsich",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Pflaume",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Preiselbeere",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Quitte",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Rhabarber",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Sanddorn",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Stachelbeere",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Traube/Rosine",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Wassermelone",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Zitrone",
+    "category": "Obst",
+    "status": "green"
+  },
+  {
+    "name": "Cashewkerne",
+    "category": "Nüsse",
+    "status": "red"
+  },
+  {
+    "name": "Erdnuss",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Haselnuss",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Kakaobohne",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Kokosnuss",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Kürbiskerne",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Leinsamen",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Macadamia",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Mandel",
+    "category": "Nüsse",
+    "status": "red"
+  },
+  {
+    "name": "Mohn",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Paranuss",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Pinienkerne",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Pistazie",
+    "category": "Nüsse",
+    "status": "red"
+  },
+  {
+    "name": "Sesam",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Sonnenblumenkerne",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Walnuss",
+    "category": "Nüsse",
+    "status": "green"
+  },
+  {
+    "name": "Chicorée",
+    "category": "Salat",
+    "status": "green"
+  },
+  {
+    "name": "Eisbergsalat",
+    "category": "Salat",
+    "status": "green"
+  },
+  {
+    "name": "Endivie",
+    "category": "Salat",
+    "status": "green"
+  },
+  {
+    "name": "Feldsalat",
+    "category": "Salat",
+    "status": "green"
+  },
+  {
+    "name": "Kopfsalat",
+    "category": "Salat",
+    "status": "green"
+  },
+  {
+    "name": "Lollo Rosso",
+    "category": "Salat",
+    "status": "green"
+  },
+  {
+    "name": "Löwenzahn",
+    "category": "Salat",
+    "status": "green"
+  },
+  {
+    "name": "Radicchio",
+    "category": "Salat",
+    "status": "green"
+  },
+  {
+    "name": "Römischer Salat",
+    "category": "Salat",
+    "status": "green"
+  },
+  {
+    "name": "Rucola",
+    "category": "Salat",
+    "status": "green"
+  },
+  {
+    "name": "Artischocke",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Aubergine",
+    "category": "Gemüse",
+    "status": "orange"
+  },
+  {
+    "name": "Bambussprossen",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Bleichsellerie",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Blumenkohl",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Bohne (dick)",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Bohne (grün)",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Brokkoli",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Chili Cayenne",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Chili Habanero",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Chili Jalapeño",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Chinakohl",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Erbse (grün)",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Fenchel",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Grünkohl",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Gurke",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Karotte",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Kartoffel",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Kichererbse",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Kohlrabi",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Kürbis",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Lauch",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Linse",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Mangold",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Mungobohne",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Muskraut",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Okraschote",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Olive",
+    "category": "Gemüse",
+    "status": "orange"
+  },
+  {
+    "name": "Paprikaschote",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Pastinake",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Radieschen",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Rosenkohl",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Rote Beete",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Rotkohl",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Sellerieknolle",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Sojabohne",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Spargel",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Spinat",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Steckrübe",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Tomate",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Weißkohl",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Wirsing",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Zucchini",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Zwiebel",
+    "category": "Gemüse",
+    "status": "green"
+  },
+  {
+    "name": "Alfalfa",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Anis",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Bärlauch",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Basilikum",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Bohnenkraut",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Dill",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Gartenkresse",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Ingwer",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Kapern",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Kardamom",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Kerbel",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Knoblauch",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Koriander",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Kreuzkümmel",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Kümmel",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Lavendel",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Liebstöckel",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Lorbeerblatt",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Majoran",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Meerrettich",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Muskatnuss",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Nelke",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Oregano",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Paprikagewürz",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Petersilie",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Pfeffer (schwarz)",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Pfeffer (weiß)",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Piment",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Rosmarin",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Safran",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Salbei",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Schnittlauch",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Senfkorn",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Thymian",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Vanille",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Wacholder",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Zimt",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Zitronenmelisse",
+    "category": "Gewürze",
+    "status": "green"
+  },
+  {
+    "name": "Aal",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Anchovis",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Auster",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Dorade",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Forelle",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Garnele",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Hai",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Heilbutt",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Hering",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Hummer",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Jakobsmuschel",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Kabeljau",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Karpfen",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Krebs",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Lachs",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Makrele",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Miesmuschel",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Oktopus",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Pangasius",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Red Snapper",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Rotbarsch",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Sardine",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Schellfisch",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Scholle",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Schwertfisch",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "See-/Wolfsbarsch",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Seehecht",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Seelachs",
+    "category": "Fisch/Meer",
+    "status": "orange"
+  },
+  {
+    "name": "Seeteufel",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Seezunge",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Thunfisch",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Tintenfisch",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Zander",
+    "category": "Fisch/Meer",
+    "status": "green"
+  },
+  {
+    "name": "Brennnessel",
+    "category": "Getränke",
+    "status": "green"
+  },
+  {
+    "name": "Hagebutte",
+    "category": "Getränke",
+    "status": "green"
+  },
+  {
+    "name": "Kaffee",
+    "category": "Getränke",
+    "status": "orange"
+  },
+  {
+    "name": "Kamille",
+    "category": "Getränke",
+    "status": "green"
+  },
+  {
+    "name": "Pfefferminz",
+    "category": "Getränke",
+    "status": "green"
+  },
+  {
+    "name": "Rotbusch",
+    "category": "Getränke",
+    "status": "green"
+  },
+  {
+    "name": "Tannin (Wein)",
+    "category": "Getränke",
+    "status": "green"
+  },
+  {
+    "name": "Tee (grün)",
+    "category": "Getränke",
+    "status": "green"
+  },
+  {
+    "name": "Tee (schwarz)",
+    "category": "Getränke",
+    "status": "green"
+  },
+  {
+    "name": "Hefe",
+    "category": "Hefe",
+    "status": "green"
+  },
+  {
+    "name": "Austernpilz",
+    "category": "Pilze",
+    "status": "green"
+  },
+  {
+    "name": "Champignon",
+    "category": "Pilze",
+    "status": "green"
+  },
+  {
+    "name": "Maronen-Röhrling",
+    "category": "Pilze",
+    "status": "green"
+  },
+  {
+    "name": "Pfifferling",
+    "category": "Pilze",
+    "status": "green"
+  },
+  {
+    "name": "Shiitake",
+    "category": "Pilze",
+    "status": "green"
+  },
+  {
+    "name": "Steinpilz",
+    "category": "Pilze",
+    "status": "green"
+  },
+  {
+    "name": "Aloe Vera",
+    "category": "Spezial",
+    "status": "green"
+  },
+  {
+    "name": "Aspergillus niger",
+    "category": "Spezial",
+    "status": "green"
+  },
+  {
+    "name": "Citronat",
+    "category": "Spezial",
+    "status": "orange"
+  },
+  {
+    "name": "Weinblätter",
+    "category": "Spezial",
+    "status": "green"
+  },
+  {
+    "name": "Nori-Rotalge",
+    "category": "Algen",
+    "status": "green"
+  },
+  {
+    "name": "Spirulina-Blaualge",
+    "category": "Algen",
+    "status": "green"
+  },
+  {
+    "name": "Agavendicksaft",
+    "category": "Süßung",
+    "status": "green"
+  },
+  {
+    "name": "Ahornsirup",
+    "category": "Süßung",
+    "status": "green"
+  },
+  {
+    "name": "Honigmischung",
+    "category": "Süßung",
+    "status": "green"
+  },
+  {
+    "name": "Rohrzucker",
+    "category": "Süßung",
+    "status": "green"
+  },
+  {
+    "name": "Agar-Agar (E 406)",
+    "category": "Zusätze",
+    "status": "green"
+  },
+  {
+    "name": "Benzoesäure (E 210)",
+    "category": "Zusätze",
+    "status": "green"
+  },
+  {
+    "name": "Carrageen (E 407)",
+    "category": "Zusätze",
+    "status": "green"
+  },
+  {
+    "name": "Guarkernmehl (E 412)",
+    "category": "Zusätze",
+    "status": "green"
+  },
+  {
+    "name": "Kurkumin (E 100)",
+    "category": "Zusätze",
+    "status": "green"
+  },
+  {
+    "name": "Pektin (E 440)",
+    "category": "Zusätze",
+    "status": "orange"
+  },
+  {
+    "name": "Sorbinsäure (E 200)",
+    "category": "Zusätze",
+    "status": "green"
+  },
+  {
+    "name": "Traganth (E 413)",
+    "category": "Zusätze",
+    "status": "green"
+  },
+  {
+    "name": "Xanthan (E 415)",
+    "category": "Zusätze",
+    "status": "green"
+  }
+]
