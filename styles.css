@@ -141,6 +141,16 @@ select {
   color: var(--text);
 }
 
+input[type="date"]::-webkit-clear-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+input[type="date"]::-ms-clear {
+  display: none;
+}
+
 input:focus,
 select:focus {
   outline: 3px solid rgba(33, 68, 168, 0.12);

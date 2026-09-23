@@ -532,12 +532,21 @@ function getWarningsForFood(foodName, selectedDate) {
     const warnings = [];
     const mostRecent = findMostRecentOccurrence(foodName, selectedDate);
 
-    if (mostRecent && mostRecent.daysAgo >= 1 && mostRecent.daysAgo <= 4) {
-        warnings.push({
-            kind: 'yellow',
-            title: 'Rotation',
-            text: `Dieses Lebensmittel wurde vor ${mostRecent.daysAgo} Tagen bereits gegessen.`,
-        });
+    if (mostRecent && Math.abs(mostRecent.daysDifference) >= 1 && Math.abs(mostRecent.daysDifference) <= 4) {
+        if (mostRecent.daysDifference > 0) {
+            warnings.push({
+                kind: 'yellow',
+                title: 'Rotation',
+                text: `Dieses Lebensmittel wurde vor ${mostRecent.daysDifference} Tagen bereits gegessen.`,
+            });
+        } else {
+            const absDays = Math.abs(mostRecent.daysDifference);
+            warnings.push({
+                kind: 'yellow',
+                title: 'Rotation',
+                text: absDays === 1 ? 'Dieses Lebensmittel wird morgen gegessen.' : `Dieses Lebensmittel wird in ${absDays} Tagen gegessen.`,
+            });
+        }
     }
 
     if (food.status === 'orange' || food.status === 'red') {
@@ -553,11 +562,11 @@ function getWarningsForFood(foodName, selectedDate) {
 
 function getRecentMealLabel(foodName, referenceDate) {
     const mostRecent = findMostRecentOccurrence(foodName, referenceDate);
-    if (!mostRecent || mostRecent.daysAgo < 1 || mostRecent.daysAgo > 4) {
+    if (!mostRecent || Math.abs(mostRecent.daysDifference) < 1 || Math.abs(mostRecent.daysDifference) > 4) {
         return '';
     }
 
-    return `${mostRecent.daysAgo}T`;
+    return `${mostRecent.daysDifference}T`;
 }
 
 function getRecentMealTitle(recentLabel) {
@@ -565,9 +574,16 @@ function getRecentMealTitle(recentLabel) {
         return '';
     }
 
-    const daysAgo = Number.parseInt(recentLabel, 10);
-    const text = daysAgo === 1 ? 'vor 1 Tag' : `vor ${daysAgo} Tagen`;
-    return `Zuletzt ${text} gegessen`;
+    const daysDifference = Number.parseInt(recentLabel, 10);
+    if (daysDifference > 0) {
+        return daysDifference === 1 ? 'Zuletzt vor 1 Tag gegessen' : `Zuletzt vor ${daysDifference} Tagen gegessen`;
+    }
+    if (daysDifference < 0) {
+        const absDays = Math.abs(daysDifference);
+        return absDays === 1 ? 'Wird morgen gegessen' : `Wird in ${absDays} Tagen gegessen`;
+    }
+
+    return 'Heute bereits erfasst';
 }
 
 function findMostRecentOccurrence(foodName, targetDate) {
@@ -579,10 +595,16 @@ function findMostRecentOccurrence(foodName, targetDate) {
     const relevant = logs
         .map((entry) => ({
             date: entry.date,
-            daysAgo: Math.abs(diffInDays(targetDate, entry.date)),
+            daysDifference: diffInDays(targetDate, entry.date),
         }))
-        .filter((entry) => entry.daysAgo >= 1 && entry.daysAgo <= 4)
-        .sort((a, b) => a.daysAgo - b.daysAgo)
+        .filter((entry) => Math.abs(entry.daysDifference) >= 1 && Math.abs(entry.daysDifference) <= 4)
+        .sort((a, b) => {
+            const byDistance = Math.abs(a.daysDifference) - Math.abs(b.daysDifference);
+            if (byDistance !== 0) {
+                return byDistance;
+            }
+            return (a.daysDifference > 0 ? -1 : 1) - (b.daysDifference > 0 ? -1 : 1);
+        })
         .shift();
 
     return relevant || null;
