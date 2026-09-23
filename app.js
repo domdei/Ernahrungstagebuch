@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'ernaehrungstagebuch-diary-v1';
+const DRAFT_STORAGE_KEY = 'ernaehrungstagebuch-draft-v1';
 const FOOD_DB_PATH = './food-data.json';
 const APP_VERSION_PATH = './version.json';
 const MAX_SUGGESTIONS = 20;
@@ -25,6 +26,7 @@ const ui = {
     entryDate: document.getElementById('entryDate'),
     todayButton: document.getElementById('todayButton'),
     searchCategory: document.getElementById('searchCategory'),
+    onlyFreshGreenFoods: document.getElementById('onlyFreshGreenFoods'),
     foodSearch: document.getElementById('foodSearch'),
     suggestions: document.getElementById('suggestions'),
     selectedFoods: document.getElementById('selectedFoods'),
@@ -62,13 +64,14 @@ const debouncedSearch = debounce(() => {
 }, 120);
 
 document.addEventListener('DOMContentLoaded', async () => {
+    restoreEntries();
+    restoreDraftState();
     ui.entryDate.value = state.selectedDate;
     ui.filterFromDate.value = state.filterFromDate;
     ui.filterToDate.value = state.filterToDate;
     state.filterCategory = 'all';
     state.filterStatus = 'all';
     createCategoryOptions();
-    restoreEntries();
     await loadFoodDatabase();
     await loadVersionInfo();
     updateHistoryControls();
@@ -151,11 +154,13 @@ function bindEvents() {
         persistEntries();
         state.selectedFoods = [];
         ui.foodSearch.value = '';
+        persistDraftState();
         renderEverything();
     });
 
     ui.entryDate.addEventListener('change', () => {
         state.selectedDate = ui.entryDate.value || getTodayString();
+        persistDraftState();
         renderEverything();
     });
 
@@ -163,12 +168,14 @@ function bindEvents() {
         if (!ui.entryDate.value) {
             ui.entryDate.value = state.selectedDate || getTodayString();
         }
+        persistDraftState();
     });
 
     ui.todayButton.addEventListener('click', () => {
         const today = getTodayString();
         state.selectedDate = today;
         ui.entryDate.value = today;
+        persistDraftState();
         renderEverything();
     });
 
@@ -184,6 +191,10 @@ function bindEvents() {
 
     ui.searchCategory.addEventListener('change', () => {
         state.searchCategory = ui.searchCategory.value;
+        renderSuggestions();
+    });
+
+    ui.onlyFreshGreenFoods.addEventListener('change', () => {
         renderSuggestions();
     });
 
@@ -283,12 +294,50 @@ function restoreEntries() {
     state.entries = Array.isArray(state.entries) ? state.entries : [];
 }
 
+function restoreDraftState() {
+    try {
+        const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+        if (!raw) {
+            return;
+        }
+
+        const draft = JSON.parse(raw);
+        if (typeof draft.selectedDate === 'string' && draft.selectedDate) {
+            state.selectedDate = draft.selectedDate;
+        }
+
+        if (Array.isArray(draft.selectedFoods)) {
+            state.selectedFoods = draft.selectedFoods.filter((food) => typeof food === 'string' && food.trim());
+        }
+
+        if (typeof draft.foodSearch === 'string' && ui.foodSearch) {
+            ui.foodSearch.value = draft.foodSearch;
+        }
+    } catch (error) {
+        console.error('Entwurf konnte nicht wiederhergestellt werden:', error);
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+    }
+}
+
 function persistEntries() {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.entries));
     } catch (error) {
         console.error('Speichern fehlgeschlagen:', error);
         alert('Das Speichern in den lokalen Browser-Daten ist fehlgeschlagen. Bitte prüfe den Speicherplatz oder den Browser-Status.');
+    }
+}
+
+function persistDraftState() {
+    try {
+        const draft = {
+            selectedDate: ui.entryDate.value || state.selectedDate || getTodayString(),
+            selectedFoods: [...state.selectedFoods],
+            foodSearch: ui.foodSearch ? ui.foodSearch.value : '',
+        };
+        localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
+    } catch (error) {
+        console.error('Entwurf konnte nicht gespeichert werden:', error);
     }
 }
 
@@ -379,27 +428,24 @@ function removeSelectedFood(foodName) {
     }
 
     state.selectedFoods = state.selectedFoods.filter((item) => item !== foodName);
+    persistDraftState();
     renderSelectedFoods();
     renderSuggestions();
 }
 
 function renderSuggestionList(query) {
-    const results = getSuggestions(query).slice(0, MAX_SUGGESTIONS);
+    const allResults = getSuggestions(query);
+    const results = query ? allResults.slice(0, MAX_SUGGESTIONS) : allResults;
+
     if (!query && !results.length) {
         ui.suggestions.innerHTML = '<div class="empty-state">Kein passendes Lebensmittel gefunden.</div>';
         ui.suggestions.classList.add('visible');
         return;
     }
 
-    if (!query && !results.length && !ui.foodSearch.matches(':focus')) {
+    if (!query && !ui.foodSearch.matches(':focus')) {
         ui.suggestions.innerHTML = '';
         ui.suggestions.classList.remove('visible');
-        return;
-    }
-
-    if (!query && !results.length) {
-        ui.suggestions.innerHTML = '<div class="empty-state">Kein passendes Lebensmittel gefunden.</div>';
-        ui.suggestions.classList.add('visible');
         return;
     }
 
@@ -437,7 +483,7 @@ function renderSuggestionList(query) {
 
 function renderSuggestions() {
     const query = ui.foodSearch.value.trim();
-    if (!query) {
+    if (!query && !ui.foodSearch.matches(':focus')) {
         ui.suggestions.classList.remove('visible');
         ui.suggestions.innerHTML = '';
         return;
@@ -631,11 +677,34 @@ function findMostRecentOccurrence(foodName, targetDate) {
     return relevant || null;
 }
 
+function isFoodAvailableForSelectedDate(foodName, selectedDateValue) {
+    const referenceDate = selectedDateValue || state.selectedDate || getTodayString();
+    const hasRecentOrUpcomingOccurrence = state.entries.some((entry) => {
+        if (entry.name !== foodName) {
+            return false;
+        }
+        return Math.abs(diffInDays(referenceDate, entry.date)) <= 4;
+    });
+
+    return !hasRecentOrUpcomingOccurrence;
+}
+
 function getSuggestions(query) {
     const normalizedQuery = normalizeText(query);
     const category = state.searchCategory;
 
-    const filteredFoods = [...state.foods].filter((food) => category === 'all' || food.category === category);
+    const filteredFoods = [...state.foods].filter((food) => {
+        const matchesCategory = category === 'all' || food.category === category;
+        if (!matchesCategory) {
+            return false;
+        }
+
+        if (ui.onlyFreshGreenFoods && ui.onlyFreshGreenFoods.checked) {
+            return food.status === 'green' && isFoodAvailableForSelectedDate(food.name, ui.entryDate.value || state.selectedDate || getTodayString());
+        }
+
+        return true;
+    });
 
     if (!normalizedQuery) {
         return filteredFoods.sort((a, b) => a.name.localeCompare(b.name));
@@ -695,6 +764,7 @@ function addSelectedFood(foodName) {
     ui.foodSearch.value = '';
     ui.suggestions.innerHTML = '';
     ui.suggestions.classList.remove('visible');
+    persistDraftState();
     renderSelectedFoods();
 }
 
@@ -1082,7 +1152,7 @@ function registerServiceWorker() {
     }
 
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').then((registration) => {
+        navigator.serviceWorker.register('./sw.js?v=1.0.2').then((registration) => {
             registration.addEventListener('updatefound', () => {
                 const installingWorker = registration.installing;
                 if (!installingWorker) {

@@ -204,6 +204,23 @@ select:focus {
   position: relative;
 }
 
+.subtle-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0.1rem;
+  color: var(--muted, #6b7280);
+  font-size: 0.76rem;
+  user-select: none;
+  cursor: pointer;
+}
+
+.subtle-toggle input {
+  accent-color: var(--primary, #1d4ed8);
+  transform: scale(0.9);
+}
+
 .suggestions {
   position: absolute;
   top: calc(100% + 8px);
@@ -212,6 +229,9 @@ select:focus {
   display: none;
   flex-direction: column;
   gap: 6px;
+  max-height: min(50vh, 320px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 8px;
   background: #fff;
   border: 1px solid var(--border);
