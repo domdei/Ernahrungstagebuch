@@ -255,7 +255,6 @@ function bindEvents() {
 
     ui.exportJsonButton.addEventListener('click', exportJsonBackup);
     ui.importFile.addEventListener('change', handleImport);
-    ui.checkForUpdateButton.addEventListener('click', checkForServiceWorkerUpdate);
     updateVersionDisplay();
 }
 
@@ -1112,47 +1111,6 @@ function updateVersionDisplay() {
 
         ui.updateStatus.textContent = 'Aktuell';
     }
-}
-
-function checkForServiceWorkerUpdate() {
-    if (!('serviceWorker' in navigator)) {
-        if (ui.updateStatus) {
-            ui.updateStatus.textContent = 'SW nicht unterstützt';
-        }
-        return;
-    }
-
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-        if (!registrations.length) {
-            if (ui.updateStatus) {
-                ui.updateStatus.textContent = 'Kein Service Worker';
-            }
-            return;
-        }
-
-        Promise.all(registrations.map((registration) => registration.update())).then(() => {
-            const waitingWorker = registrations
-                .map((registration) => registration.waiting)
-                .find(Boolean);
-
-            if (waitingWorker) {
-                waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-                if (ui.updateStatus) {
-                    ui.updateStatus.textContent = 'Update wird geladen…';
-                }
-                return;
-            }
-
-            if (ui.updateStatus) {
-                ui.updateStatus.textContent = 'Aktuell';
-            }
-        }).catch((error) => {
-            console.error('Service Worker Update konnte nicht geprüft werden:', error);
-            if (ui.updateStatus) {
-                ui.updateStatus.textContent = 'Prüfung fehlgeschlagen';
-            }
-        });
-    });
 }
 
 function bindInstallPrompt() {
