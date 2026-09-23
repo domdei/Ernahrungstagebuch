@@ -32,10 +32,13 @@
       <main class="container">
         <section class="panel form-panel">
           <div class="field-grid">
-            <label class="field">
-              <span>Datum</span>
-              <input id="entryDate" type="date" />
-            </label>
+            <div class="date-field-wrap">
+              <label class="field">
+                <span>Datum</span>
+                <input id="entryDate" type="date" />
+              </label>
+              <button id="todayButton" class="mini-button" type="button" aria-label="Auf heute setzen">Heute</button>
+            </div>
 
             <label class="field">
               <span>Kategorie</span>

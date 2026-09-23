@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'ernaehrungstagebuch-diary-v1';
 const FOOD_DB_PATH = './food-data.json';
-const APP_VERSION = '1.0.0';
+const APP_VERSION_PATH = './version.json';
 const MAX_SUGGESTIONS = 20;
 const BACKUP_HANDLE_DB = 'ernaehrungstagebuch-backup-handles';
 const BACKUP_HANDLE_STORE = 'handles';
@@ -23,6 +23,7 @@ const state = {
 
 const ui = {
     entryDate: document.getElementById('entryDate'),
+    todayButton: document.getElementById('todayButton'),
     searchCategory: document.getElementById('searchCategory'),
     foodSearch: document.getElementById('foodSearch'),
     suggestions: document.getElementById('suggestions'),
@@ -69,6 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     createCategoryOptions();
     restoreEntries();
     await loadFoodDatabase();
+    await loadVersionInfo();
     updateHistoryControls();
     renderEverything();
     bindEvents();
@@ -154,6 +156,19 @@ function bindEvents() {
 
     ui.entryDate.addEventListener('change', () => {
         state.selectedDate = ui.entryDate.value || getTodayString();
+        renderEverything();
+    });
+
+    ui.entryDate.addEventListener('input', () => {
+        if (!ui.entryDate.value) {
+            ui.entryDate.value = state.selectedDate || getTodayString();
+        }
+    });
+
+    ui.todayButton.addEventListener('click', () => {
+        const today = getTodayString();
+        state.selectedDate = today;
+        ui.entryDate.value = today;
         renderEverything();
     });
 
@@ -968,11 +983,29 @@ function downloadBlob(blob, filename) {
     URL.revokeObjectURL(url);
 }
 
-function updateVersionDisplay() {
-    if (ui.appVersion) {
-        ui.appVersion.textContent = APP_VERSION;
+async function loadVersionInfo() {
+    try {
+        const response = await fetch(APP_VERSION_PATH);
+        if (!response.ok) {
+            throw new Error('Version konnte nicht geladen werden');
+        }
+
+        const data = await response.json();
+        const version = data && typeof data.version === 'string' ? data.version : '1.0.0';
+        if (ui.appVersion) {
+            ui.appVersion.textContent = version;
+        }
+    } catch (error) {
+        console.error('Version konnte nicht geladen werden:', error);
+        if (ui.appVersion) {
+            ui.appVersion.textContent = '1.0.0';
+        }
     }
 
+    updateVersionDisplay();
+}
+
+function updateVersionDisplay() {
     if (ui.updateStatus) {
         if (!('serviceWorker' in navigator)) {
             ui.updateStatus.textContent = 'SW nicht unterstützt';
