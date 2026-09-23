@@ -46,8 +46,6 @@ const ui = {
     exportJsonButton: document.getElementById('exportJsonButton'),
     importFile: document.getElementById('importFile'),
     appVersion: document.getElementById('appVersion'),
-    checkForUpdateButton: document.getElementById('checkForUpdateButton'),
-    updateStatus: document.getElementById('updateStatus'),
 };
 
 let deferredPrompt = null;
@@ -1099,18 +1097,10 @@ async function loadVersionInfo() {
         }
     }
 
-    updateVersionDisplay();
 }
 
 function updateVersionDisplay() {
-    if (ui.updateStatus) {
-        if (!('serviceWorker' in navigator)) {
-            ui.updateStatus.textContent = 'SW nicht unterstützt';
-            return;
-        }
-
-        ui.updateStatus.textContent = 'Aktuell';
-    }
+    return;
 }
 
 function bindInstallPrompt() {
@@ -1147,18 +1137,10 @@ function registerServiceWorker() {
 
                 installingWorker.addEventListener('statechange', () => {
                     if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        if (ui.updateStatus) {
-                            ui.updateStatus.textContent = 'Update verfügbar';
-                        }
+                        console.info('Service Worker-Update installiert und aktiv.');
                     }
                 });
             });
-
-            if (registration.waiting) {
-                if (ui.updateStatus) {
-                    ui.updateStatus.textContent = 'Update verfügbar';
-                }
-            }
         }).catch((error) => {
             console.error('Service Worker konnte nicht registriert werden:', error);
         });
