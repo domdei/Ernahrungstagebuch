@@ -251,7 +251,7 @@ function bindEvents() {
         removeSelectedFood(button.dataset.name || '');
     });
 
-    ui.exportJsonButton.addEventListener('click', exportJsonBackup);
+    ui.exportJsonButton.addEventListener('click', () => exportJsonBackup());
     ui.importFile.addEventListener('change', handleImport);
     updateVersionDisplay();
 }
@@ -891,11 +891,18 @@ async function maybeAutoDailyBackup() {
 }
 
 async function exportJsonBackup(filenameOverride) {
-    const fileName = filenameOverride || getBackupFilename(new Date(), true);
+    const isEventObject = filenameOverride && typeof filenameOverride === 'object' && typeof filenameOverride.preventDefault === 'function';
+    const fileName = typeof filenameOverride === 'string' && filenameOverride.trim()
+        ? filenameOverride
+        : getBackupFilename(new Date(), true);
     const payload = JSON.stringify({
         exportedAt: new Date().toISOString(),
         entries: state.entries,
     }, null, 2);
+
+    if (isEventObject) {
+        return;
+    }
 
     if (window.showDirectoryPicker && typeof window.showDirectoryPicker === 'function') {
         try {
