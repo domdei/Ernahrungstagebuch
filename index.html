@@ -30,17 +30,6 @@
       </header>
 
       <main class="container">
-        <section class="panel hero-panel">
-          <div>
-            <p class="eyebrow">Tageslog</p>
-            <h2>Lebensmittel erfassen</h2>
-          </div>
-          <p class="subtle-text">
-            Erstelle Einträge für heute oder ein früheres Datum und prüfe sofort auf Rotations- und
-            Unverträglichkeitswarnungen.
-          </p>
-        </section>
-
         <section class="panel form-panel">
           <div class="field-grid">
             <label class="field">
@@ -76,28 +65,36 @@
         <section class="panel overview-panel">
           <div class="section-header">
             <h2>Verlauf</h2>
-            <div class="filter-row">
-              <label>
-                <span>Datum</span>
-                <input id="filterDate" type="date" />
-              </label>
-              <label>
-                <span>Kategorie</span>
-                <select id="filterCategory">
-                  <option value="all">Alle</option>
-                </select>
-              </label>
-              <label>
-                <span>Status</span>
-                <select id="filterStatus">
-                  <option value="all">Alle</option>
-                  <option value="green">Grün</option>
-                  <option value="orange">Orange</option>
-                  <option value="red">Rot</option>
-                </select>
-              </label>
+            <div class="history-toolbar">
+              <button id="historyModeToggle" class="ghost-button" type="button">Historie filtern</button>
               <button id="historyDeleteToggle" class="ghost-button" type="button">Löschmodus</button>
             </div>
+          </div>
+
+          <div id="historyFilters" class="filter-row hidden">
+            <label>
+              <span>Datum von</span>
+              <input id="filterFromDate" type="date" />
+            </label>
+            <label>
+              <span>Datum bis</span>
+              <input id="filterToDate" type="date" />
+            </label>
+            <label>
+              <span>Kategorie</span>
+              <select id="filterCategory">
+                <option value="all">Alle</option>
+              </select>
+            </label>
+            <label>
+              <span>Status</span>
+              <select id="filterStatus">
+                <option value="all">Alle</option>
+                <option value="green">Grün</option>
+                <option value="orange">Orange</option>
+                <option value="red">Rot</option>
+              </select>
+            </label>
           </div>
 
           <div id="historyList" class="history-list"></div>
@@ -108,10 +105,9 @@
             <div>
               <h2>Export & Import</h2>
               <div class="export-actions">
-                <button id="exportJsonButton" class="secondary-button" type="button">JSON exportieren</button>
-                <button id="exportCsvButton" class="secondary-button" type="button">CSV exportieren</button>
+                <button id="exportJsonButton" class="secondary-button" type="button">Backup speichern</button>
                 <label class="import-label">
-                  <span>Importieren</span>
+                  <span>Backup importieren</span>
                   <input id="importFile" type="file" accept=".json,.csv" />
                 </label>
               </div>

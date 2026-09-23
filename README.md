@@ -56,7 +56,12 @@ Die App enthält die notwendigen PWA-Komponenten:
 Im Projektordner ausführen:
 
 ```bash
+cd "C:\Users\domin\OneDrive\Data\VSCode\Project\Ernahrungstagebuch"
 python -m http.server 8001
+```
+
+```bash
+python -m http.server 8001 --directory "C:\Users\domin\OneDrive\Data\VSCode\Project\Ernahrungstagebuch"
 ```
 
 Danach im Browser öffnen:

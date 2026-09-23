@@ -1,16 +1,22 @@
 const STORAGE_KEY = 'ernaehrungstagebuch-diary-v1';
 const FOOD_DB_PATH = './food-data.json';
 const MAX_SUGGESTIONS = 20;
+const BACKUP_HANDLE_DB = 'ernaehrungstagebuch-backup-handles';
+const BACKUP_HANDLE_STORE = 'handles';
+const BACKUP_FILENAME = 'ernaehrungstagebuch-backup.json';
 
 const state = {
     foods: [],
     entries: [],
     selectedFoods: [],
     selectedDate: getTodayString(),
+    filterFromDate: getDefaultHistoryFromDate(),
+    filterToDate: getTodayString(),
     filterDate: '',
     searchCategory: 'all',
     filterCategory: 'all',
     filterStatus: 'all',
+    historyMode: false,
     historyDeleteMode: false,
 };
 
@@ -23,14 +29,16 @@ const ui = {
     selectionWarnings: document.getElementById('selectionWarnings'),
     saveButton: document.getElementById('saveButton'),
     historyList: document.getElementById('historyList'),
-    filterDate: document.getElementById('filterDate'),
+    historyFilters: document.getElementById('historyFilters'),
+    historyModeToggle: document.getElementById('historyModeToggle'),
+    filterFromDate: document.getElementById('filterFromDate'),
+    filterToDate: document.getElementById('filterToDate'),
     filterCategory: document.getElementById('filterCategory'),
     filterStatus: document.getElementById('filterStatus'),
     daySummary: document.getElementById('daySummary'),
     historyDeleteToggle: document.getElementById('historyDeleteToggle'),
     installButton: document.getElementById('installButton'),
     exportJsonButton: document.getElementById('exportJsonButton'),
-    exportCsvButton: document.getElementById('exportCsvButton'),
     importFile: document.getElementById('importFile'),
 };
 
@@ -50,10 +58,14 @@ const debouncedSearch = debounce(() => {
 
 document.addEventListener('DOMContentLoaded', async () => {
     ui.entryDate.value = state.selectedDate;
-    ui.filterDate.value = state.filterDate;
+    ui.filterFromDate.value = state.filterFromDate;
+    ui.filterToDate.value = state.filterToDate;
+    state.filterCategory = 'all';
+    state.filterStatus = 'all';
     createCategoryOptions();
     restoreEntries();
     await loadFoodDatabase();
+    updateHistoryControls();
     renderEverything();
     bindEvents();
     registerServiceWorker();
@@ -76,6 +88,25 @@ function bindEvents() {
             if (firstSuggestion) {
                 addSelectedFood(firstSuggestion.dataset.name);
             }
+        }
+    });
+
+    ui.foodSearch.addEventListener('blur', () => {
+        setTimeout(() => {
+            if (!ui.foodSearch.matches(':focus') && !ui.suggestions.matches(':hover')) {
+                ui.suggestions.innerHTML = '';
+                ui.suggestions.classList.remove('visible');
+            }
+        }, 120);
+    });
+
+    document.addEventListener('click', (event) => {
+        const clickedInsideSearch = ui.foodSearch.contains(event.target);
+        const clickedInsideSuggestions = ui.suggestions.contains(event.target);
+
+        if (!clickedInsideSearch && !clickedInsideSuggestions) {
+            ui.suggestions.innerHTML = '';
+            ui.suggestions.classList.remove('visible');
         }
     });
 
@@ -122,8 +153,13 @@ function bindEvents() {
         renderEverything();
     });
 
-    ui.filterDate.addEventListener('change', () => {
-        state.filterDate = ui.filterDate.value || getTodayString();
+    ui.filterFromDate.addEventListener('change', () => {
+        state.filterFromDate = ui.filterFromDate.value || getDefaultHistoryFromDate();
+        renderEverything();
+    });
+
+    ui.filterToDate.addEventListener('change', () => {
+        state.filterToDate = ui.filterToDate.value || getTodayString();
         renderEverything();
     });
 
@@ -139,6 +175,12 @@ function bindEvents() {
 
     ui.filterStatus.addEventListener('change', () => {
         state.filterStatus = ui.filterStatus.value;
+        renderEverything();
+    });
+
+    ui.historyModeToggle.addEventListener('click', () => {
+        state.historyMode = !state.historyMode;
+        updateHistoryControls();
         renderEverything();
     });
 
@@ -179,8 +221,7 @@ function bindEvents() {
         removeSelectedFood(button.dataset.name || '');
     });
 
-    ui.exportJsonButton.addEventListener('click', exportJson);
-    ui.exportCsvButton.addEventListener('click', exportCsv);
+    ui.exportJsonButton.addEventListener('click', exportJsonBackup);
     ui.importFile.addEventListener('change', handleImport);
 }
 
@@ -230,7 +271,39 @@ function persistEntries() {
     }
 }
 
+function getDefaultHistoryFromDate() {
+    const today = parseDateInput(getTodayString());
+    today.setDate(today.getDate() - 4);
+    return formatDateInput(today);
+}
+
+function updateHistoryControls() {
+    if (!ui.historyFilters || !ui.historyModeToggle) {
+        return;
+    }
+
+    ui.historyFilters.classList.toggle('hidden', !state.historyMode);
+    ui.historyModeToggle.textContent = state.historyMode ? 'Filter ausblenden' : 'Historie filtern';
+
+    if (!state.historyMode) {
+        state.filterFromDate = getDefaultHistoryFromDate();
+        state.filterToDate = getTodayString();
+        state.filterCategory = 'all';
+        state.filterStatus = 'all';
+        ui.filterFromDate.value = state.filterFromDate;
+        ui.filterToDate.value = state.filterToDate;
+        ui.filterCategory.value = 'all';
+        ui.filterStatus.value = 'all';
+    }
+}
+
 function renderEverything() {
+    if (ui.filterFromDate) {
+        ui.filterFromDate.value = state.filterFromDate;
+    }
+    if (ui.filterToDate) {
+        ui.filterToDate.value = state.filterToDate;
+    }
     createCategoryOptions();
     renderSelectedFoods();
     renderSuggestions();
@@ -371,32 +444,49 @@ function renderHistory() {
 
     ui.historyList.innerHTML = dates
         .map((date) => {
-            const items = grouped[date]
-                .sort((a, b) => b.createdAt - a.createdAt)
-                .map((entry) => {
-                    const deleteButton = state.historyDeleteMode
-                        ? `<button type="button" class="delete-entry-button" data-entry-id="${escapeHtml(entry.id)}" aria-label="Eintrag löschen">×</button>`
-                        : '';
+            const categoryGroups = grouped[date]
+                .reduce((acc, entry) => {
+                    if (!acc[entry.category]) {
+                        acc[entry.category] = [];
+                    }
+                    acc[entry.category].push(entry);
+                    return acc;
+                }, {});
+
+            const categoryNames = Object.keys(categoryGroups).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
+            const categoryMarkup = categoryNames
+                .map((category) => {
+                    const items = categoryGroups[category]
+                        .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+                        .map((entry) => {
+                            const deleteButton = state.historyDeleteMode
+                                ? `<button type="button" class="delete-entry-button" data-entry-id="${escapeHtml(entry.id)}" aria-label="Eintrag löschen">×</button>`
+                                : '';
+
+                            return `
+                <div class="history-item" title="${toStatusLabel(entry.status)}">
+                  <span class="name">${escapeHtml(entry.name)}</span>
+                  <span class="status-dot status-${entry.status}" title="${toStatusLabel(entry.status)}" aria-label="${toStatusLabel(entry.status)}"></span>
+                  ${deleteButton}
+                </div>
+              `;
+                        })
+                        .join('');
 
                     return `
-          <div class="history-item">
-            <div class="name-row">
-              <span class="name">${escapeHtml(entry.name)}</span>
-              <span class="status-pill status-${entry.status}">${toStatusLabel(entry.status)}</span>
-            </div>
-            <div class="history-meta-row">
-              <span>${escapeHtml(entry.category)}</span>
-              ${deleteButton}
-            </div>
-          </div>
-        `;
+              <div class="history-category-group">
+                <div class="history-category-header">${escapeHtml(category)}</div>
+                <div class="history-category-items">${items}</div>
+              </div>
+            `;
                 })
                 .join('');
 
             return `
         <div class="history-day">
           <h3>${formatFriendlyDate(date)}</h3>
-          <div class="history-items">${items}</div>
+          <div class="history-items">${categoryMarkup}</div>
         </div>
       `;
         })
@@ -420,21 +510,13 @@ function confirmDeleteEntry(entryId) {
 }
 
 function filterEntries() {
-    const selectedDate = ui.filterDate.value || state.filterDate;
-    const category = ui.filterCategory.value;
-    const status = ui.filterStatus.value;
-
-    const visibleDates = new Set();
-    if (!selectedDate) {
-        const today = parseDateInput(getTodayString());
-        for (let offset = 3; offset >= 0; offset -= 1) {
-            const date = addDays(today, -offset);
-            visibleDates.add(formatDateInput(date));
-        }
-    }
+    const fromDate = ui.filterFromDate.value || state.filterFromDate || getDefaultHistoryFromDate();
+    const toDate = ui.filterToDate.value || state.filterToDate || getTodayString();
+    const category = ui.filterCategory.value || state.filterCategory || 'all';
+    const status = ui.filterStatus.value || state.filterStatus || 'all';
 
     return state.entries.filter((entry) => {
-        const matchesDate = !selectedDate ? visibleDates.has(entry.date) : entry.date === selectedDate;
+        const matchesDate = entry.date >= fromDate && entry.date <= toDate;
         const matchesCategory = category === 'all' || entry.category === category;
         const matchesStatus = status === 'all' || entry.status === status;
         return matchesDate && matchesCategory && matchesStatus;
@@ -659,6 +741,33 @@ function formatShortDate(date) {
     }).format(date);
 }
 
+async function exportJsonBackup() {
+    const payload = JSON.stringify({
+        exportedAt: new Date().toISOString(),
+        entries: state.entries,
+    }, null, 2);
+
+    if (window.showDirectoryPicker && typeof window.showDirectoryPicker === 'function') {
+        try {
+            const directoryHandle = await getSavedDirectoryHandle() || await window.showDirectoryPicker({ mode: 'readwrite' });
+            await saveDirectoryHandle(directoryHandle);
+            const fileHandle = await directoryHandle.getFileHandle(BACKUP_FILENAME, { create: true });
+            const writable = await fileHandle.createWritable();
+            await writable.write(payload);
+            await writable.close();
+            alert('Backup gespeichert.');
+            return;
+        } catch (error) {
+            if (error && error.name !== 'AbortError') {
+                console.warn('Directory Picker konnte nicht verwendet werden:', error);
+            }
+        }
+    }
+
+    const blob = new Blob([payload], { type: 'application/json' });
+    downloadBlob(blob, BACKUP_FILENAME);
+}
+
 function exportJson() {
     const blob = new Blob([JSON.stringify(state.entries, null, 2)], { type: 'application/json' });
     downloadBlob(blob, 'ernaehrungstagebuch.json');
@@ -686,22 +795,94 @@ async function handleImport(event) {
 
     try {
         const content = await file.text();
-        const parsed = file.name.toLowerCase().endsWith('.json') ? JSON.parse(content) : parseCsv(content);
+        const parsed = file.name.toLowerCase().endsWith('.json') ? parseImportedJson(content) : parseCsv(content);
         const nextEntries = Array.isArray(parsed) ? parsed : Array.isArray(parsed.entries) ? parsed.entries : [];
 
         const imported = nextEntries
             .map((entry) => normalizeImportedEntry(entry))
             .filter(Boolean);
 
-        state.entries = [...state.entries, ...imported];
+        if (!imported.length) {
+            alert('Es wurden keine Einträge gefunden, die importiert werden können.');
+            return;
+        }
+
+        const shouldMerge = window.confirm('Bestehende Einträge beibehalten und importierte Einträge ergänzen?');
+        state.entries = shouldMerge
+            ? [...state.entries, ...imported]
+            : imported;
+
         state.entries.sort((a, b) => new Date(b.date) - new Date(a.date) || b.createdAt - a.createdAt);
         persistEntries();
         renderEverything();
+        alert('Backup importiert.');
     } catch (error) {
         console.error('Fehler beim Import:', error);
         alert('Die Datei konnte nicht importiert werden. Bitte prüfe das Format.');
     } finally {
         event.target.value = '';
+    }
+}
+
+function parseImportedJson(content) {
+    const parsed = JSON.parse(content);
+    if (Array.isArray(parsed)) {
+        return parsed;
+    }
+    if (parsed && Array.isArray(parsed.entries)) {
+        return parsed.entries;
+    }
+    return [];
+}
+
+function openBackupDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(BACKUP_HANDLE_DB, 1);
+
+        request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(BACKUP_HANDLE_STORE)) {
+                db.createObjectStore(BACKUP_HANDLE_STORE);
+            }
+        };
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error || new Error('IndexedDB konnte nicht geöffnet werden.'));
+    });
+}
+
+async function saveDirectoryHandle(directoryHandle) {
+    if (!directoryHandle || !('getFileHandle' in directoryHandle)) {
+        return;
+    }
+
+    const db = await openBackupDatabase();
+    const transaction = db.transaction(BACKUP_HANDLE_STORE, 'readwrite');
+    const store = transaction.objectStore(BACKUP_HANDLE_STORE);
+    store.put(directoryHandle, 'directory');
+    await new Promise((resolve, reject) => {
+        transaction.oncomplete = resolve;
+        transaction.onerror = () => reject(transaction.error || new Error('Backup-Handle konnte nicht gespeichert werden.'));
+    });
+}
+
+async function getSavedDirectoryHandle() {
+    if (!('indexedDB' in window)) {
+        return null;
+    }
+
+    try {
+        const db = await openBackupDatabase();
+        const transaction = db.transaction(BACKUP_HANDLE_STORE, 'readonly');
+        const store = transaction.objectStore(BACKUP_HANDLE_STORE);
+        return await new Promise((resolve, reject) => {
+            const request = store.get('directory');
+            request.onsuccess = () => resolve(request.result || null);
+            request.onerror = () => reject(request.error || new Error('Gespeicherten Backup-Ordner konnte nicht geladen werden.'));
+        });
+    } catch (error) {
+        console.warn('Gespeicherter Backup-Ordner konnte nicht geladen werden:', error);
+        return null;
     }
 }
 
