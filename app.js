@@ -5,7 +5,7 @@ const APP_VERSION_PATH = './version.json';
 const MAX_SUGGESTIONS = 20;
 const BACKUP_HANDLE_DB = 'ernaehrungstagebuch-backup-handles';
 const BACKUP_HANDLE_STORE = 'handles';
-const BACKUP_FILENAME_PREFIX = 'ernaehrungstagebuch-backup';
+const BACKUP_FILENAME_PREFIX = 'backup';
 const LAST_DAILY_BACKUP_KEY = 'ernaehrungstagebuch-last-daily-backup-date';
 
 const state = {
@@ -860,8 +860,19 @@ function getDateStamp(date = new Date()) {
     return `${year}-${month}-${day}`;
 }
 
-function getBackupFilename(date = new Date()) {
-    return `${BACKUP_FILENAME_PREFIX}-${getDateStamp(date)}.json`;
+function getDateTimeStamp(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+}
+
+function getBackupFilename(date = new Date(), includeTime = false) {
+    const stamp = includeTime ? getDateTimeStamp(date) : getDateStamp(date);
+    return `${BACKUP_FILENAME_PREFIX}_${stamp}.json`;
 }
 
 async function maybeAutoDailyBackup() {
@@ -872,7 +883,7 @@ async function maybeAutoDailyBackup() {
     }
 
     try {
-        await exportJsonBackup(getBackupFilename());
+        await exportJsonBackup(getBackupFilename(new Date(), false));
         localStorage.setItem(LAST_DAILY_BACKUP_KEY, today);
     } catch (error) {
         console.warn('Tägliches Backup konnte nicht erstellt werden:', error);
@@ -880,7 +891,7 @@ async function maybeAutoDailyBackup() {
 }
 
 async function exportJsonBackup(filenameOverride) {
-    const fileName = filenameOverride || getBackupFilename();
+    const fileName = filenameOverride || getBackupFilename(new Date(), true);
     const payload = JSON.stringify({
         exportedAt: new Date().toISOString(),
         entries: state.entries,
