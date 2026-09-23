@@ -5,7 +5,8 @@ const APP_VERSION_PATH = './version.json';
 const MAX_SUGGESTIONS = 20;
 const BACKUP_HANDLE_DB = 'ernaehrungstagebuch-backup-handles';
 const BACKUP_HANDLE_STORE = 'handles';
-const BACKUP_FILENAME = 'ernaehrungstagebuch-backup.json';
+const BACKUP_FILENAME_PREFIX = 'ernaehrungstagebuch-backup';
+const LAST_DAILY_BACKUP_KEY = 'ernaehrungstagebuch-last-daily-backup-date';
 
 const state = {
     foods: [],
@@ -73,6 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     state.filterStatus = 'all';
     createCategoryOptions();
     await loadFoodDatabase();
+    await maybeAutoDailyBackup();
     await loadVersionInfo();
     updateHistoryControls();
     renderEverything();
@@ -854,7 +856,34 @@ function formatShortDate(date) {
     }).format(date);
 }
 
-async function exportJsonBackup() {
+function getDateStamp(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function getBackupFilename(date = new Date()) {
+    return `${BACKUP_FILENAME_PREFIX}-${getDateStamp(date)}.json`;
+}
+
+async function maybeAutoDailyBackup() {
+    const today = getDateStamp();
+    const lastDailyBackupDate = localStorage.getItem(LAST_DAILY_BACKUP_KEY);
+    if (lastDailyBackupDate === today) {
+        return;
+    }
+
+    try {
+        await exportJsonBackup(getBackupFilename());
+        localStorage.setItem(LAST_DAILY_BACKUP_KEY, today);
+    } catch (error) {
+        console.warn('Tägliches Backup konnte nicht erstellt werden:', error);
+    }
+}
+
+async function exportJsonBackup(filenameOverride) {
+    const fileName = filenameOverride || getBackupFilename();
     const payload = JSON.stringify({
         exportedAt: new Date().toISOString(),
         entries: state.entries,
@@ -864,11 +893,10 @@ async function exportJsonBackup() {
         try {
             const directoryHandle = await getSavedDirectoryHandle() || await window.showDirectoryPicker({ mode: 'readwrite' });
             await saveDirectoryHandle(directoryHandle);
-            const fileHandle = await directoryHandle.getFileHandle(BACKUP_FILENAME, { create: true });
+            const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
             const writable = await fileHandle.createWritable();
             await writable.write(payload);
             await writable.close();
-            alert('Backup gespeichert.');
             return;
         } catch (error) {
             if (error && error.name !== 'AbortError') {
@@ -878,7 +906,7 @@ async function exportJsonBackup() {
     }
 
     const blob = new Blob([payload], { type: 'application/json' });
-    downloadBlob(blob, BACKUP_FILENAME);
+    downloadBlob(blob, fileName);
 }
 
 function exportJson() {
