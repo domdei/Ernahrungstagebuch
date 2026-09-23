@@ -101,6 +101,35 @@ button {
   font-size: 1.4rem;
 }
 
+.version-panel {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.version-row,
+.version-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.version-label {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.update-status {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
 .subtle-text {
   margin: 0;
   color: var(--muted);

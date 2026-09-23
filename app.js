@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'ernaehrungstagebuch-diary-v1';
 const FOOD_DB_PATH = './food-data.json';
+const APP_VERSION = '1.0.0';
 const MAX_SUGGESTIONS = 20;
 const BACKUP_HANDLE_DB = 'ernaehrungstagebuch-backup-handles';
 const BACKUP_HANDLE_STORE = 'handles';
@@ -40,6 +41,9 @@ const ui = {
     installButton: document.getElementById('installButton'),
     exportJsonButton: document.getElementById('exportJsonButton'),
     importFile: document.getElementById('importFile'),
+    appVersion: document.getElementById('appVersion'),
+    checkForUpdateButton: document.getElementById('checkForUpdateButton'),
+    updateStatus: document.getElementById('updateStatus'),
 };
 
 let deferredPrompt = null;
@@ -223,6 +227,8 @@ function bindEvents() {
 
     ui.exportJsonButton.addEventListener('click', exportJsonBackup);
     ui.importFile.addEventListener('change', handleImport);
+    ui.checkForUpdateButton.addEventListener('click', checkForServiceWorkerUpdate);
+    updateVersionDisplay();
 }
 
 async function loadFoodDatabase() {
@@ -962,6 +968,62 @@ function downloadBlob(blob, filename) {
     URL.revokeObjectURL(url);
 }
 
+function updateVersionDisplay() {
+    if (ui.appVersion) {
+        ui.appVersion.textContent = APP_VERSION;
+    }
+
+    if (ui.updateStatus) {
+        if (!('serviceWorker' in navigator)) {
+            ui.updateStatus.textContent = 'SW nicht unterstützt';
+            return;
+        }
+
+        ui.updateStatus.textContent = 'Aktuell';
+    }
+}
+
+function checkForServiceWorkerUpdate() {
+    if (!('serviceWorker' in navigator)) {
+        if (ui.updateStatus) {
+            ui.updateStatus.textContent = 'SW nicht unterstützt';
+        }
+        return;
+    }
+
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+        if (!registrations.length) {
+            if (ui.updateStatus) {
+                ui.updateStatus.textContent = 'Kein Service Worker';
+            }
+            return;
+        }
+
+        Promise.all(registrations.map((registration) => registration.update())).then(() => {
+            const waitingWorker = registrations
+                .map((registration) => registration.waiting)
+                .find(Boolean);
+
+            if (waitingWorker) {
+                waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+                if (ui.updateStatus) {
+                    ui.updateStatus.textContent = 'Update wird geladen…';
+                }
+                return;
+            }
+
+            if (ui.updateStatus) {
+                ui.updateStatus.textContent = 'Aktuell';
+            }
+        }).catch((error) => {
+            console.error('Service Worker Update konnte nicht geprüft werden:', error);
+            if (ui.updateStatus) {
+                ui.updateStatus.textContent = 'Prüfung fehlgeschlagen';
+            }
+        });
+    });
+}
+
 function bindInstallPrompt() {
     window.addEventListener('beforeinstallprompt', (event) => {
         event.preventDefault();
@@ -987,7 +1049,28 @@ function registerServiceWorker() {
     }
 
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch((error) => {
+        navigator.serviceWorker.register('./sw.js').then((registration) => {
+            registration.addEventListener('updatefound', () => {
+                const installingWorker = registration.installing;
+                if (!installingWorker) {
+                    return;
+                }
+
+                installingWorker.addEventListener('statechange', () => {
+                    if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        if (ui.updateStatus) {
+                            ui.updateStatus.textContent = 'Update verfügbar';
+                        }
+                    }
+                });
+            });
+
+            if (registration.waiting) {
+                if (ui.updateStatus) {
+                    ui.updateStatus.textContent = 'Update verfügbar';
+                }
+            }
+        }).catch((error) => {
             console.error('Service Worker konnte nicht registriert werden:', error);
         });
     });
