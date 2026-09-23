@@ -904,7 +904,12 @@ async function exportJsonBackup(filenameOverride) {
         return;
     }
 
-    if (window.showDirectoryPicker && typeof window.showDirectoryPicker === 'function') {
+    const canUseDirectoryPicker = window.isSecureContext
+        && window.showDirectoryPicker
+        && typeof window.showDirectoryPicker === 'function'
+        && !(/Android|iPhone|iPad/i.test(navigator.userAgent));
+
+    if (canUseDirectoryPicker) {
         try {
             const directoryHandle = await getSavedDirectoryHandle() || await window.showDirectoryPicker({ mode: 'readwrite' });
             await saveDirectoryHandle(directoryHandle);
@@ -1146,7 +1151,7 @@ function registerServiceWorker() {
     }
 
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=1.0.2').then((registration) => {
+        navigator.serviceWorker.register('./sw.js?v=1.0.3').then((registration) => {
             registration.addEventListener('updatefound', () => {
                 const installingWorker = registration.installing;
                 if (!installingWorker) {
