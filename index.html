@@ -15,7 +15,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.0.13" />
+    <link rel="stylesheet" href="./styles.css?v=1.0.23" />
     <script>
       (function() {
         try {
@@ -54,23 +54,56 @@
             </div>
 
             <div class="category-field-wrap">
-              <label class="field">
-                <span>Kategorie</span>
-                <select id="searchCategory">
-                  <option value="all">Alle</option>
-                </select>
-              </label>
+              <div class="field category-field">
+                <label for="searchCategory">Kategorie</label>
+                <div class="category-input-inner">
+                  <select id="searchCategory">
+                    <option value="all">Alle</option>
+                  </select>
+                  <button
+                    id="categoryClearButton"
+                    class="search-clear-button category-clear-button hidden"
+                    type="button"
+                    aria-label="Kategorie-Filter zurücksetzen"
+                    title="Kategorie auf Alle zurücksetzen"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
               <button id="onlyFreshGreenFoods" class="icon-button green-filter-button" type="button" aria-pressed="false" aria-label="Nur grüne, noch nicht erfasste Lebensmittel" title="Nur grüne, noch nicht erfasste Lebensmittel">🟢</button>
             </div>
 
-            <div class="field search-field">
+            <div class="field search-field" id="searchField">
               <label id="foodSearchLabel" for="foodSearch">Lebensmittel</label>
-              <input
-                id="foodSearch"
-                type="text"
-                autocomplete="off"
-                placeholder="Suche nach einem Lebensmittel..."
-              />
+              <div class="search-input-wrap">
+                <button
+                  id="searchCloseButton"
+                  class="icon-button search-close-button"
+                  type="button"
+                  aria-label="Suche schließen"
+                  title="Suche schließen"
+                >
+                  ←
+                </button>
+                <div class="search-input-inner">
+                  <input
+                    id="foodSearch"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Suche nach einem Lebensmittel..."
+                  />
+                  <button
+                    id="searchClearButton"
+                    class="search-clear-button hidden"
+                    type="button"
+                    aria-label="Eingabe löschen"
+                    title="Eingabe löschen"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
               <div id="suggestions" class="suggestions" aria-live="polite"></div>
             </div>
           </div>
@@ -85,8 +118,26 @@
           <div class="section-header">
             <h2>Verlauf</h2>
             <div class="history-toolbar">
-              <button id="historyModeToggle" class="ghost-button" type="button">Historie filtern</button>
-              <button id="historyDeleteToggle" class="ghost-button" type="button">Löschmodus</button>
+              <button
+                id="historyModeToggle"
+                class="icon-button small-icon-button"
+                type="button"
+                aria-pressed="false"
+                aria-label="Historie filtern"
+                title="Historie filtern"
+              >
+                🔍
+              </button>
+              <button
+                id="historyDeleteToggle"
+                class="icon-button small-icon-button"
+                type="button"
+                aria-pressed="false"
+                aria-label="Löschmodus aktivieren"
+                title="Löschmodus aktivieren"
+              >
+                🗑️
+              </button>
             </div>
           </div>
 
@@ -143,10 +194,30 @@
       </main>
     </div>
 
+    <div id="importModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
+      <div class="modal-card">
+        <h3 id="importModalTitle">Backup importieren</h3>
+        <p id="importModalText" class="modal-description"></p>
+        <div class="modal-actions">
+          <button id="importMergeButton" class="modal-btn modal-btn-option" type="button">
+            <strong>Ergänzen</strong>
+            <small>Neue Einträge hinzufügen, Bestehendes behalten</small>
+          </button>
+          <button id="importReplaceButton" class="modal-btn modal-btn-option" type="button">
+            <strong>Ersetzen</strong>
+            <small>Alle bisherigen Einträge durch das Backup ersetzen</small>
+          </button>
+          <button id="importCancelButton" class="ghost-button modal-btn modal-btn-cancel" type="button">
+            <strong>Abbrechen</strong>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <noscript>
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script src="./app.js?v=1.0.13" defer></script>
+    <script src="./app.js?v=1.0.23" defer></script>
   </body>
 </html>

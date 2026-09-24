@@ -27,8 +27,12 @@ const ui = {
     entryDate: document.getElementById('entryDate'),
     todayButton: document.getElementById('todayButton'),
     searchCategory: document.getElementById('searchCategory'),
+    categoryClearButton: document.getElementById('categoryClearButton'),
     onlyFreshGreenFoods: document.getElementById('onlyFreshGreenFoods'),
+    searchField: document.getElementById('searchField'),
     foodSearchLabel: document.getElementById('foodSearchLabel'),
+    searchCloseButton: document.getElementById('searchCloseButton'),
+    searchClearButton: document.getElementById('searchClearButton'),
     foodSearch: document.getElementById('foodSearch'),
     suggestions: document.getElementById('suggestions'),
     selectedFoods: document.getElementById('selectedFoods'),
@@ -47,9 +51,92 @@ const ui = {
     exportJsonButton: document.getElementById('exportJsonButton'),
     importFile: document.getElementById('importFile'),
     appVersion: document.getElementById('appVersion'),
+    importModal: document.getElementById('importModal'),
+    importModalTitle: document.getElementById('importModalTitle'),
+    importModalText: document.getElementById('importModalText'),
+    importMergeButton: document.getElementById('importMergeButton'),
+    importReplaceButton: document.getElementById('importReplaceButton'),
+    importCancelButton: document.getElementById('importCancelButton'),
 };
 
 let deferredPrompt = null;
+let isSearchOverlayOpen = false;
+
+function isMobileView() {
+    return window.matchMedia('(max-width: 760px), (max-height: 500px)').matches;
+}
+
+function updateSearchClearButton() {
+    if (!ui.searchClearButton) {
+        return;
+    }
+    const hasText = Boolean(ui.foodSearch && ui.foodSearch.value.length > 0);
+    ui.searchClearButton.classList.toggle('hidden', !hasText);
+}
+
+function updateCategoryClearButton() {
+    if (!ui.categoryClearButton || !ui.searchCategory) {
+        return;
+    }
+    const hasFilter = ui.searchCategory.value !== 'all';
+    ui.categoryClearButton.classList.toggle('hidden', !hasFilter);
+    const wrap = ui.searchCategory.closest('.category-input-inner');
+    if (wrap) {
+        wrap.classList.toggle('has-selection', hasFilter);
+    }
+}
+
+function openSearchOverlay() {
+    if (isSearchOverlayOpen) {
+        return;
+    }
+    if (!isMobileView()) {
+        return;
+    }
+
+    isSearchOverlayOpen = true;
+    document.body.classList.add('search-overlay-active');
+    updateSearchClearButton();
+    renderSuggestionList(ui.foodSearch.value.trim());
+
+    try {
+        window.history.pushState({ searchOverlay: true }, '');
+    } catch (e) {}
+}
+
+function closeSearchOverlay(fromPopState = false) {
+    if (!isSearchOverlayOpen) {
+        if (ui.foodSearch) {
+            ui.foodSearch.blur();
+        }
+        return;
+    }
+
+    isSearchOverlayOpen = false;
+    document.body.classList.remove('search-overlay-active');
+    if (ui.foodSearch) {
+        ui.foodSearch.blur();
+    }
+
+    if (!fromPopState) {
+        try {
+            if (window.history.state && window.history.state.searchOverlay) {
+                window.history.back();
+            }
+        } catch (e) {}
+    }
+
+    if (ui.foodSearch) {
+        ui.foodSearch.value = '';
+    }
+    updateSearchClearButton();
+    persistDraftState();
+
+    if (ui.suggestions) {
+        ui.suggestions.innerHTML = '';
+        ui.suggestions.classList.remove('visible');
+    }
+}
 
 const debounce = (fn, delay) => {
     let timer;
@@ -84,11 +171,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function bindEvents() {
     ui.foodSearch.addEventListener('input', () => {
+        updateSearchClearButton();
         debouncedSearch();
     });
 
     ui.foodSearch.addEventListener('focus', () => {
-        renderSuggestionList(ui.foodSearch.value.trim());
+        if (isMobileView()) {
+            openSearchOverlay();
+        } else {
+            renderSuggestionList(ui.foodSearch.value.trim());
+        }
+    });
+
+    ui.foodSearch.addEventListener('click', () => {
+        if (isMobileView() && !isSearchOverlayOpen) {
+            openSearchOverlay();
+        }
     });
 
     ui.foodSearch.addEventListener('keydown', (event) => {
@@ -98,10 +196,42 @@ function bindEvents() {
             if (firstSuggestion) {
                 addSelectedFood(firstSuggestion.dataset.name);
             }
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            if (isSearchOverlayOpen) {
+                closeSearchOverlay();
+            } else {
+                ui.foodSearch.blur();
+                ui.suggestions.innerHTML = '';
+                ui.suggestions.classList.remove('visible');
+            }
         }
     });
 
+    if (ui.searchCloseButton) {
+        ui.searchCloseButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            closeSearchOverlay();
+        });
+    }
+
+    if (ui.searchClearButton) {
+        ui.searchClearButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            ui.foodSearch.value = '';
+            updateSearchClearButton();
+            persistDraftState();
+            ui.foodSearch.focus();
+            renderSuggestionList('');
+        });
+    }
+
     ui.foodSearch.addEventListener('blur', () => {
+        if (isSearchOverlayOpen) {
+            return;
+        }
         setTimeout(() => {
             if (!ui.foodSearch.matches(':focus') && !ui.suggestions.matches(':hover')) {
                 ui.suggestions.innerHTML = '';
@@ -111,12 +241,28 @@ function bindEvents() {
     });
 
     document.addEventListener('click', (event) => {
+        if (isSearchOverlayOpen) {
+            return;
+        }
         const clickedInsideSearch = ui.foodSearch.contains(event.target);
         const clickedInsideSuggestions = ui.suggestions.contains(event.target);
+        const clickedInsideClear = ui.searchClearButton && ui.searchClearButton.contains(event.target);
 
-        if (!clickedInsideSearch && !clickedInsideSuggestions) {
+        if (!clickedInsideSearch && !clickedInsideSuggestions && !clickedInsideClear) {
             ui.suggestions.innerHTML = '';
             ui.suggestions.classList.remove('visible');
+        }
+    });
+
+    window.addEventListener('popstate', () => {
+        if (isSearchOverlayOpen) {
+            closeSearchOverlay(true);
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        if (isSearchOverlayOpen && !isMobileView()) {
+            closeSearchOverlay();
         }
     });
 
@@ -192,8 +338,20 @@ function bindEvents() {
 
     ui.searchCategory.addEventListener('change', () => {
         state.searchCategory = ui.searchCategory.value;
+        updateCategoryClearButton();
         renderSuggestions();
     });
+
+    if (ui.categoryClearButton) {
+        ui.categoryClearButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            ui.searchCategory.value = 'all';
+            state.searchCategory = 'all';
+            updateCategoryClearButton();
+            renderSuggestions();
+        });
+    }
 
     if (ui.onlyFreshGreenFoods) {
         ui.onlyFreshGreenFoods.addEventListener('click', () => {
@@ -221,7 +379,7 @@ function bindEvents() {
 
     ui.historyDeleteToggle.addEventListener('click', () => {
         state.historyDeleteMode = !state.historyDeleteMode;
-        ui.historyDeleteToggle.textContent = state.historyDeleteMode ? 'Löschmodus beenden' : 'Löschmodus';
+        updateHistoryControls();
         renderHistory();
     });
 
@@ -329,6 +487,7 @@ function createCategoryOptions() {
     ui.searchCategory.innerHTML = categoryOptions;
     ui.searchCategory.value = categories.includes(currentSearch) ? currentSearch : 'all';
     state.searchCategory = ui.searchCategory.value;
+    updateCategoryClearButton();
 }
 
 function restoreEntries() {
@@ -360,6 +519,7 @@ function restoreDraftState() {
 
         if (typeof draft.foodSearch === 'string' && ui.foodSearch) {
             ui.foodSearch.value = draft.foodSearch;
+            updateSearchClearButton();
         }
     } catch (error) {
         console.error('Entwurf konnte nicht wiederhergestellt werden:', error);
@@ -396,22 +556,32 @@ function getDefaultHistoryFromDate() {
 }
 
 function updateHistoryControls() {
-    if (!ui.historyFilters || !ui.historyModeToggle) {
-        return;
+    if (ui.historyFilters && ui.historyModeToggle) {
+        ui.historyFilters.classList.toggle('hidden', !state.historyMode);
+        ui.historyModeToggle.setAttribute('aria-pressed', String(state.historyMode));
+        ui.historyModeToggle.classList.toggle('active', state.historyMode);
+        const filterTitle = state.historyMode ? 'Filter ausblenden' : 'Historie filtern';
+        ui.historyModeToggle.setAttribute('title', filterTitle);
+        ui.historyModeToggle.setAttribute('aria-label', filterTitle);
+
+        if (!state.historyMode) {
+            state.filterFromDate = getDefaultHistoryFromDate();
+            state.filterToDate = getTodayString();
+            state.filterCategory = 'all';
+            state.filterStatus = 'all';
+            ui.filterFromDate.value = state.filterFromDate;
+            ui.filterToDate.value = state.filterToDate;
+            ui.filterCategory.value = 'all';
+            ui.filterStatus.value = 'all';
+        }
     }
 
-    ui.historyFilters.classList.toggle('hidden', !state.historyMode);
-    ui.historyModeToggle.textContent = state.historyMode ? 'Filter ausblenden' : 'Historie filtern';
-
-    if (!state.historyMode) {
-        state.filterFromDate = getDefaultHistoryFromDate();
-        state.filterToDate = getTodayString();
-        state.filterCategory = 'all';
-        state.filterStatus = 'all';
-        ui.filterFromDate.value = state.filterFromDate;
-        ui.filterToDate.value = state.filterToDate;
-        ui.filterCategory.value = 'all';
-        ui.filterStatus.value = 'all';
+    if (ui.historyDeleteToggle) {
+        ui.historyDeleteToggle.setAttribute('aria-pressed', String(state.historyDeleteMode));
+        ui.historyDeleteToggle.classList.toggle('delete-active', state.historyDeleteMode);
+        const deleteTitle = state.historyDeleteMode ? 'Löschmodus beenden' : 'Löschmodus aktivieren';
+        ui.historyDeleteToggle.setAttribute('title', deleteTitle);
+        ui.historyDeleteToggle.setAttribute('aria-label', deleteTitle);
     }
 }
 
@@ -491,7 +661,7 @@ function renderSuggestionList(query) {
         return;
     }
 
-    if (!query && !ui.foodSearch.matches(':focus')) {
+    if (!query && !ui.foodSearch.matches(':focus') && !isSearchOverlayOpen) {
         ui.suggestions.innerHTML = '';
         ui.suggestions.classList.remove('visible');
         return;
@@ -531,7 +701,7 @@ function renderSuggestionList(query) {
 
 function renderSuggestions() {
     const query = ui.foodSearch.value.trim();
-    if (!query && !ui.foodSearch.matches(':focus')) {
+    if (!query && !ui.foodSearch.matches(':focus') && !isSearchOverlayOpen) {
         ui.suggestions.classList.remove('visible');
         ui.suggestions.innerHTML = '';
         return;
@@ -556,10 +726,29 @@ function renderHistory() {
     }, {});
 
     const dates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+    const todayString = getTodayString();
 
     ui.historyList.innerHTML = dates
-        .map((date) => {
-            const categoryGroups = grouped[date]
+        .map((date, index) => {
+            const dayEntries = grouped[date];
+            const isToday = date === todayString;
+            // Der jüngste Tag oder "Heute" ist standardmäßig geöffnet, ältere geschlossen (außer im Löschmodus)
+            const shouldOpen = state.historyDeleteMode || index === 0;
+
+            const counts = { green: 0, orange: 0, red: 0 };
+            dayEntries.forEach((e) => {
+                const s = e.status || 'green';
+                counts[s] = (counts[s] || 0) + 1;
+            });
+
+            const statPills = [];
+            if (counts.green > 0) statPills.push(`<span>🟢 ${counts.green}</span>`);
+            if (counts.orange > 0) statPills.push(`<span>🟠 ${counts.orange}</span>`);
+            if (counts.red > 0) statPills.push(`<span>🔴 ${counts.red}</span>`);
+
+            const totalText = dayEntries.length === 1 ? '1 Eintrag' : `${dayEntries.length} Einträge`;
+
+            const categoryGroups = dayEntries
                 .reduce((acc, entry) => {
                     if (!acc[entry.category]) {
                         acc[entry.category] = [];
@@ -598,11 +787,23 @@ function renderHistory() {
                 })
                 .join('');
 
+            const todayBadge = isToday ? '<span class="history-day-today-badge">Heute</span>' : '';
+
             return `
-        <div class="history-day">
-          <h3>${formatFriendlyDate(date)}</h3>
+        <details class="history-day" ${shouldOpen ? 'open' : ''}>
+          <summary class="history-day-summary">
+            <div class="history-day-title-wrap">
+              <span class="history-day-chevron">▶</span>
+              <span class="history-day-title">${escapeHtml(formatFriendlyDate(date))}</span>
+              ${todayBadge}
+            </div>
+            <div class="history-day-stats">
+              <span class="history-stat-count">${totalText}</span>
+              <span class="history-stat-dots">${statPills.join(' ')}</span>
+            </div>
+          </summary>
           <div class="history-items">${categoryMarkup}</div>
-        </div>
+        </details>
       `;
         })
         .join('');
@@ -809,10 +1010,15 @@ function addSelectedFood(foodName) {
         state.selectedFoods.push(food.name);
     }
 
-    ui.foodSearch.value = '';
-    ui.suggestions.innerHTML = '';
-    ui.suggestions.classList.remove('visible');
-    persistDraftState();
+    if (isSearchOverlayOpen) {
+        closeSearchOverlay();
+    } else {
+        ui.foodSearch.value = '';
+        updateSearchClearButton();
+        ui.suggestions.innerHTML = '';
+        ui.suggestions.classList.remove('visible');
+        persistDraftState();
+    }
     renderSelectedFoods();
 }
 
@@ -984,21 +1190,96 @@ async function handleImport(event) {
             return;
         }
 
-        const shouldMerge = window.confirm('Bestehende Einträge beibehalten und importierte Einträge ergänzen?');
-        state.entries = shouldMerge
-            ? [...state.entries, ...imported]
-            : imported;
+        const choice = await promptImportAction(imported.length, state.entries.length);
+        if (choice === 'cancel') {
+            return;
+        }
+
+        if (choice === 'replace') {
+            state.entries = imported;
+        } else if (choice === 'merge') {
+            // Intelligent zusammenführen: Duplikate (gleicher Tag + gleicher Name) überspringen
+            const existingKeys = new Set(
+                state.entries.map((e) => `${e.date}__${e.name.toLowerCase()}`)
+            );
+            const nonDuplicates = imported.filter(
+                (e) => !existingKeys.has(`${e.date}__${e.name.toLowerCase()}`)
+            );
+            state.entries = [...state.entries, ...nonDuplicates];
+        }
 
         state.entries.sort((a, b) => new Date(b.date) - new Date(a.date) || b.createdAt - a.createdAt);
         persistEntries();
         renderEverything();
-        alert('Backup importiert.');
     } catch (error) {
         console.error('Fehler beim Import:', error);
         alert('Die Datei konnte nicht importiert werden. Bitte prüfe das Format.');
     } finally {
         event.target.value = '';
     }
+}
+
+function promptImportAction(importedCount, currentCount) {
+    return new Promise((resolve) => {
+        if (!ui.importModal) {
+            // Fallback falls DOM-Element fehlt
+            const shouldMerge = window.confirm('Bestehende Einträge beibehalten und importierte Einträge ergänzen?');
+            resolve(shouldMerge ? 'merge' : 'replace');
+            return;
+        }
+
+        const currentText = currentCount === 1 ? '1 bestehender Eintrag' : `${currentCount} bestehende Einträge`;
+        const importedText = importedCount === 1 ? '1 Eintrag' : `${importedCount} Einträge`;
+
+        ui.importModalText.textContent = `In der Datei wurden ${importedText} gefunden. Im Tagebuch befinden sich aktuell ${currentText}. Wie möchtest du fortfahren?`;
+
+        ui.importModal.classList.remove('hidden');
+
+        const cleanup = () => {
+            ui.importModal.classList.add('hidden');
+            ui.importMergeButton.removeEventListener('click', onMerge);
+            ui.importReplaceButton.removeEventListener('click', onReplace);
+            ui.importCancelButton.removeEventListener('click', onCancel);
+            document.removeEventListener('keydown', onKeyDown);
+            ui.importModal.removeEventListener('click', onBackdropClick);
+        };
+
+        const onMerge = () => {
+            cleanup();
+            resolve('merge');
+        };
+
+        const onReplace = () => {
+            cleanup();
+            resolve('replace');
+        };
+
+        const onCancel = () => {
+            cleanup();
+            resolve('cancel');
+        };
+
+        const onKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                cleanup();
+                resolve('cancel');
+            }
+        };
+
+        const onBackdropClick = (event) => {
+            if (event.target === ui.importModal) {
+                cleanup();
+                resolve('cancel');
+            }
+        };
+
+        ui.importMergeButton.addEventListener('click', onMerge);
+        ui.importReplaceButton.addEventListener('click', onReplace);
+        ui.importCancelButton.addEventListener('click', onCancel);
+        document.addEventListener('keydown', onKeyDown);
+        ui.importModal.addEventListener('click', onBackdropClick);
+    });
 }
 
 function parseImportedJson(content) {

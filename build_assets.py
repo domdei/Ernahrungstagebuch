@@ -107,5 +107,5 @@ def write_icons() -> None:
 if __name__ == '__main__':
     records = parse_food_data()
     write_food_json(records)
-    write_icons()
-    print(f'Created {len(records)} food items and icon assets.')
+    # write_icons()  # Deaktiviert, um die benutzerdefinierten Icons nicht zu überschreiben
+    print(f'Created {len(records)} food items.')

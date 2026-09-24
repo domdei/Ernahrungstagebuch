@@ -1,0 +1,597 @@
+{
+  "exportedAt": "2026-09-24T20:33:13.727Z",
+  "entries": [
+    {
+      "id": "6562b419-25a8-4587-a9ff-bff3cc419690",
+      "date": "2026-09-24",
+      "name": "Paprikagewürz",
+      "category": "Gewürze und Kräuter",
+      "status": "green",
+      "createdAt": 1790272512343
+    },
+    {
+      "id": "f896e55f-ced8-4b3a-af99-82b5c894d58b",
+      "date": "2026-09-24",
+      "name": "Bleichsellerie",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790268094063
+    },
+    {
+      "id": "62718e80-da0d-487a-90e8-7a9bdbec1b40",
+      "date": "2026-09-24",
+      "name": "Sonnenblumenkerne",
+      "category": "Samen und Nüsse",
+      "status": "green",
+      "createdAt": 1790257233880
+    },
+    {
+      "id": "6ebeb7da-3d32-4f08-84d5-0a96bd93a9b7",
+      "date": "2026-09-24",
+      "name": "Hafer (glutenfrei)",
+      "category": "Glutenfreie Getreide und Alternativen",
+      "status": "green",
+      "createdAt": 1790257192362
+    },
+    {
+      "id": "71b564b6-c081-4354-adce-097b1b1d95de",
+      "date": "2026-09-24",
+      "name": "Paranuss",
+      "category": "Nüsse",
+      "status": "green",
+      "createdAt": 1790249838672
+    },
+    {
+      "id": "078c7da7-cd18-4f53-bde7-edb59c103c6f",
+      "date": "2026-09-24",
+      "name": "Pflaume",
+      "category": "Obst",
+      "status": "green",
+      "createdAt": 1790247785524
+    },
+    {
+      "id": "e1761661-653f-4b81-b282-a4721ca6acda",
+      "date": "2026-09-24",
+      "name": "Champignon",
+      "category": "Pilze",
+      "status": "green",
+      "createdAt": 1790247785524
+    },
+    {
+      "id": "8de020db-95b7-4013-b390-84010133d2ef",
+      "date": "2026-09-24",
+      "name": "Pfeffer (schwarz)",
+      "category": "Gewürze",
+      "status": "green",
+      "createdAt": 1790247785524
+    },
+    {
+      "id": "30f053d2-7d23-4597-a66a-dcdbc74e60a7",
+      "date": "2026-09-24",
+      "name": "Kartoffel",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790196821473
+    },
+    {
+      "id": "453f0a1e-423e-438a-b7d9-fbd173ae0a25",
+      "date": "2026-09-23",
+      "name": "Rotbusch",
+      "category": "Tees Kaffee Tannin",
+      "status": "green",
+      "createdAt": 1790257355468
+    },
+    {
+      "id": "6ba2c443-0326-465c-9df1-c0a4628c36f5",
+      "date": "2026-09-23",
+      "name": "Haselnuss",
+      "category": "Nüsse",
+      "status": "green",
+      "createdAt": 1790197244455
+    },
+    {
+      "id": "2ad6a597-cd6d-4300-a494-2ef28e10ef29",
+      "date": "2026-09-23",
+      "name": "Dinkel",
+      "category": "Getreide",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "dd982099-af22-4edb-96ab-348b67c9f5af",
+      "date": "2026-09-23",
+      "name": "Hirse",
+      "category": "Glutenfrei",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "e2ecc658-4244-44d0-ba2d-5acb52b49a2f",
+      "date": "2026-09-23",
+      "name": "Banane",
+      "category": "Obst",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "4978d9e3-d336-4358-8e1f-3bdf9b5449f6",
+      "date": "2026-09-23",
+      "name": "Hefe",
+      "category": "Hefe",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "313dc417-5860-45ed-8dfd-934236cd4455",
+      "date": "2026-09-23",
+      "name": "Honigmischung",
+      "category": "Süßung",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "3bee2f12-90cf-4518-8e3d-48547335a124",
+      "date": "2026-09-23",
+      "name": "Sojabohne",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "af03beb0-664b-4d05-9dcd-41b118ee8125",
+      "date": "2026-09-23",
+      "name": "Traube/Rosine",
+      "category": "Obst",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "c42b79d1-b19a-491e-aaed-74fbd6062298",
+      "date": "2026-09-23",
+      "name": "Kokosnuss",
+      "category": "Nüsse",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "8f692982-a0cb-4056-b29f-a33760745b30",
+      "date": "2026-09-23",
+      "name": "Kakaobohne",
+      "category": "Nüsse",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "cc58277b-1b07-492a-8cce-e300d4794a15",
+      "date": "2026-09-23",
+      "name": "Tomate",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "bd756146-7405-4df4-a8f7-f5b1ab41dbcf",
+      "date": "2026-09-23",
+      "name": "Karotte",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "ce79bdaa-e780-4c80-87d7-e0acd59f7f50",
+      "date": "2026-09-23",
+      "name": "Bleichsellerie",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "ac4f160c-51f3-4f7e-8218-faae2ec69ba3",
+      "date": "2026-09-23",
+      "name": "Zwiebel",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "f89c7a3d-207c-4d3b-a008-67a138f7e7ef",
+      "date": "2026-09-23",
+      "name": "Rohrzucker",
+      "category": "Süßung",
+      "status": "green",
+      "createdAt": 1790195869049
+    },
+    {
+      "id": "94aff304-e56c-47a3-b7de-25d2b9bf1575",
+      "date": "2026-09-22",
+      "name": "Mango",
+      "category": "Obst",
+      "status": "green",
+      "createdAt": 1790196430372
+    },
+    {
+      "id": "efa4a38c-06ca-4a0a-a86a-fd5bbe33db47",
+      "date": "2026-09-22",
+      "name": "Linse",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790196430372
+    },
+    {
+      "id": "ce138724-d631-4de8-8fea-7760cee05f0e",
+      "date": "2026-09-22",
+      "name": "Zucchini",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790196430372
+    },
+    {
+      "id": "c071a7ab-77fd-4270-8470-25fbb563b0e4",
+      "date": "2026-09-22",
+      "name": "Rosmarin",
+      "category": "Gewürze",
+      "status": "green",
+      "createdAt": 1790196430372
+    },
+    {
+      "id": "541d23e6-5ad7-4567-8d10-1f67a26b7583",
+      "date": "2026-09-22",
+      "name": "Basilikum",
+      "category": "Gewürze",
+      "status": "green",
+      "createdAt": 1790196430372
+    },
+    {
+      "id": "94da1f25-9ee9-4594-804c-5dd4ed6cfca8",
+      "date": "2026-09-22",
+      "name": "Buchweizen",
+      "category": "Glutenfrei",
+      "status": "green",
+      "createdAt": 1790196430372
+    },
+    {
+      "id": "d84c15ff-4894-44d6-a796-8fed56575176",
+      "date": "2026-09-22",
+      "name": "Macadamia",
+      "category": "Nüsse",
+      "status": "green",
+      "createdAt": 1790196430372
+    },
+    {
+      "id": "f785165f-764a-4a1c-bd85-5c14327c0a5c",
+      "date": "2026-09-22",
+      "name": "Reis",
+      "category": "Glutenfrei",
+      "status": "green",
+      "createdAt": 1790196259250
+    },
+    {
+      "id": "e359c20b-1e55-41b4-babb-1aae3c0ccbe7",
+      "date": "2026-09-21",
+      "name": "Kamille",
+      "category": "Tees Kaffee Tannin",
+      "status": "green",
+      "createdAt": 1790255899557
+    },
+    {
+      "id": "981e9b9f-c328-4bdb-b59a-39790836804e",
+      "date": "2026-09-21",
+      "name": "Quinoa",
+      "category": "Glutenfrei",
+      "status": "green",
+      "createdAt": 1790196205559
+    },
+    {
+      "id": "a432e209-9b04-4aaf-b116-eb3d9625f08e",
+      "date": "2026-09-21",
+      "name": "Traube/Rosine",
+      "category": "Obst",
+      "status": "green",
+      "createdAt": 1790196205559
+    },
+    {
+      "id": "3c1aaa95-c321-459b-a152-e6710d1bf94c",
+      "date": "2026-09-21",
+      "name": "Kohlrabi",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790196205559
+    },
+    {
+      "id": "30c37bb1-1cba-4ae8-95c3-2ff3c3a22133",
+      "date": "2026-09-21",
+      "name": "Sojabohne",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790196205559
+    },
+    {
+      "id": "c0a9b900-e70b-401e-9d23-0c00531c6704",
+      "date": "2026-09-21",
+      "name": "Sesam",
+      "category": "Nüsse",
+      "status": "green",
+      "createdAt": 1790196205559
+    },
+    {
+      "id": "f8e6a680-5903-4b20-a5e2-6a86deb4c17d",
+      "date": "2026-09-21",
+      "name": "Walnuss",
+      "category": "Nüsse",
+      "status": "green",
+      "createdAt": 1790196205559
+    },
+    {
+      "id": "e5a4cad9-a2d3-46bd-b41e-1eeb9d0966c4",
+      "date": "2026-09-21",
+      "name": "Lachs",
+      "category": "Fisch/Meer",
+      "status": "green",
+      "createdAt": 1790196205559
+    },
+    {
+      "id": "a1f7a4cd-f292-4d2c-811d-38b322c95908",
+      "date": "2026-09-21",
+      "name": "Himbeere",
+      "category": "Obst",
+      "status": "green",
+      "createdAt": 1790196205559
+    },
+    {
+      "id": "fd0878f7-0eb6-4360-81d9-09f57c8e7b83",
+      "date": "2026-09-21",
+      "name": "Basilikum",
+      "category": "Gewürze",
+      "status": "green",
+      "createdAt": 1790196205559
+    },
+    {
+      "id": "b84c3e32-75bf-46c7-9853-c8b5456e767f",
+      "date": "2026-09-20",
+      "name": "Thymian",
+      "category": "Gewürze und Kräuter",
+      "status": "green",
+      "createdAt": 1790255912191
+    },
+    {
+      "id": "600a9647-e856-4b28-b6af-825278d0f6e7",
+      "date": "2026-09-20",
+      "name": "Erdnuss",
+      "category": "Samen und Nüsse",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "b032175a-eed3-4641-a954-d13026fbed09",
+      "date": "2026-09-20",
+      "name": "Hafer (glutenfrei)",
+      "category": "Glutenfreie Getreide und Alternativen",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "861909e7-426a-48c8-b958-4e6e4d7f2058",
+      "date": "2026-09-20",
+      "name": "Banane",
+      "category": "Obst und Früchte",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "ed789dc8-cc41-470c-bbf1-3e10763a8d18",
+      "date": "2026-09-20",
+      "name": "Linse",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "f7cca3b3-2cce-4930-bec7-7233a8ef662c",
+      "date": "2026-09-20",
+      "name": "Kichererbse",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "b7c6e766-1ac7-4325-b4df-25f4847d4d37",
+      "date": "2026-09-20",
+      "name": "Kakaobohne",
+      "category": "Samen und Nüsse",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "bdd68b52-993c-4e60-bc31-194d52ed2140",
+      "date": "2026-09-20",
+      "name": "Haselnuss",
+      "category": "Samen und Nüsse",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "884d24b8-15f8-478c-84d7-9c7a2dc0140a",
+      "date": "2026-09-20",
+      "name": "Bleichsellerie",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "a9ce0208-381b-48a3-b8d8-ea23d8261e2f",
+      "date": "2026-09-20",
+      "name": "Kürbis",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "31d08f71-d70d-4a97-834a-91c7e5fd0459",
+      "date": "2026-09-20",
+      "name": "Karotte",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "550ae430-261c-408d-9d72-41d03972ef72",
+      "date": "2026-09-20",
+      "name": "Tomate",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "73bd9980-82fa-4df2-80ea-07b711e1f770",
+      "date": "2026-09-20",
+      "name": "Zwiebel",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "5c9a8259-c623-4d5b-811c-6a79a5b4dc2c",
+      "date": "2026-09-20",
+      "name": "Johannisbeere",
+      "category": "Obst und Früchte",
+      "status": "green",
+      "createdAt": 1790255776553
+    },
+    {
+      "id": "c892a866-e07f-4e93-afb3-66ea444bc1c8",
+      "date": "2026-09-20",
+      "name": "Kamille",
+      "category": "Getränke",
+      "status": "green",
+      "createdAt": 1790196232824
+    },
+    {
+      "id": "61fdec61-f9ad-4567-a216-6ef04f3830a1",
+      "date": "2026-09-20",
+      "name": "Huhn",
+      "category": "Fleisch",
+      "status": "green",
+      "createdAt": 1790196099063
+    },
+    {
+      "id": "6c5a44a2-6067-43e8-8248-62335aa8885f",
+      "date": "2026-09-20",
+      "name": "Süßkartoffel",
+      "category": "Glutenfrei",
+      "status": "green",
+      "createdAt": 1790196099063
+    },
+    {
+      "id": "03779291-3ffd-4eb0-9401-88c997f33b8c",
+      "date": "2026-09-20",
+      "name": "Reis",
+      "category": "Glutenfrei",
+      "status": "green",
+      "createdAt": 1790196099063
+    },
+    {
+      "id": "af0692ad-97d5-48b1-9b17-5537478db73c",
+      "date": "2026-09-20",
+      "name": "Schwein",
+      "category": "Fleisch",
+      "status": "green",
+      "createdAt": 1790196099063
+    },
+    {
+      "id": "b6ec81e6-7811-4927-8b06-426df4e0076d",
+      "date": "2026-09-20",
+      "name": "Blaubeere",
+      "category": "Obst",
+      "status": "green",
+      "createdAt": 1790196099063
+    },
+    {
+      "id": "9c524634-659d-4c27-96ba-2e3f272b1679",
+      "date": "2026-09-20",
+      "name": "Aprikose",
+      "category": "Obst",
+      "status": "green",
+      "createdAt": 1790196099063
+    },
+    {
+      "id": "6519363a-4352-4b1b-ab6a-95f0eb7f9e23",
+      "date": "2026-09-20",
+      "name": "Gerste",
+      "category": "Getreide",
+      "status": "green",
+      "createdAt": 1790196099063
+    },
+    {
+      "id": "e7690bae-fa93-497b-8b6d-22ccc3922c99",
+      "date": "2026-09-20",
+      "name": "Pflaume",
+      "category": "Obst",
+      "status": "green",
+      "createdAt": 1790196099063
+    },
+    {
+      "id": "205ac345-084f-4fff-ae50-7b7e3ca8e8f4",
+      "date": "2026-09-20",
+      "name": "Zitrone",
+      "category": "Obst",
+      "status": "green",
+      "createdAt": 1790196099063
+    },
+    {
+      "id": "587c6e46-4127-4be8-ae94-9b9f5b1fd998",
+      "date": "2026-09-19",
+      "name": "Erbse (grün)",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790255863087
+    },
+    {
+      "id": "34f834ef-fbb2-4c9f-b21a-68d3c0491c27",
+      "date": "2026-09-19",
+      "name": "Brokkoli",
+      "category": "Gemüse",
+      "status": "green",
+      "createdAt": 1790255863087
+    },
+    {
+      "id": "1a5569ff-a6f8-4219-afd6-1e34a8b6bb0d",
+      "date": "2026-09-19",
+      "name": "Hirse",
+      "category": "Glutenfreie Getreide und Alternativen",
+      "status": "green",
+      "createdAt": 1790255863087
+    },
+    {
+      "id": "fc6cadea-e89f-4bd0-b63d-edd7bc4f436b",
+      "date": "2026-09-19",
+      "name": "Feige",
+      "category": "Obst und Früchte",
+      "status": "green",
+      "createdAt": 1790255863087
+    },
+    {
+      "id": "378a4209-0a95-43c4-a335-a853ef210545",
+      "date": "2026-09-19",
+      "name": "Paranuss",
+      "category": "Samen und Nüsse",
+      "status": "green",
+      "createdAt": 1790255863087
+    },
+    {
+      "id": "55014820-1d07-4a52-a800-89dad229b13d",
+      "date": "2026-09-19",
+      "name": "Dorade",
+      "category": "Fische und Meeresfrüchte",
+      "status": "green",
+      "createdAt": 1790255863087
+    },
+    {
+      "id": "94d787b6-fe8f-4469-9308-d01dcadf5d3d",
+      "date": "2026-09-19",
+      "name": "Pfefferminz",
+      "category": "Tees Kaffee Tannin",
+      "status": "green",
+      "createdAt": 1790255863087
+    }
+  ]
+}
