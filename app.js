@@ -912,28 +912,56 @@ async function exportJsonBackup() {
         entries: state.entries,
     }, null, 2);
 
-    const blob = new Blob([payload], { type: 'application/json' });
-    const backupFile = new File([blob], fileName, { type: 'application/json' });
-
-    // Auf Android / Mobilgeräten natives Share-Sheet nutzen ("In Dateien speichern", Drive, Mail etc.)
-    if (navigator.canShare && navigator.canShare({ files: [backupFile] })) {
+    // Stufe 1: showSaveFilePicker falls unterstützt (direkte Ordner- und Dateiauswahl)
+    if (window.showSaveFilePicker && typeof window.showSaveFilePicker === 'function') {
         try {
-            await navigator.share({
-                title: 'Ernährungstagebuch Backup',
-                text: `Backup vom ${new Date().toLocaleDateString('de-DE')}`,
-                files: [backupFile],
+            const handle = await window.showSaveFilePicker({
+                suggestedName: fileName,
+                types: [
+                    {
+                        description: 'JSON-Backup',
+                        accept: { 'application/json': ['.json'] },
+                    },
+                ],
             });
+            const writable = await handle.createWritable();
+            await writable.write(payload);
+            await writable.close();
             return;
         } catch (error) {
             if (error && error.name === 'AbortError') {
                 return;
             }
-            console.warn('Web Share API fehlgeschlagen, wechsle auf Download:', error);
+            console.warn('showSaveFilePicker fehlgeschlagen, versuche Web Share:', error);
         }
     }
 
+    const blob = new Blob([payload], { type: 'application/json' });
+
+    // Stufe 2: Web Share API (auf Mobilgeräten für Google Drive, Dateimanager etc.)
+    // Zuerst mit application/json testen, sonst mit text/plain Fallback
+    const candidateTypes = ['application/json', 'text/plain'];
+    for (const mimeType of candidateTypes) {
+        try {
+            const backupFile = new File([blob], fileName, { type: mimeType });
+            if (navigator.canShare && navigator.canShare({ files: [backupFile] })) {
+                await navigator.share({
+                    title: 'Ernährungstagebuch Backup',
+                    text: `Backup vom ${new Date().toLocaleDateString('de-DE')}`,
+                    files: [backupFile],
+                });
+                return;
+            }
+        } catch (error) {
+            if (error && error.name === 'AbortError') {
+                return;
+            }
+            console.warn(`Share mit ${mimeType} fehlgeschlagen:`, error);
+        }
+    }
+
+    // Stufe 3: Download-Fallback
     downloadBlob(blob, fileName);
-    alert(`Backup wurde heruntergeladen:\n"${fileName}"\n(im Download-Ordner deines Geräts).`);
 }
 
 async function handleImport(event) {
