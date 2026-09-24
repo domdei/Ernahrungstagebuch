@@ -932,11 +932,11 @@ function renderHistory() {
     const todayString = getTodayString();
 
     ui.historyList.innerHTML = dates
-        .map((date, index) => {
+        .map((date) => {
             const dayEntries = grouped[date];
             const isToday = date === todayString;
-            // Der jüngste Tag oder "Heute" ist standardmäßig geöffnet, ältere geschlossen (außer im Löschmodus)
-            const shouldOpen = state.historyDeleteMode || index === 0;
+            // Alle Tage standardmäßig zugeklappt (nur im Löschmodus zur Bearbeitung offen)
+            const shouldOpen = state.historyDeleteMode;
 
             const counts = { green: 0, orange: 0, red: 0 };
             dayEntries.forEach((e) => {
