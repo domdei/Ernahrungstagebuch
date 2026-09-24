@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'ernaehrungstagebuch-diary-v1';
+const LEGACY_STORAGE_KEY = 'ernaehrungstagebuch-diary-v1';
 const DRAFT_STORAGE_KEY = 'ernaehrungstagebuch-draft-v1';
 const THEME_STORAGE_KEY = 'ernaehrungstagebuch-theme';
 const IDB_NAME = 'ernaehrungstagebuch_db';
@@ -675,32 +675,32 @@ async function idbSaveEntries(entries) {
 }
 
 async function restoreEntries() {
-    // 1. Zuerst aus synchronem localStorage als sofortige Basis lesen (kein Flackern)
-    let entriesFromLocal = [];
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        entriesFromLocal = raw ? JSON.parse(raw) : [];
-    } catch (error) {
-        entriesFromLocal = [];
-    }
-    state.entries = Array.isArray(entriesFromLocal) ? entriesFromLocal : [];
-
-    // 2. Aus IndexedDB laden und ggf. Migration durchführen
     try {
         const idbData = await idbGetEntries();
         if (Array.isArray(idbData) && idbData.length > 0) {
             state.entries = idbData;
-            // Lokalen Backup-Spiegel aktuell halten
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state.entries));
-            } catch (e) {}
-        } else if (state.entries.length > 0) {
-            // Erstmalige Migration von localStorage -> IndexedDB
-            await idbSaveEntries(state.entries);
+        } else {
+            // Einmalige Übernahme von altem localStorage, falls noch nicht erfolgt
+            const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+            if (raw) {
+                const legacyEntries = JSON.parse(raw);
+                if (Array.isArray(legacyEntries) && legacyEntries.length > 0) {
+                    state.entries = legacyEntries;
+                    await idbSaveEntries(state.entries);
+                }
+            } else {
+                state.entries = [];
+            }
         }
     } catch (err) {
-        console.warn('IndexedDB Wiederherstellung fehlgeschlagen, verwende localStorage:', err);
+        console.warn('Fehler beim Laden aus IndexedDB:', err);
+        state.entries = [];
     }
+
+    // Altes localStorage-Relikt entfernen, um Speicherplatz freizugeben
+    try {
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
+    } catch (e) {}
 }
 
 function restoreDraftState() {
@@ -730,17 +730,11 @@ function restoreDraftState() {
 }
 
 function persistEntries() {
-    // 1. Primär asynchron & transaktionssicher in IndexedDB schreiben
+    // Einträge ausschließlich in IndexedDB speichern
     idbSaveEntries(state.entries).catch((err) => {
-        console.warn('IndexedDB Speichern fehlgeschlagen:', err);
+        console.error('Speichern in IndexedDB fehlgeschlagen:', err);
+        alert('Das Speichern in der lokalen Datenbank ist fehlgeschlagen. Bitte prüfe den Gerätespeicher.');
     });
-
-    // 2. Synchronen Spiegel im localStorage pflegen (Fallback & sofortige Verfügbarkeit)
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.entries));
-    } catch (error) {
-        console.warn('localStorage Spiegelung fehlgeschlagen (evtl. Speicher voll):', error);
-    }
 }
 
 function persistDraftState() {
