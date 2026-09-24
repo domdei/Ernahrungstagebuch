@@ -33,6 +33,8 @@ const ui = {
     foodSearchLabel: document.getElementById('foodSearchLabel'),
     searchCloseButton: document.getElementById('searchCloseButton'),
     searchClearButton: document.getElementById('searchClearButton'),
+    searchDoneButton: document.getElementById('searchDoneButton'),
+    overlaySelectedFoods: document.getElementById('overlaySelectedFoods'),
     foodSearch: document.getElementById('foodSearch'),
     suggestions: document.getElementById('suggestions'),
     selectedFoods: document.getElementById('selectedFoods'),
@@ -47,6 +49,10 @@ const ui = {
     filterStatus: document.getElementById('filterStatus'),
     historyDeleteToggle: document.getElementById('historyDeleteToggle'),
     themeToggle: document.getElementById('themeToggle'),
+    settingsButton: document.getElementById('settingsButton'),
+    settingsModal: document.getElementById('settingsModal'),
+    settingsCloseButton: document.getElementById('settingsCloseButton'),
+    storageStatus: document.getElementById('storageStatus'),
     installButton: document.getElementById('installButton'),
     exportJsonButton: document.getElementById('exportJsonButton'),
     importFile: document.getElementById('importFile'),
@@ -74,6 +80,42 @@ function updateSearchClearButton() {
     ui.searchClearButton.classList.toggle('hidden', !hasText);
 }
 
+function updateSearchDoneButton() {
+    if (!ui.searchDoneButton) {
+        return;
+    }
+    const count = state.selectedFoods.length;
+    ui.searchDoneButton.textContent = count > 0 ? `Fertig (${count})` : 'Fertig';
+}
+
+function updateOverlaySelectedFoods() {
+    if (!ui.overlaySelectedFoods) {
+        return;
+    }
+    if (!state.selectedFoods.length) {
+        ui.overlaySelectedFoods.innerHTML = '';
+        ui.overlaySelectedFoods.classList.add('hidden');
+        return;
+    }
+
+    const chips = state.selectedFoods
+        .map((foodName) => {
+            const food = getFoodByName(foodName);
+            const status = food ? food.status : 'green';
+            return `
+        <div class="selection-chip">
+          <span class="badge badge-${status}"></span>
+          <span>${escapeHtml(foodName)}</span>
+          <button type="button" class="remove-chip" data-name="${escapeHtml(foodName)}" aria-label="Entfernen">×</button>
+        </div>
+      `;
+        })
+        .join('');
+
+    ui.overlaySelectedFoods.innerHTML = chips;
+    ui.overlaySelectedFoods.classList.remove('hidden');
+}
+
 function updateCategoryClearButton() {
     if (!ui.categoryClearButton || !ui.searchCategory) {
         return;
@@ -83,6 +125,53 @@ function updateCategoryClearButton() {
     const wrap = ui.searchCategory.closest('.category-input-inner');
     if (wrap) {
         wrap.classList.toggle('has-selection', hasFilter);
+    }
+}
+
+function openSettingsModal() {
+    if (!ui.settingsModal) {
+        return;
+    }
+    ui.settingsModal.classList.remove('hidden');
+}
+
+function closeSettingsModal() {
+    if (!ui.settingsModal) {
+        return;
+    }
+    ui.settingsModal.classList.add('hidden');
+}
+
+async function initPersistentStorage() {
+    if (navigator.storage && navigator.storage.persist) {
+        try {
+            let isPersisted = await navigator.storage.persisted();
+            if (!isPersisted) {
+                isPersisted = await navigator.storage.persist();
+            }
+            updateStorageStatus(isPersisted);
+        } catch (e) {
+            console.warn('Storage persist check failed:', e);
+            updateStorageStatus(false);
+        }
+    } else {
+        updateStorageStatus(null);
+    }
+}
+
+function updateStorageStatus(persisted) {
+    if (!ui.storageStatus) {
+        return;
+    }
+    if (persisted === true) {
+        ui.storageStatus.textContent = 'Dauerhaft gesichert (Persisted)';
+        ui.storageStatus.style.color = 'var(--green)';
+    } else if (persisted === false) {
+        ui.storageStatus.textContent = 'Standard (Nicht geschützt)';
+        ui.storageStatus.style.color = 'var(--orange)';
+    } else {
+        ui.storageStatus.textContent = 'Standard';
+        ui.storageStatus.style.color = '';
     }
 }
 
@@ -97,6 +186,8 @@ function openSearchOverlay() {
     isSearchOverlayOpen = true;
     document.body.classList.add('search-overlay-active');
     updateSearchClearButton();
+    updateOverlaySelectedFoods();
+    updateSearchDoneButton();
     renderSuggestionList(ui.foodSearch.value.trim());
 
     try {
@@ -130,7 +221,10 @@ function closeSearchOverlay(fromPopState = false) {
         ui.foodSearch.value = '';
     }
     updateSearchClearButton();
+    updateOverlaySelectedFoods();
+    updateSearchDoneButton();
     persistDraftState();
+    renderSelectedFoods();
 
     if (ui.suggestions) {
         ui.suggestions.innerHTML = '';
@@ -164,6 +258,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateHistoryControls();
     renderEverything();
     initTheme();
+    initPersistentStorage();
     bindEvents();
     registerServiceWorker();
     bindInstallPrompt();
@@ -200,6 +295,8 @@ function bindEvents() {
             event.preventDefault();
             if (isSearchOverlayOpen) {
                 closeSearchOverlay();
+            } else if (ui.settingsModal && !ui.settingsModal.classList.contains('hidden')) {
+                closeSettingsModal();
             } else {
                 ui.foodSearch.blur();
                 ui.suggestions.innerHTML = '';
@@ -207,6 +304,38 @@ function bindEvents() {
             }
         }
     });
+
+    if (ui.searchDoneButton) {
+        ui.searchDoneButton.addEventListener('click', () => {
+            closeSearchOverlay();
+        });
+    }
+
+    if (ui.overlaySelectedFoods) {
+        ui.overlaySelectedFoods.addEventListener('click', (event) => {
+            const button = event.target.closest('.remove-chip');
+            if (!button) {
+                return;
+            }
+            removeSelectedFood(button.dataset.name || '');
+        });
+    }
+
+    if (ui.settingsButton) {
+        ui.settingsButton.addEventListener('click', openSettingsModal);
+    }
+
+    if (ui.settingsCloseButton) {
+        ui.settingsCloseButton.addEventListener('click', closeSettingsModal);
+    }
+
+    if (ui.settingsModal) {
+        ui.settingsModal.addEventListener('click', (event) => {
+            if (event.target === ui.settingsModal) {
+                closeSettingsModal();
+            }
+        });
+    }
 
     if (ui.searchCloseButton) {
         ui.searchCloseButton.addEventListener('click', (event) => {
@@ -648,6 +777,8 @@ function removeSelectedFood(foodName) {
     state.selectedFoods = state.selectedFoods.filter((item) => item !== foodName);
     persistDraftState();
     renderSelectedFoods();
+    updateOverlaySelectedFoods();
+    updateSearchDoneButton();
     renderSuggestions();
 }
 
@@ -741,12 +872,11 @@ function renderHistory() {
                 counts[s] = (counts[s] || 0) + 1;
             });
 
-            const statPills = [];
-            if (counts.green > 0) statPills.push(`<span>🟢 ${counts.green}</span>`);
-            if (counts.orange > 0) statPills.push(`<span>🟠 ${counts.orange}</span>`);
-            if (counts.red > 0) statPills.push(`<span>🔴 ${counts.red}</span>`);
-
-            const totalText = dayEntries.length === 1 ? '1 Eintrag' : `${dayEntries.length} Einträge`;
+            const statParts = [];
+            if (counts.green > 0) statParts.push(`${counts.green} 🟢`);
+            if (counts.orange > 0) statParts.push(`${counts.orange} 🟠`);
+            if (counts.red > 0) statParts.push(`${counts.red} 🔴`);
+            const statChipText = statParts.join(' · ') || `${dayEntries.length} 🟢`;
 
             const categoryGroups = dayEntries
                 .reduce((acc, entry) => {
@@ -798,8 +928,7 @@ function renderHistory() {
               ${todayBadge}
             </div>
             <div class="history-day-stats">
-              <span class="history-stat-count">${totalText}</span>
-              <span class="history-stat-dots">${statPills.join(' ')}</span>
+              <span class="history-stat-chip">${statChipText}</span>
             </div>
           </summary>
           <div class="history-items">${categoryMarkup}</div>
@@ -1011,15 +1140,24 @@ function addSelectedFood(foodName) {
     }
 
     if (isSearchOverlayOpen) {
-        closeSearchOverlay();
+        ui.foodSearch.value = '';
+        updateSearchClearButton();
+        updateOverlaySelectedFoods();
+        updateSearchDoneButton();
+        persistDraftState();
+        renderSelectedFoods();
+        if (ui.foodSearch) {
+            ui.foodSearch.focus();
+        }
+        renderSuggestionList('');
     } else {
         ui.foodSearch.value = '';
         updateSearchClearButton();
         ui.suggestions.innerHTML = '';
         ui.suggestions.classList.remove('visible');
         persistDraftState();
+        renderSelectedFoods();
     }
-    renderSelectedFoods();
 }
 
 function getFoodByName(name) {

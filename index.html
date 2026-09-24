@@ -15,7 +15,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.0.23" />
+    <link rel="stylesheet" href="./styles.css?v=1.0.24" />
     <script>
       (function() {
         try {
@@ -36,6 +36,7 @@
         </div>
         <div class="topbar-actions">
           <button id="themeToggle" class="icon-button" type="button" aria-label="Nachtmodus aktivieren" title="Nachtmodus aktivieren">☾</button>
+          <button id="settingsButton" class="icon-button" type="button" aria-label="Einstellungen & Backup" title="Einstellungen & Backup">⚙</button>
           <button id="installButton" class="secondary-button hidden" type="button" aria-label="App installieren">
             Installieren
           </button>
@@ -103,7 +104,17 @@
                     ✕
                   </button>
                 </div>
+                <button
+                  id="searchDoneButton"
+                  class="search-done-button"
+                  type="button"
+                  aria-label="Auswahl abschließen"
+                  title="Auswahl abschließen"
+                >
+                  Fertig
+                </button>
               </div>
+              <div id="overlaySelectedFoods" class="overlay-selected-foods hidden" aria-live="polite"></div>
               <div id="suggestions" class="suggestions" aria-live="polite"></div>
             </div>
           </div>
@@ -169,29 +180,39 @@
 
           <div id="historyList" class="history-list"></div>
         </section>
+      </main>
+    </div>
 
-        <section class="panel summary-panel">
-          <div class="summary-grid">
-            <div>
-              <h2>Export & Import</h2>
-              <div class="export-actions">
-                <button id="exportJsonButton" class="secondary-button" type="button">Backup speichern</button>
-                <label class="import-label">
-                  <span>Backup importieren</span>
-                  <input id="importFile" type="file" accept=".json" />
-                </label>
-              </div>
+    <div id="settingsModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="settingsModalTitle">Einstellungen &amp; Backup</h3>
+          <button id="settingsCloseButton" class="icon-button small-icon-button modal-close-btn" type="button" aria-label="Schließen" title="Schließen">✕</button>
+        </div>
+        <div class="settings-content">
+          <div class="settings-section">
+            <h4>Datensicherung</h4>
+            <div class="export-actions">
+              <button id="exportJsonButton" class="secondary-button" type="button">Backup speichern (Export)</button>
+              <label class="import-label">
+                <span>Backup importieren</span>
+                <input id="importFile" type="file" accept=".json" />
+              </label>
             </div>
           </div>
-
-          <div class="version-panel">
+          <div class="settings-section">
+            <h4>Speicherstatus &amp; Info</h4>
             <div class="version-row">
-              <span class="version-label">Version</span>
+              <span class="version-label">Browser-Speicher:</span>
+              <strong id="storageStatus">Standard</strong>
+            </div>
+            <div class="version-row">
+              <span class="version-label">Version:</span>
               <strong id="appVersion">1.0.0</strong>
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </div>
     </div>
 
     <div id="importModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
@@ -218,6 +239,6 @@
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script src="./app.js?v=1.0.23" defer></script>
+    <script src="./app.js?v=1.0.24" defer></script>
   </body>
 </html>
