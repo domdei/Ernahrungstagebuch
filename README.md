@@ -1,135 +1,80 @@
 # Persönliches Ernährungstagebuch
 
-Eine responsive Progressive Web App (PWA) für ein persönliches Ernährungstagebuch. Die App dient ausschließlich der Erfassung von Lebensmitteln und der automatischen Prüfung, ob ein Lebensmittel in den letzten Tagen bereits gegessen wurde oder laut der eigenen Bewertung als orange oder rot eingestuft ist.
+Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft automatisch Rotationszeiten und persönliche Unverträglichkeiten. Sie läuft im Browser, funktioniert offline und speichert Daten lokal auf dem Gerät.
 
-Dabei läuft die Anwendung komplett im Browser und kann auf Android als installierbare App auf dem Startbildschirm platziert werden. Sie funktioniert offline, bleibt mobil nutzbar und speichert die Daten lokal im Browser.
+## Hauptfunktionen
 
-## Zweck der App
-
-Die App unterstützt die tägliche Erfassung von Lebensmitteln mit folgenden Prüfungen:
-
-- Rotationswarnung: Wenn ein Lebensmittel in den letzten 4 Tagen bereits gegessen wurde
-- Unverträglichkeitswarnung: Wenn ein Lebensmittel laut der eigenen Bewertung als orange oder rot markiert ist
-- Einfache, schnelle Auswahl aus einer persönlichen Lebensmittel-Datenbank
-- Keine festen Rotationstage, keine komplexen Pläne und keine Kategorie-Abhängigkeiten
-
-## PWA-Anforderungen
-
-Die App enthält die notwendigen PWA-Komponenten:
-
-- Manifest mit Name, Icons, Theme-Farben und standalone-Display
-- Service Worker für Caching und Offline-Fallback
-- Installierbarkeit auf Android über Add to Home Screen
-- Vollbild-ähnliches Verhalten auf dem Handy ohne Browser-UI
-
-## Funktionen
-
-- Lebensmittel nach Name suchen
-- Kategorie filtern
-- Vorschläge mit Statusfarbe anzeigen
-- Auswahl vor dem Speichern verwalten
-- Einträge pro Tag im Verlauf anzeigen
-- 4-Tage-Übersicht
-- lokale Speicherung im Browser (`localStorage`)
-- Export als JSON oder CSV
-- Import aus JSON oder CSV
-- als installierbare PWA nutzbar
-- offline-fähig über Service Worker
+- **4-Tage-Rotationswarnung:** Warnt, wenn ein Lebensmittel in den letzten 3 Tagen gegessen wurde. Ab Tag 5 ist es wieder ohne Warnung erlaubt.
+- **Unverträglichkeitsprüfung:** Markiert Lebensmittel nach eigener Einstufung farblich (Grün, Orange, Rot).
+- **Schnellfilter (🟢):** Filtert die Suche per Knopfdruck auf verträgliche und heute rotationsfreie Lebensmittel (`Lebensmittel (gefiltert)`).
+- **Tag- und Nachtmodus (☾ / ☼):** Wechselt das Farbschema über die Kopfzeile und speichert die Wahl.
+- **Tagesabstand-Badges:** Zeigt bei Vorschlägen an, vor wie vielen Tagen ein Lebensmittel gegessen wurde (`1T`, `2T`, `3T`).
+- **Verlauf:** Zeigt Einträge pro Tag an. Bietet Filter nach Datum, Kategorie und Status sowie einen Löschmodus.
+- **Entwurfsspeicherung:** Sichert ungespeicherte Eingaben automatisch im Browser.
+- **Backup:** Exportiert Daten als JSON über das Android-Teilen-Menü oder per Download. Importiert Backups aus JSON.
+- **Offlinefähig:** Lässt sich auf Android als App installieren und ohne Internet nutzen.
 
 ## Projektstruktur
 
-- `index.html` – App-Layout
-- `styles.css` – Styling und responsive Oberfläche
-- `app.js` – Logik für Suche, Auswahl, Filter, Verlauf und Speicherung
-- `manifest.json` – PWA-Manifest
-- `sw.js` – Service Worker für Offline-Funktion
-- `food-data.json` – Lebensmittel-Datenbank
-- `icons/` – Installations- und App-Icons
-
-## Voraussetzungen
-
-- Ein aktueller Browser (Chrome, Edge, Chromium-basierte Browser empfohlen)
-- Python 3, falls du den lokalen Webserver verwenden willst
+- [index.html](index.html): HTML-Gerüst der App.
+- [styles.css](styles.css): Styles für mobile Geräte und Desktop.
+- [app.js](app.js): Gesamte Anwendungslogik.
+- [manifest.json](manifest.json): PWA-Konfiguration für die Installation.
+- [sw.js](sw.js): Service Worker für Caching und Offlinebetrieb.
+- [version.json](version.json): Versionsnummer der App.
+- [data.md](data.md): Quelldatei der Lebensmittel als Tabelle.
+- [build_assets.py](build_assets.py): Erzeugt `food-data.json` aus `data.md`.
+- [food-data.json](food-data.json): Von der App geladene Datenbank.
+- `icons/`: App-Symbole für Mobilgeräte.
 
 ## Lokale Ausführung
 
-Im Projektordner ausführen:
+Starte einen Webserver im Projektordner:
 
 ```bash
-cd "C:\Users\domin\OneDrive\Data\VSCode\Project\Ernahrungstagebuch"
 python -m http.server 8001
 ```
 
-```bash
-python -m http.server 8001 --directory "C:\Users\domin\OneDrive\Data\VSCode\Project\Ernahrungstagebuch"
-```
-
-Danach im Browser öffnen:
+Öffne die App im Browser unter:
 
 ```text
 http://localhost:8001/
 ```
 
-## Testen auf dem Handy im gleichen WLAN
+## Auf dem Handy im WLAN testen
 
-1. Auf dem PC den Server starten:
+1. Starte den Server auf dem PC.
+2. Ermittle die lokale IP-Adresse deines PCs (in Windows mit `ipconfig`).
+3. Öffne auf dem Handy die Adresse `http://<DEINE-IP>:8001/`.
+4. Installiere die App über das Browsermenü ("Zum Startbildschirm hinzufügen").
+
+## Bedienung
+
+1. Wähle das Datum (mit `↺` setzt du es sofort auf heute zurück).
+2. Wähle optional eine Kategorie oder aktiviere den Grün-Filter (`🟢`).
+3. Suche das Lebensmittel und tippe es an.
+4. Wiederhole den Schritt für weitere Lebensmittel.
+5. Speichere die Auswahl.
+6. Prüfe oder bearbeite Einträge im Verlauf.
+7. Sichere deine Daten regelmäßig über "Backup speichern".
+
+## Datenbasis pflegen
+
+1. Öffne [data.md](data.md) und passe die Tabelle an (`Kategorie,Lebensmittel,Status`).
+2. Führe das Build-Skript aus:
 
 ```bash
-cd "c:\Users\domin\OneDrive\Data\VSCode\Project\Ernahrungstagebuch"
-python -m http.server 8001
+python build_assets.py
 ```
 
-2. Auf dem PC die eigene IP ermitteln:
-
-```powershell
-ipconfig
-```
-
-3. Die IPv4-Adresse notieren, z. B.:
-
-```text
-192.168.1.25
-```
-
-4. Auf dem Handy im gleichen WLAN den Browser öffnen und folgende Adresse eingeben:
-
-```text
-http://192.168.1.25:8001/
-```
-
-5. Die App testen und optional als PWA auf dem Handy installieren.
-
-## Verwendung
-
-1. Datum auswählen
-2. Kategorie wählen (optional)
-3. Lebensmittel suchen und aus der Vorschlagsliste wählen
-4. Mehrere Lebensmittel in die Auswahl aufnehmen
-5. Auswahl per Chip entfernen oder mit dem X direkt verwalten
-6. Einträge speichern
-7. Verlauf und 4-Tage-Übersicht prüfen
-
-## Datenpflege
-
-Die Lebensmittel-Daten stammen aus `food-data.json`. Diese Datei ist projekt- und nutzer-spezifisch und muss je nach persönlicher Bewertung, Lebensmitteln, Kategorien und individuellen Regeln angepasst werden.
-
-Das bedeutet:
-
-- neue Lebensmittel oder Kategorien müssen manuell in `food-data.json` ergänzt werden
-- bestehende Einträge können je nach persönlicher Bewertung angepasst werden
-- die App nutzt diese Datei als zentrale Datenbasis, daher ist sie kein statischer, unveränderlicher Standard
-- bei größeren Änderungen solltest du die Datei gezielt bearbeiten oder mit einem eigenen Generator neu erzeugen
+3. Das Skript aktualisiert [food-data.json](food-data.json).
 
 ## Hinweise
 
-- Die Daten werden lokal im Browser gespeichert.
-- Bei einem Wechsel des Browsers oder Gerätes sind ältere Datensätze nicht automatisch sichtbar.
-- Für echte PWA-Funktionalität ist ein lokaler Server sinnvoll.
+- Alle Daten liegen im lokalen Browserspeicher (`localStorage`).
+- Bei einem Gerätewechsel überträgst du die Daten per Backup-Export und Import.
+- Ein Service Worker benötigt `localhost` oder eine HTTPS-Verbindung.
 
 ## Lizenz
 
-Dieses Projekt ist für den privaten Gebrauch vorgesehen.
-
-# Ernahrungstagebuch
-
-Nutrition Rotation Tracker – PWA zur Erfassung täglicher Lebensmittel mit automatischer 4‑Tage‑Rotationswarnung und Unverträglichkeitsprüfung (Grün/Orange/Rot).
+Privater Gebrauch.

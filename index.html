@@ -15,7 +15,17 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.0.2" />
+    <link rel="stylesheet" href="./styles.css?v=1.0.12" />
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('ernaehrungstagebuch-theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = saved || (prefersDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div class="app-shell">
@@ -24,9 +34,12 @@
           <p class="eyebrow">Persönlicher Tracker</p>
           <h1>Ernährungstagebuch</h1>
         </div>
-        <button id="installButton" class="secondary-button hidden" type="button" aria-label="App installieren">
-          Installieren
-        </button>
+        <div class="topbar-actions">
+          <button id="themeToggle" class="icon-button" type="button" aria-label="Nachtmodus aktivieren" title="Nachtmodus aktivieren">☾</button>
+          <button id="installButton" class="secondary-button hidden" type="button" aria-label="App installieren">
+            Installieren
+          </button>
+        </div>
       </header>
 
       <main class="container">
@@ -37,23 +50,21 @@
                 <span>Datum</span>
                 <input id="entryDate" type="date" />
               </label>
-              <button id="todayButton" class="mini-button" type="button" aria-label="Auf heute setzen">Heute</button>
+              <button id="todayButton" class="icon-button" type="button" aria-label="Auf heute setzen" title="Auf heute setzen">↺</button>
             </div>
 
-            <label class="field">
-              <span>Kategorie</span>
-              <select id="searchCategory">
-                <option value="all">Alle</option>
-              </select>
-            </label>
-
-            <label class="subtle-toggle" for="onlyFreshGreenFoods">
-              <input id="onlyFreshGreenFoods" type="checkbox" />
-              <span>Nur grüne, noch nicht erfasst</span>
-            </label>
+            <div class="category-field-wrap">
+              <label class="field">
+                <span>Kategorie</span>
+                <select id="searchCategory">
+                  <option value="all">Alle</option>
+                </select>
+              </label>
+              <button id="onlyFreshGreenFoods" class="icon-button green-filter-button" type="button" aria-pressed="false" aria-label="Nur grüne, noch nicht erfasste Lebensmittel" title="Nur grüne, noch nicht erfasste Lebensmittel">🟢</button>
+            </div>
 
             <div class="field search-field">
-              <label for="foodSearch">Lebensmittel</label>
+              <label id="foodSearchLabel" for="foodSearch">Lebensmittel</label>
               <input
                 id="foodSearch"
                 type="text"
@@ -116,7 +127,7 @@
                 <button id="exportJsonButton" class="secondary-button" type="button">Backup speichern</button>
                 <label class="import-label">
                   <span>Backup importieren</span>
-                  <input id="importFile" type="file" accept=".json,.csv" />
+                  <input id="importFile" type="file" accept=".json" />
                 </label>
               </div>
             </div>
@@ -136,6 +147,6 @@
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script src="./app.js?v=1.0.2" defer></script>
+    <script src="./app.js?v=1.0.12" defer></script>
   </body>
 </html>

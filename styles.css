@@ -18,6 +18,30 @@
   --shadow: 0 18px 35px rgba(15, 23, 42, 0.08);
 }
 
+[data-theme="dark"] {
+  --bg: #090e17;
+  --panel: #131b2a;
+  --panel-alt: #1a2538;
+  --text: #f1f5f9;
+  --muted: #8fa0ba;
+  --border: #233148;
+  --primary: #60a5fa;
+  --primary-soft: #1d3356;
+  --green: #10b981;
+  --green-soft: #064e3b;
+  --orange: #f59e0b;
+  --orange-soft: #451a03;
+  --red: #ef4444;
+  --red-soft: #450a0a;
+  --yellow: #fbbf24;
+  --yellow-soft: #451a03;
+  --shadow: 0 18px 35px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] body {
+  background: linear-gradient(180deg, #0f172a 0%, var(--bg) 100%);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -57,6 +81,12 @@ button {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 20px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .topbar h1 {
@@ -139,21 +169,76 @@ button {
 
 .field-grid {
   display: grid;
-  grid-template-columns: minmax(160px, 220px) minmax(180px, 220px) minmax(
-      0,
-      1fr
-    );
+  grid-template-columns: minmax(220px, 260px) minmax(220px, 280px);
   gap: 16px;
 }
 
-.date-field-wrap {
+.date-field-wrap,
+.category-field-wrap {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
+  gap: 8px;
 }
 
-.date-field-wrap .field {
+.date-field-wrap .field,
+.category-field-wrap .field {
   flex: 1 1 auto;
+  min-width: 0;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  background: var(--panel-alt, #f3f7fb);
+  color: var(--primary);
+  border-radius: 12px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.icon-button:hover {
+  background: var(--primary-soft);
+  transform: translateY(-1px);
+}
+
+.icon-button:active {
+  transform: scale(0.96);
+}
+
+.green-filter-button {
+  font-size: 1.1rem;
+  opacity: 0.45;
+  filter: grayscale(0.8);
+  transition:
+    opacity 0.15s ease,
+    filter 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.green-filter-button:hover {
+  opacity: 0.8;
+  filter: grayscale(0.3);
+}
+
+.green-filter-button.active {
+  opacity: 1;
+  filter: none;
+  background: var(--green-soft);
+  border-color: var(--green);
 }
 
 .field {
@@ -174,7 +259,7 @@ input[type="text"],
 select {
   width: 100%;
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--panel);
   border-radius: 12px;
   padding: 0.8rem 0.9rem;
   color: var(--text);
@@ -202,23 +287,7 @@ select:focus {
 
 .search-field {
   position: relative;
-}
-
-.subtle-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.35rem;
-  margin-bottom: 0.1rem;
-  color: var(--muted, #6b7280);
-  font-size: 0.76rem;
-  user-select: none;
-  cursor: pointer;
-}
-
-.subtle-toggle input {
-  accent-color: var(--primary, #1d4ed8);
-  transform: scale(0.9);
+  grid-column: 1 / -1;
 }
 
 .suggestions {
@@ -229,11 +298,12 @@ select:focus {
   display: none;
   flex-direction: column;
   gap: 6px;
-  max-height: min(50vh, 320px);
+  max-height: min(55vh, 400px);
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   padding: 8px;
-  background: #fff;
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: var(--shadow);
@@ -247,7 +317,7 @@ select:focus {
 .suggestion-item {
   width: 100%;
   border: none;
-  background: #f7fafd;
+  background: var(--panel-alt);
   border-radius: 10px;
   padding: 0.7rem 0.8rem;
   text-align: left;
@@ -521,7 +591,11 @@ select:focus {
   padding: 14px;
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: linear-gradient(180deg, #fff, #f9fbff);
+  background: var(--panel);
+}
+
+[data-theme="dark"] .history-day {
+  background: linear-gradient(180deg, #131b2a, #172338);
 }
 
 .history-day h3 {
@@ -563,7 +637,7 @@ select:focus {
   padding: 0.42rem 0.7rem 0.42rem 0.8rem;
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: #fff;
+  background: var(--panel-alt);
   box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02);
 }
 
@@ -625,7 +699,7 @@ select:focus {
   padding: 0.8rem 0.9rem;
   min-width: 116px;
   flex: 1 1 110px;
-  background: #f7faff;
+  background: var(--panel-alt);
 }
 
 .day-summary-card h4 {
@@ -648,7 +722,7 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f7fc;
+  background: var(--panel-alt);
   color: var(--text);
   border: 1px dashed var(--border);
   position: relative;
@@ -665,7 +739,7 @@ select:focus {
 .empty-state {
   color: var(--muted);
   border: 1px dashed var(--border);
-  background: #f9fbff;
+  background: var(--panel-alt);
   padding: 1rem;
   border-radius: 14px;
 }
@@ -684,7 +758,12 @@ select:focus {
     grid-template-columns: 1fr;
   }
 
-  .topbar,
+  .topbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   .hero-panel,
   .section-header {
     flex-direction: column;

@@ -2,7 +2,7 @@
   "name": "Ernährungstagebuch",
   "short_name": "Ernährung",
   "description": "Persönliches Ernährungstagebuch mit Rotationswarnungen und individuellen Bewertungschecks.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f3f7fb",
   "theme_color": "#0f172a",

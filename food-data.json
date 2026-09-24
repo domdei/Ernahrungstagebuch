@@ -1,117 +1,117 @@
 [
   {
     "name": "Dinkel",
-    "category": "Getreide",
+    "category": "Glutenhaltige Getreide",
     "status": "green"
   },
   {
     "name": "Gerste",
-    "category": "Getreide",
+    "category": "Glutenhaltige Getreide",
     "status": "green"
   },
   {
     "name": "Gluten",
-    "category": "Getreide",
+    "category": "Glutenhaltige Getreide",
     "status": "green"
   },
   {
     "name": "Kamut",
-    "category": "Getreide",
+    "category": "Glutenhaltige Getreide",
     "status": "green"
   },
   {
     "name": "Roggen",
-    "category": "Getreide",
+    "category": "Glutenhaltige Getreide",
     "status": "green"
   },
   {
     "name": "Weizen",
-    "category": "Getreide",
+    "category": "Glutenhaltige Getreide",
     "status": "green"
   },
   {
     "name": "Amaranth",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Buchweizen",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Carob",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Esskastanie",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "orange"
   },
   {
     "name": "Fonio",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Hafer (glutenfrei)",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Hirse",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Lupine",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Mais",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Maniok",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Pfeilwurz",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Quinoa",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Reis",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Süßkartoffel",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Tapioka",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Teff",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
     "name": "Topinambur",
-    "category": "Glutenfrei",
+    "category": "Glutenfreie Getreide und Alternativen",
     "status": "green"
   },
   {
@@ -216,382 +216,382 @@
   },
   {
     "name": "Hellim (Halloumi)",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "orange"
   },
   {
     "name": "Kamelmilch",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "green"
   },
   {
     "name": "Kefir (Kuh)",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "orange"
   },
   {
     "name": "Labkäse (Kuh)",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "red"
   },
   {
     "name": "Milch (Kuh)",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "red"
   },
   {
     "name": "Milch (Kuh gekocht)",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "orange"
   },
   {
     "name": "Ricotta (Kuh)",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "red"
   },
   {
     "name": "Sauermilchprod. (Kuh)",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "red"
   },
   {
     "name": "Schafsmilch/-käse",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "red"
   },
   {
     "name": "Stutenmilch",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "green"
   },
   {
     "name": "Ziegenmilch/-käse",
-    "category": "Milch",
+    "category": "Milchprodukte",
     "status": "red"
   },
   {
     "name": "Ananas",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Apfel",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Aprikose",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Avocado",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Banane",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Birne",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Blaubeere",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Brombeere",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Cranberry",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Dattel",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Erdbeere",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Feige",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Granatapfel",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Grapefruit",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Guave",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Himbeere",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Honigmelone",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Johannisbeere",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Kaktusfeige",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Kirsche",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Kiwi",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "orange"
   },
   {
     "name": "Limette",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Litschi",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Mandarine",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Mango",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Mirabelle",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Nektarine",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Orange",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Papaya",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Pfirsich",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Pflaume",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Preiselbeere",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Quitte",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Rhabarber",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Sanddorn",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Stachelbeere",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Traube/Rosine",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Wassermelone",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Zitrone",
-    "category": "Obst",
+    "category": "Obst und Früchte",
     "status": "green"
   },
   {
     "name": "Cashewkerne",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "red"
   },
   {
     "name": "Erdnuss",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Haselnuss",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Kakaobohne",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Kokosnuss",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Kürbiskerne",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Leinsamen",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Macadamia",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Mandel",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "red"
   },
   {
     "name": "Mohn",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Paranuss",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Pinienkerne",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Pistazie",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "red"
   },
   {
     "name": "Sesam",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Sonnenblumenkerne",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Walnuss",
-    "category": "Nüsse",
+    "category": "Samen und Nüsse",
     "status": "green"
   },
   {
     "name": "Chicorée",
-    "category": "Salat",
+    "category": "Salate",
     "status": "green"
   },
   {
     "name": "Eisbergsalat",
-    "category": "Salat",
+    "category": "Salate",
     "status": "green"
   },
   {
     "name": "Endivie",
-    "category": "Salat",
+    "category": "Salate",
     "status": "green"
   },
   {
     "name": "Feldsalat",
-    "category": "Salat",
+    "category": "Salate",
     "status": "green"
   },
   {
     "name": "Kopfsalat",
-    "category": "Salat",
+    "category": "Salate",
     "status": "green"
   },
   {
     "name": "Lollo Rosso",
-    "category": "Salat",
+    "category": "Salate",
     "status": "green"
   },
   {
     "name": "Löwenzahn",
-    "category": "Salat",
+    "category": "Salate",
     "status": "green"
   },
   {
     "name": "Radicchio",
-    "category": "Salat",
+    "category": "Salate",
     "status": "green"
   },
   {
     "name": "Römischer Salat",
-    "category": "Salat",
+    "category": "Salate",
     "status": "green"
   },
   {
     "name": "Rucola",
-    "category": "Salat",
+    "category": "Salate",
     "status": "green"
   },
   {
@@ -816,402 +816,402 @@
   },
   {
     "name": "Alfalfa",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Anis",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Bärlauch",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Basilikum",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Bohnenkraut",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Dill",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Gartenkresse",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Ingwer",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Kapern",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Kardamom",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Kerbel",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Knoblauch",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Koriander",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Kreuzkümmel",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Kümmel",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Lavendel",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Liebstöckel",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Lorbeerblatt",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Majoran",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Meerrettich",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Muskatnuss",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Nelke",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Oregano",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Paprikagewürz",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Petersilie",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Pfeffer (schwarz)",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Pfeffer (weiß)",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Piment",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Rosmarin",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Safran",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Salbei",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Schnittlauch",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Senfkorn",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Thymian",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Vanille",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Wacholder",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Zimt",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Zitronenmelisse",
-    "category": "Gewürze",
+    "category": "Gewürze und Kräuter",
     "status": "green"
   },
   {
     "name": "Aal",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Anchovis",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Auster",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Dorade",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Forelle",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Garnele",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Hai",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Heilbutt",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Hering",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Hummer",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Jakobsmuschel",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Kabeljau",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Karpfen",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Krebs",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Lachs",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Makrele",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Miesmuschel",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Oktopus",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Pangasius",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Red Snapper",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Rotbarsch",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Sardine",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Schellfisch",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Scholle",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Schwertfisch",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "See-/Wolfsbarsch",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Seehecht",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Seelachs",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "orange"
   },
   {
     "name": "Seeteufel",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Seezunge",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Thunfisch",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Tintenfisch",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Zander",
-    "category": "Fisch/Meer",
+    "category": "Fische und Meeresfrüchte",
     "status": "green"
   },
   {
     "name": "Brennnessel",
-    "category": "Getränke",
+    "category": "Tees Kaffee Tannin",
     "status": "green"
   },
   {
     "name": "Hagebutte",
-    "category": "Getränke",
+    "category": "Tees Kaffee Tannin",
     "status": "green"
   },
   {
     "name": "Kaffee",
-    "category": "Getränke",
+    "category": "Tees Kaffee Tannin",
     "status": "orange"
   },
   {
     "name": "Kamille",
-    "category": "Getränke",
+    "category": "Tees Kaffee Tannin",
     "status": "green"
   },
   {
     "name": "Pfefferminz",
-    "category": "Getränke",
+    "category": "Tees Kaffee Tannin",
     "status": "green"
   },
   {
     "name": "Rotbusch",
-    "category": "Getränke",
+    "category": "Tees Kaffee Tannin",
     "status": "green"
   },
   {
     "name": "Tannin (Wein)",
-    "category": "Getränke",
+    "category": "Tees Kaffee Tannin",
     "status": "green"
   },
   {
     "name": "Tee (grün)",
-    "category": "Getränke",
+    "category": "Tees Kaffee Tannin",
     "status": "green"
   },
   {
     "name": "Tee (schwarz)",
-    "category": "Getränke",
+    "category": "Tees Kaffee Tannin",
     "status": "green"
   },
   {
@@ -1251,22 +1251,22 @@
   },
   {
     "name": "Aloe Vera",
-    "category": "Spezial",
+    "category": "Besonderes",
     "status": "green"
   },
   {
     "name": "Aspergillus niger",
-    "category": "Spezial",
+    "category": "Besonderes",
     "status": "green"
   },
   {
     "name": "Citronat",
-    "category": "Spezial",
+    "category": "Besonderes",
     "status": "orange"
   },
   {
     "name": "Weinblätter",
-    "category": "Spezial",
+    "category": "Besonderes",
     "status": "green"
   },
   {
@@ -1281,67 +1281,67 @@
   },
   {
     "name": "Agavendicksaft",
-    "category": "Süßung",
+    "category": "Süßmittel",
     "status": "green"
   },
   {
     "name": "Ahornsirup",
-    "category": "Süßung",
+    "category": "Süßmittel",
     "status": "green"
   },
   {
     "name": "Honigmischung",
-    "category": "Süßung",
+    "category": "Süßmittel",
     "status": "green"
   },
   {
     "name": "Rohrzucker",
-    "category": "Süßung",
+    "category": "Süßmittel",
     "status": "green"
   },
   {
     "name": "Agar-Agar (E 406)",
-    "category": "Zusätze",
+    "category": "Lebensmittelzusatzstoffe",
     "status": "green"
   },
   {
     "name": "Benzoesäure (E 210)",
-    "category": "Zusätze",
+    "category": "Lebensmittelzusatzstoffe",
     "status": "green"
   },
   {
     "name": "Carrageen (E 407)",
-    "category": "Zusätze",
+    "category": "Lebensmittelzusatzstoffe",
     "status": "green"
   },
   {
     "name": "Guarkernmehl (E 412)",
-    "category": "Zusätze",
+    "category": "Lebensmittelzusatzstoffe",
     "status": "green"
   },
   {
     "name": "Kurkumin (E 100)",
-    "category": "Zusätze",
+    "category": "Lebensmittelzusatzstoffe",
     "status": "green"
   },
   {
     "name": "Pektin (E 440)",
-    "category": "Zusätze",
+    "category": "Lebensmittelzusatzstoffe",
     "status": "orange"
   },
   {
     "name": "Sorbinsäure (E 200)",
-    "category": "Zusätze",
+    "category": "Lebensmittelzusatzstoffe",
     "status": "green"
   },
   {
     "name": "Traganth (E 413)",
-    "category": "Zusätze",
+    "category": "Lebensmittelzusatzstoffe",
     "status": "green"
   },
   {
     "name": "Xanthan (E 415)",
-    "category": "Zusätze",
+    "category": "Lebensmittelzusatzstoffe",
     "status": "green"
   }
 ]

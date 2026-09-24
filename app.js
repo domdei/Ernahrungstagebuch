@@ -1,12 +1,11 @@
 const STORAGE_KEY = 'ernaehrungstagebuch-diary-v1';
 const DRAFT_STORAGE_KEY = 'ernaehrungstagebuch-draft-v1';
+const THEME_STORAGE_KEY = 'ernaehrungstagebuch-theme';
 const FOOD_DB_PATH = './food-data.json';
 const APP_VERSION_PATH = './version.json';
 const MAX_SUGGESTIONS = 20;
-const BACKUP_HANDLE_DB = 'ernaehrungstagebuch-backup-handles';
-const BACKUP_HANDLE_STORE = 'handles';
+const ROTATION_WARNING_DAYS = 3;
 const BACKUP_FILENAME_PREFIX = 'backup';
-const LAST_DAILY_BACKUP_KEY = 'ernaehrungstagebuch-last-daily-backup-date';
 
 const state = {
     foods: [],
@@ -17,6 +16,7 @@ const state = {
     filterToDate: getTodayString(),
     filterDate: '',
     searchCategory: 'all',
+    onlyFreshGreen: false,
     filterCategory: 'all',
     filterStatus: 'all',
     historyMode: false,
@@ -28,6 +28,7 @@ const ui = {
     todayButton: document.getElementById('todayButton'),
     searchCategory: document.getElementById('searchCategory'),
     onlyFreshGreenFoods: document.getElementById('onlyFreshGreenFoods'),
+    foodSearchLabel: document.getElementById('foodSearchLabel'),
     foodSearch: document.getElementById('foodSearch'),
     suggestions: document.getElementById('suggestions'),
     selectedFoods: document.getElementById('selectedFoods'),
@@ -40,8 +41,8 @@ const ui = {
     filterToDate: document.getElementById('filterToDate'),
     filterCategory: document.getElementById('filterCategory'),
     filterStatus: document.getElementById('filterStatus'),
-    daySummary: document.getElementById('daySummary'),
     historyDeleteToggle: document.getElementById('historyDeleteToggle'),
+    themeToggle: document.getElementById('themeToggle'),
     installButton: document.getElementById('installButton'),
     exportJsonButton: document.getElementById('exportJsonButton'),
     importFile: document.getElementById('importFile'),
@@ -72,10 +73,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     state.filterStatus = 'all';
     createCategoryOptions();
     await loadFoodDatabase();
-    await maybeAutoDailyBackup();
     await loadVersionInfo();
     updateHistoryControls();
     renderEverything();
+    initTheme();
     bindEvents();
     registerServiceWorker();
     bindInstallPrompt();
@@ -194,9 +195,13 @@ function bindEvents() {
         renderSuggestions();
     });
 
-    ui.onlyFreshGreenFoods.addEventListener('change', () => {
-        renderSuggestions();
-    });
+    if (ui.onlyFreshGreenFoods) {
+        ui.onlyFreshGreenFoods.addEventListener('click', () => {
+            state.onlyFreshGreen = !state.onlyFreshGreen;
+            updateGreenFilterUI();
+            renderSuggestions();
+        });
+    }
 
     ui.filterCategory.addEventListener('change', () => {
         state.filterCategory = ui.filterCategory.value;
@@ -253,7 +258,51 @@ function bindEvents() {
 
     ui.exportJsonButton.addEventListener('click', () => exportJsonBackup());
     ui.importFile.addEventListener('change', handleImport);
-    updateVersionDisplay();
+    if (ui.themeToggle) {
+        ui.themeToggle.addEventListener('click', toggleTheme);
+    }
+}
+
+function initTheme() {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    applyTheme(theme, false);
+}
+
+function applyTheme(theme, save = true) {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (save) {
+        localStorage.setItem(THEME_STORAGE_KEY, theme);
+    }
+
+    if (ui.themeToggle) {
+        const isDark = theme === 'dark';
+        ui.themeToggle.textContent = isDark ? '☼' : '☾';
+        ui.themeToggle.setAttribute('aria-label', isDark ? 'Tagmodus aktivieren' : 'Nachtmodus aktivieren');
+        ui.themeToggle.setAttribute('title', isDark ? 'Tagmodus aktivieren' : 'Nachtmodus aktivieren');
+    }
+
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', theme === 'dark' ? '#090e17' : '#0f172a');
+    }
+}
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next, true);
+}
+
+function updateGreenFilterUI() {
+    if (ui.onlyFreshGreenFoods) {
+        ui.onlyFreshGreenFoods.setAttribute('aria-pressed', String(state.onlyFreshGreen));
+        ui.onlyFreshGreenFoods.classList.toggle('active', state.onlyFreshGreen);
+    }
+    if (ui.foodSearchLabel) {
+        ui.foodSearchLabel.textContent = state.onlyFreshGreen ? 'Lebensmittel (gefiltert)' : 'Lebensmittel';
+    }
 }
 
 async function loadFoodDatabase() {
@@ -342,7 +391,7 @@ function persistDraftState() {
 
 function getDefaultHistoryFromDate() {
     const today = parseDateInput(getTodayString());
-    today.setDate(today.getDate() - 4);
+    today.setDate(today.getDate() - ROTATION_WARNING_DAYS);
     return formatDateInput(today);
 }
 
@@ -598,7 +647,7 @@ function getWarningsForFood(foodName, selectedDate) {
     const warnings = [];
     const mostRecent = findMostRecentOccurrence(foodName, selectedDate);
 
-    if (mostRecent && Math.abs(mostRecent.daysDifference) >= 1 && Math.abs(mostRecent.daysDifference) <= 4) {
+    if (mostRecent && Math.abs(mostRecent.daysDifference) >= 1 && Math.abs(mostRecent.daysDifference) <= ROTATION_WARNING_DAYS) {
         if (mostRecent.daysDifference > 0) {
             warnings.push({
                 kind: 'yellow',
@@ -628,7 +677,7 @@ function getWarningsForFood(foodName, selectedDate) {
 
 function getRecentMealLabel(foodName, referenceDate) {
     const mostRecent = findMostRecentOccurrence(foodName, referenceDate);
-    if (!mostRecent || Math.abs(mostRecent.daysDifference) < 1 || Math.abs(mostRecent.daysDifference) > 4) {
+    if (!mostRecent || Math.abs(mostRecent.daysDifference) < 1 || Math.abs(mostRecent.daysDifference) > ROTATION_WARNING_DAYS) {
         return '';
     }
 
@@ -663,7 +712,7 @@ function findMostRecentOccurrence(foodName, targetDate) {
             date: entry.date,
             daysDifference: diffInDays(targetDate, entry.date),
         }))
-        .filter((entry) => Math.abs(entry.daysDifference) >= 1 && Math.abs(entry.daysDifference) <= 4)
+        .filter((entry) => Math.abs(entry.daysDifference) >= 1 && Math.abs(entry.daysDifference) <= ROTATION_WARNING_DAYS)
         .sort((a, b) => {
             const byDistance = Math.abs(a.daysDifference) - Math.abs(b.daysDifference);
             if (byDistance !== 0) {
@@ -682,7 +731,7 @@ function isFoodAvailableForSelectedDate(foodName, selectedDateValue) {
         if (entry.name !== foodName) {
             return false;
         }
-        return Math.abs(diffInDays(referenceDate, entry.date)) <= 4;
+        return Math.abs(diffInDays(referenceDate, entry.date)) <= ROTATION_WARNING_DAYS;
     });
 
     return !hasRecentOrUpcomingOccurrence;
@@ -698,7 +747,7 @@ function getSuggestions(query) {
             return false;
         }
 
-        if (ui.onlyFreshGreenFoods && ui.onlyFreshGreenFoods.checked) {
+        if (state.onlyFreshGreen) {
             return food.status === 'green' && isFoodAvailableForSelectedDate(food.name, ui.entryDate.value || state.selectedDate || getTodayString());
         }
 
@@ -805,12 +854,6 @@ function getTodayString() {
     return formatDateInput(new Date());
 }
 
-function getLastNDaysString(daysBack) {
-    const date = new Date();
-    date.setDate(date.getDate() - daysBack);
-    return formatDateInput(date);
-}
-
 function formatDateInput(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -830,12 +873,6 @@ function diffInDays(left, right) {
     return Math.round(diffMs / (1000 * 60 * 60 * 24));
 }
 
-function addDays(date, days) {
-    const copy = new Date(date);
-    copy.setUTCDate(copy.getUTCDate() + days);
-    return copy;
-}
-
 function formatFriendlyDate(dateString) {
     const date = parseDateInput(dateString);
     return new Intl.DateTimeFormat('de-DE', {
@@ -843,13 +880,6 @@ function formatFriendlyDate(dateString) {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
-    }).format(date);
-}
-
-function formatShortDate(date) {
-    return new Intl.DateTimeFormat('de-DE', {
-        day: '2-digit',
-        month: '2-digit',
     }).format(date);
 }
 
@@ -870,82 +900,40 @@ function getDateTimeStamp(date = new Date()) {
     return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
 }
 
-function getBackupFilename(date = new Date(), includeTime = false) {
+function getBackupFilename(date = new Date(), includeTime = true) {
     const stamp = includeTime ? getDateTimeStamp(date) : getDateStamp(date);
     return `${BACKUP_FILENAME_PREFIX}_${stamp}.json`;
 }
 
-async function maybeAutoDailyBackup() {
-    const today = getDateStamp();
-    const lastDailyBackupDate = localStorage.getItem(LAST_DAILY_BACKUP_KEY);
-    if (lastDailyBackupDate === today) {
-        return;
-    }
-
-    try {
-        await exportJsonBackup(getBackupFilename(new Date(), false));
-        localStorage.setItem(LAST_DAILY_BACKUP_KEY, today);
-    } catch (error) {
-        console.warn('Tägliches Backup konnte nicht erstellt werden:', error);
-    }
-}
-
-async function exportJsonBackup(filenameOverride) {
-    const isEventObject = filenameOverride && typeof filenameOverride === 'object' && typeof filenameOverride.preventDefault === 'function';
-    const fileName = typeof filenameOverride === 'string' && filenameOverride.trim()
-        ? filenameOverride
-        : getBackupFilename(new Date(), true);
+async function exportJsonBackup() {
+    const fileName = getBackupFilename(new Date(), true);
     const payload = JSON.stringify({
         exportedAt: new Date().toISOString(),
         entries: state.entries,
     }, null, 2);
 
-    if (isEventObject) {
-        return;
-    }
+    const blob = new Blob([payload], { type: 'application/json' });
+    const backupFile = new File([blob], fileName, { type: 'application/json' });
 
-    const canUseDirectoryPicker = window.isSecureContext
-        && window.showDirectoryPicker
-        && typeof window.showDirectoryPicker === 'function'
-        && !(/Android|iPhone|iPad/i.test(navigator.userAgent));
-
-    if (canUseDirectoryPicker) {
+    // Auf Android / Mobilgeräten natives Share-Sheet nutzen ("In Dateien speichern", Drive, Mail etc.)
+    if (navigator.canShare && navigator.canShare({ files: [backupFile] })) {
         try {
-            const directoryHandle = await getSavedDirectoryHandle() || await window.showDirectoryPicker({ mode: 'readwrite' });
-            await saveDirectoryHandle(directoryHandle);
-            const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
-            const writable = await fileHandle.createWritable();
-            await writable.write(payload);
-            await writable.close();
+            await navigator.share({
+                title: 'Ernährungstagebuch Backup',
+                text: `Backup vom ${new Date().toLocaleDateString('de-DE')}`,
+                files: [backupFile],
+            });
             return;
         } catch (error) {
-            if (error && error.name !== 'AbortError') {
-                console.warn('Directory Picker konnte nicht verwendet werden:', error);
+            if (error && error.name === 'AbortError') {
+                return;
             }
+            console.warn('Web Share API fehlgeschlagen, wechsle auf Download:', error);
         }
     }
 
-    const blob = new Blob([payload], { type: 'application/json' });
     downloadBlob(blob, fileName);
-}
-
-function exportJson() {
-    const blob = new Blob([JSON.stringify(state.entries, null, 2)], { type: 'application/json' });
-    downloadBlob(blob, 'ernaehrungstagebuch.json');
-}
-
-function exportCsv() {
-    const rows = [
-        ['date', 'category', 'name', 'status'],
-        ...state.entries.map((entry) => [entry.date, entry.category, entry.name, entry.status]),
-    ];
-
-    const csv = rows
-        .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(','))
-        .join('\n');
-
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    downloadBlob(blob, 'ernaehrungstagebuch.csv');
+    alert(`Backup wurde heruntergeladen:\n"${fileName}"\n(im Download-Ordner deines Geräts).`);
 }
 
 async function handleImport(event) {
@@ -956,7 +944,7 @@ async function handleImport(event) {
 
     try {
         const content = await file.text();
-        const parsed = file.name.toLowerCase().endsWith('.json') ? parseImportedJson(content) : parseCsv(content);
+        const parsed = parseImportedJson(content);
         const nextEntries = Array.isArray(parsed) ? parsed : Array.isArray(parsed.entries) ? parsed.entries : [];
 
         const imported = nextEntries
@@ -996,57 +984,6 @@ function parseImportedJson(content) {
     return [];
 }
 
-function openBackupDatabase() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open(BACKUP_HANDLE_DB, 1);
-
-        request.onupgradeneeded = () => {
-            const db = request.result;
-            if (!db.objectStoreNames.contains(BACKUP_HANDLE_STORE)) {
-                db.createObjectStore(BACKUP_HANDLE_STORE);
-            }
-        };
-
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error || new Error('IndexedDB konnte nicht geöffnet werden.'));
-    });
-}
-
-async function saveDirectoryHandle(directoryHandle) {
-    if (!directoryHandle || !('getFileHandle' in directoryHandle)) {
-        return;
-    }
-
-    const db = await openBackupDatabase();
-    const transaction = db.transaction(BACKUP_HANDLE_STORE, 'readwrite');
-    const store = transaction.objectStore(BACKUP_HANDLE_STORE);
-    store.put(directoryHandle, 'directory');
-    await new Promise((resolve, reject) => {
-        transaction.oncomplete = resolve;
-        transaction.onerror = () => reject(transaction.error || new Error('Backup-Handle konnte nicht gespeichert werden.'));
-    });
-}
-
-async function getSavedDirectoryHandle() {
-    if (!('indexedDB' in window)) {
-        return null;
-    }
-
-    try {
-        const db = await openBackupDatabase();
-        const transaction = db.transaction(BACKUP_HANDLE_STORE, 'readonly');
-        const store = transaction.objectStore(BACKUP_HANDLE_STORE);
-        return await new Promise((resolve, reject) => {
-            const request = store.get('directory');
-            request.onsuccess = () => resolve(request.result || null);
-            request.onerror = () => reject(request.error || new Error('Gespeicherten Backup-Ordner konnte nicht geladen werden.'));
-        });
-    } catch (error) {
-        console.warn('Gespeicherter Backup-Ordner konnte nicht geladen werden:', error);
-        return null;
-    }
-}
-
 function normalizeImportedEntry(entry) {
     const name = entry.name || entry.food || entry['Lebensmittel'];
     if (!name) {
@@ -1070,24 +1007,6 @@ function generateEntryId() {
     }
 
     return `entry-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-}
-
-function parseCsv(text) {
-    const lines = text.trim().split(/\r?\n/).filter(Boolean);
-    if (!lines.length) {
-        return [];
-    }
-
-    const header = lines[0].split(',').map((cell) => cell.trim().toLowerCase());
-    return lines.slice(1).map((line) => {
-        const values = line.match(/("(?:[^"]|"")*"|[^,]*)/g) || [];
-        const row = values.map((value) => value.replace(/^"|"$/g, '').replace(/""/g, '"').trim());
-        const obj = {};
-        header.forEach((key, index) => {
-            obj[key] = row[index] || '';
-        });
-        return obj;
-    });
 }
 
 function downloadBlob(blob, filename) {
@@ -1119,11 +1038,6 @@ async function loadVersionInfo() {
             ui.appVersion.textContent = '1.0.0';
         }
     }
-
-}
-
-function updateVersionDisplay() {
-    return;
 }
 
 function bindInstallPrompt() {
@@ -1151,7 +1065,7 @@ function registerServiceWorker() {
     }
 
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=1.0.3').then((registration) => {
+        navigator.serviceWorker.register('./sw.js').then((registration) => {
             registration.addEventListener('updatefound', () => {
                 const installingWorker = registration.installing;
                 if (!installingWorker) {
