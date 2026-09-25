@@ -32,6 +32,7 @@ export const ui = {
     searchCategory: document.getElementById('searchCategory'),
     categoryClearButton: document.getElementById('categoryClearButton'),
     onlyFreshGreenFoods: document.getElementById('onlyFreshGreenFoods'),
+    searchFilterBar: document.querySelector('.search-filter-bar'),
     searchField: document.getElementById('searchField'),
     foodSearchLabel: document.getElementById('foodSearchLabel'),
     searchCloseButton: document.getElementById('searchCloseButton'),
@@ -70,6 +71,9 @@ export const ui = {
     confirmModalList: document.getElementById('confirmModalList'),
     confirmProceedButton: document.getElementById('confirmProceedButton'),
     confirmCancelButton: document.getElementById('confirmCancelButton'),
+    categoryModal: document.getElementById('categoryModal'),
+    categoryModalCloseButton: document.getElementById('categoryModalCloseButton'),
+    categoryModalGrid: document.getElementById('categoryModalGrid'),
 };
 
 export function isMobileView() {

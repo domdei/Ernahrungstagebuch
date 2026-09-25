@@ -127,10 +127,20 @@ button {
 }
 
 .hero-panel h2,
-.section-header h2,
 .summary-panel h2 {
   margin: 0;
   font-size: 1.4rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.form-section-header {
+  margin-bottom: 12px;
 }
 
 .version-panel {
@@ -253,10 +263,16 @@ button {
 }
 
 .search-filter-bar {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 8px;
   margin-top: 8px;
+}
+
+.search-field:focus-within .search-filter-bar,
+.search-field:has(.suggestions.visible) .search-filter-bar,
+.search-filter-bar.has-active-filter {
+  display: flex;
 }
 
 .category-chip-wrap {
@@ -1434,6 +1450,62 @@ select:focus {
   opacity: 0.92;
 }
 
+.category-modal-card {
+  max-width: 480px;
+  max-height: 85vh;
+}
+
+.category-modal-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding: 4px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-modal-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-alt);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.category-modal-item:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.category-modal-item.selected {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.category-modal-check {
+  font-size: 1rem;
+  color: var(--primary);
+  font-weight: 800;
+}
+
 .confirm-modal-list {
   display: flex;
   flex-direction: column;
@@ -1568,6 +1640,14 @@ select:focus {
 
   body.search-overlay-active .search-done-button:active {
     transform: scale(0.96);
+  }
+
+  .search-filter-bar {
+    display: none !important;
+  }
+
+  body.search-overlay-active .search-filter-bar {
+    display: flex !important;
   }
 
   body.search-overlay-active .overlay-selected-foods {

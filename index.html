@@ -15,7 +15,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.0.37" />
+    <link rel="stylesheet" href="./styles.css?v=1.0.41" />
     <script>
       (function() {
         try {
@@ -45,6 +45,10 @@
 
       <main class="container">
         <section class="panel form-panel">
+          <div class="section-header form-section-header">
+            <h2 id="foodSearchLabel">Lebensmittel erfassen</h2>
+          </div>
+
           <div class="date-selector-bar">
             <button id="dateChipButton" class="date-chip-btn" type="button" aria-label="Datum ändern" title="Datum ändern">
               <span class="date-chip-icon">📅</span>
@@ -56,7 +60,6 @@
           </div>
 
           <div class="field search-field" id="searchField">
-            <label id="foodSearchLabel" for="foodSearch">Lebensmittel</label>
             <div class="search-input-wrap">
               <button
                 id="searchCloseButton"
@@ -250,10 +253,21 @@
       </div>
     </div>
 
+    <div id="categoryModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+      <div class="modal-card category-modal-card">
+        <div class="modal-header">
+          <h3 id="categoryModalTitle">Kategorie auswählen</h3>
+          <button id="categoryModalCloseButton" class="icon-button small-icon-button modal-close-btn" type="button" aria-label="Schließen" title="Schließen">✕</button>
+        </div>
+        <p class="modal-description">Wähle eine Kategorie, um die Lebensmittelsuche einzugrenzen.</p>
+        <div id="categoryModalGrid" class="category-modal-grid"></div>
+      </div>
+    </div>
+
     <noscript>
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script type="module" src="./app.js?v=1.0.37"></script>
+    <script type="module" src="./app.js?v=1.0.41"></script>
   </body>
 </html>

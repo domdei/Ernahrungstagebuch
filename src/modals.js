@@ -71,6 +71,48 @@ export function closeConfirmModal() {
     onConfirmSaveCallback = null;
 }
 
+export function openCategoryModal(onSelectCategory) {
+    if (!ui.categoryModal || !ui.categoryModalGrid) {
+        return;
+    }
+
+    const categories = ['all', ...[...new Set(state.foods.map((food) => food.category))].sort()];
+    const current = state.searchCategory || 'all';
+
+    ui.categoryModalGrid.innerHTML = categories
+        .map((cat) => {
+            const isAll = cat === 'all';
+            const label = isAll ? 'Alle Kategorien' : cat;
+            const isSelected = cat === current;
+            return `
+        <button type="button" class="category-modal-item ${isSelected ? 'selected' : ''}" data-category="${escapeHtml(cat)}">
+          <span class="category-modal-item-name">${escapeHtml(label)}</span>
+          ${isSelected ? '<span class="category-modal-check">✓</span>' : ''}
+        </button>
+      `;
+        })
+        .join('');
+
+    ui.categoryModalGrid.onclick = (e) => {
+        const btn = e.target.closest('.category-modal-item');
+        if (!btn) return;
+        const cat = btn.dataset.category;
+        closeCategoryModal();
+        if (typeof onSelectCategory === 'function') {
+            onSelectCategory(cat);
+        }
+    };
+
+    ui.categoryModal.classList.remove('hidden');
+}
+
+export function closeCategoryModal() {
+    if (!ui.categoryModal) {
+        return;
+    }
+    ui.categoryModal.classList.add('hidden');
+}
+
 export function promptImportAction(importedCount, currentCount) {
     return new Promise((resolve) => {
         if (!ui.importModal) {

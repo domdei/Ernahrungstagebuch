@@ -92,6 +92,7 @@ export function updateCategoryClearButton() {
     if (ui.categoryChipText) {
         ui.categoryChipText.textContent = hasFilter ? ui.searchCategory.value : 'Alle Kategorien';
     }
+    updateSearchFilterBarVisibility();
 }
 
 export function updateGreenFilterUI() {
@@ -100,7 +101,18 @@ export function updateGreenFilterUI() {
         ui.onlyFreshGreenFoods.classList.toggle('active', state.onlyFreshGreen);
     }
     if (ui.foodSearchLabel) {
-        ui.foodSearchLabel.textContent = state.onlyFreshGreen ? 'Lebensmittel (gefiltert)' : 'Lebensmittel';
+        ui.foodSearchLabel.textContent = state.onlyFreshGreen ? 'Lebensmittel erfassen (gefiltert)' : 'Lebensmittel erfassen';
+    }
+    updateSearchFilterBarVisibility();
+}
+
+export function updateSearchFilterBarVisibility() {
+    if (!ui.searchFilterBar) {
+        ui.searchFilterBar = document.querySelector('.search-filter-bar');
+    }
+    if (ui.searchFilterBar) {
+        const hasActiveFilter = (state.searchCategory && state.searchCategory !== 'all') || Boolean(state.onlyFreshGreen);
+        ui.searchFilterBar.classList.toggle('has-active-filter', hasActiveFilter);
     }
 }
 

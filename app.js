@@ -41,6 +41,8 @@ import {
     closeSettingsModal,
     openConfirmModal,
     closeConfirmModal,
+    openCategoryModal,
+    closeCategoryModal,
     promptImportAction,
 } from './src/modals.js';
 
@@ -540,16 +542,27 @@ function bindEvents() {
         });
     }
 
-    if (ui.categoryChipButton && ui.searchCategory) {
+    if (ui.categoryChipButton) {
         ui.categoryChipButton.addEventListener('click', () => {
-            if (typeof ui.searchCategory.showPicker === 'function') {
-                try {
-                    ui.searchCategory.showPicker();
-                } catch (e) {
-                    ui.searchCategory.focus();
+            openCategoryModal((selectedCat) => {
+                if (ui.searchCategory) {
+                    ui.searchCategory.value = selectedCat;
                 }
-            } else {
-                ui.searchCategory.focus();
+                state.searchCategory = selectedCat;
+                updateCategoryClearButton();
+                renderSuggestionList(ui.foodSearch ? ui.foodSearch.value.trim() : '', isSearchOverlayOpen);
+            });
+        });
+    }
+
+    if (ui.categoryModalCloseButton) {
+        ui.categoryModalCloseButton.addEventListener('click', closeCategoryModal);
+    }
+
+    if (ui.categoryModal) {
+        ui.categoryModal.addEventListener('click', (event) => {
+            if (event.target === ui.categoryModal) {
+                closeCategoryModal();
             }
         });
     }
