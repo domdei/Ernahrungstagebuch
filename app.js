@@ -138,6 +138,7 @@ function addSelectedFood(foodName) {
         }
         persistDraftState();
         renderSelectedFoods();
+        updateOverlaySelectedFoods();
         updateSearchDoneButton();
     }
 }

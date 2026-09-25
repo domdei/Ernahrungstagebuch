@@ -257,44 +257,90 @@ export function renderHistory() {
         return;
     }
 
-    const grouped = {};
-    filteredEntries.forEach((entry) => {
-        if (!grouped[entry.date]) {
-            grouped[entry.date] = [];
+    const grouped = filteredEntries.reduce((acc, entry) => {
+        if (!acc[entry.date]) {
+            acc[entry.date] = [];
         }
-        grouped[entry.date].push(entry);
-    });
+        acc[entry.date].push(entry);
+        return acc;
+    }, {});
 
     const dates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+    const todayString = getTodayString();
 
     const html = dates
-        .map((dateString) => {
-            const list = grouped[dateString];
-            list.sort((a, b) => b.createdAt - a.createdAt);
+        .map((date) => {
+            const dayEntries = grouped[date];
+            const isToday = date === todayString;
+            // Alle Tage standardmäßig zugeklappt (nur im Löschmodus zur Bearbeitung offen)
+            const shouldOpen = state.historyDeleteMode;
 
-            const itemsHtml = list
-                .map((entry) => `
-            <div class="history-item">
-              <span class="status-dot status-${entry.status}" title="${toStatusLabel(entry.status)}" aria-label="${toStatusLabel(entry.status)}"></span>
-              <div class="meta">
-                <span class="name">${escapeHtml(entry.name)}</span>
-                <span class="category">${escapeHtml(entry.category)}</span>
+            const counts = { green: 0, orange: 0, red: 0 };
+            dayEntries.forEach((e) => {
+                const s = e.status || 'green';
+                counts[s] = (counts[s] || 0) + 1;
+            });
+
+            const statParts = [];
+            if (counts.green > 0) statParts.push(`${counts.green} 🟢`);
+            if (counts.orange > 0) statParts.push(`${counts.orange} 🟠`);
+            if (counts.red > 0) statParts.push(`${counts.red} 🔴`);
+            const statChipText = statParts.join(' · ') || `${dayEntries.length} 🟢`;
+
+            const categoryGroups = dayEntries.reduce((acc, entry) => {
+                if (!acc[entry.category]) {
+                    acc[entry.category] = [];
+                }
+                acc[entry.category].push(entry);
+                return acc;
+            }, {});
+
+            const categoryNames = Object.keys(categoryGroups).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
+            const categoryMarkup = categoryNames
+                .map((category) => {
+                    const items = categoryGroups[category]
+                        .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+                        .map((entry) => {
+                            const deleteButton = state.historyDeleteMode
+                                ? `<button type="button" class="delete-entry-button" data-entry-id="${escapeHtml(entry.id)}" aria-label="Eintrag löschen" title="Eintrag löschen">✕</button>`
+                                : '';
+
+                            return `
+                <div class="history-item" title="${toStatusLabel(entry.status)}">
+                  <span class="name">${escapeHtml(entry.name)}</span>
+                  <span class="status-dot status-${entry.status}" title="${toStatusLabel(entry.status)}" aria-label="${toStatusLabel(entry.status)}"></span>
+                  ${deleteButton}
+                </div>
+              `;
+                        })
+                        .join('');
+
+                    return `
+              <div class="history-category-group">
+                <div class="history-category-header">${escapeHtml(category)}</div>
+                <div class="history-category-items">${items}</div>
               </div>
-              ${state.historyDeleteMode ? `<button class="delete-entry-button" data-entry-id="${entry.id}" type="button" aria-label="Eintrag löschen" title="Eintrag löschen">✕</button>` : ''}
-            </div>
-          `)
+            `;
+                })
                 .join('');
 
+            const todayBadge = isToday ? '<span class="history-day-today-badge">Heute</span>' : '';
+
             return `
-        <article class="history-day">
-          <header class="history-day-header">
-            <h3>${escapeHtml(formatFriendlyDate(dateString))}</h3>
-            <span class="count">${list.length} ${list.length === 1 ? 'Eintrag' : 'Einträge'}</span>
-          </header>
-          <div class="history-day-list">
-            ${itemsHtml}
-          </div>
-        </article>
+        <details class="history-day" ${shouldOpen ? 'open' : ''}>
+          <summary class="history-day-summary">
+            <div class="history-day-title-wrap">
+              <span class="history-day-chevron">▶</span>
+              <span class="history-day-title">${escapeHtml(formatFriendlyDate(date))}</span>
+              ${todayBadge}
+            </div>
+            <div class="history-day-stats">
+              <span class="history-stat-chip">${statChipText}</span>
+            </div>
+          </summary>
+          <div class="history-items">${categoryMarkup}</div>
+        </details>
       `;
         })
         .join('');
