@@ -1,4 +1,4 @@
-import { ROTATION_WARNING_DAYS, diffInDays, normalizeText, getTodayString, getFoodTolerance } from './utils.js';
+import { ROTATION_WARNING_DAYS, diffInDays, normalizeText, getTodayString, getFoodTolerance, getEntryTolerance } from './utils.js';
 import { state } from './state.js';
 
 export function getFoodByName(name) {
@@ -158,7 +158,7 @@ export function filterEntries() {
     return state.entries.filter((entry) => {
         const matchesDate = (!fromDate || entry.date >= fromDate) && (!toDate || entry.date <= toDate);
         const matchesCategory = category === 'all' || entry.category === category;
-        const matchesStatus = status === 'all' || (entry.tolerance || entry.status) === status;
+        const matchesStatus = status === 'all' || getEntryTolerance(entry) === status;
         return matchesDate && matchesCategory && matchesStatus;
     });
 }

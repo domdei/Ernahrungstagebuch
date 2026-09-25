@@ -1,4 +1,4 @@
-import { THEME_STORAGE_KEY, escapeHtml, formatFriendlyDate, formatShortFriendlyDate, toStatusLabel, MAX_SUGGESTIONS, getTodayString, getFoodTolerance } from './utils.js';
+import { THEME_STORAGE_KEY, escapeHtml, formatFriendlyDate, formatShortFriendlyDate, toStatusLabel, MAX_SUGGESTIONS, getTodayString, getFoodTolerance, getEntryTolerance } from './utils.js';
 import { state, ui, isMobileView, getDefaultHistoryFromDate } from './state.js';
 import {
     getFoodByName,
@@ -402,7 +402,7 @@ export function renderHistory() {
 
             const counts = { green: 0, orange: 0, red: 0 };
             dayEntries.forEach((e) => {
-                const s = e.tolerance || e.status || 'green';
+                const s = getEntryTolerance(e);
                 counts[s] = (counts[s] || 0) + 1;
             });
 
@@ -427,7 +427,7 @@ export function renderHistory() {
                     const items = categoryGroups[category]
                         .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
                         .map((entry) => {
-                            const entryTol = entry.tolerance || entry.status || 'green';
+                            const entryTol = getEntryTolerance(entry);
                             const deleteButton = state.historyDeleteMode
                                 ? `<button type="button" class="delete-entry-button" data-entry-id="${escapeHtml(entry.id)}" aria-label="Eintrag löschen" title="Eintrag löschen">✕</button>`
                                 : '';

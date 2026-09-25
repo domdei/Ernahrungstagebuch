@@ -5,7 +5,7 @@ import {
     generateEntryId,
     normalizeText,
     getFoodTolerance,
-    toStateFood,
+    normalizeFoodRecord,
 } from './src/utils.js';
 import {
     restoreEntries,
@@ -233,7 +233,6 @@ function executeSaveEntries() {
                 name: food.name,
                 category: food.category,
                 tolerance: tol,
-                status: tol,
                 createdAt: Date.now(),
             };
         });
@@ -299,7 +298,7 @@ async function handleImport(event) {
             state.entries = imported;
             if (nextFoods && nextFoods.length > 0) {
                 await idbSetAllFoods(nextFoods);
-                state.foods = nextFoods.map(toStateFood);
+                state.foods = nextFoods.map(normalizeFoodRecord);
             }
         } else if (choice === 'merge') {
             const existingKeys = new Set(
@@ -315,7 +314,7 @@ async function handleImport(event) {
                     await idbPutFood(item);
                 }
                 const reloaded = await idbGetAllFoods();
-                state.foods = reloaded.map(toStateFood);
+                state.foods = reloaded.map(normalizeFoodRecord);
             }
         }
 
@@ -355,13 +354,13 @@ async function handleTolerancesImport(event) {
         const choice = await promptTolerancesImportAction(importedFoods.length, state.foods.length);
         if (choice === 'replace') {
             await idbSetAllFoods(importedFoods);
-            state.foods = importedFoods.map(toStateFood);
+            state.foods = importedFoods.map(normalizeFoodRecord);
         } else if (choice === 'merge') {
             for (const item of importedFoods) {
                 await idbPutFood(item);
             }
             const reloaded = await idbGetAllFoods();
-            state.foods = reloaded.map(toStateFood);
+            state.foods = reloaded.map(normalizeFoodRecord);
         }
 
         createCategoryOptions();
@@ -966,7 +965,7 @@ function bindEvents() {
                 return;
             }
 
-            const foodObj = { name, category, tolerance, status: tolerance };
+            const foodObj = { name, category, tolerance };
             const idx = state.foods.findIndex((f) => normalizeText(f.name) === normName);
             if (idx >= 0) {
                 state.foods[idx] = foodObj;
@@ -993,7 +992,6 @@ function bindEvents() {
                 const food = state.foods.find((f) => f.name === foodName);
                 if (food && getFoodTolerance(food) !== newTol) {
                     food.tolerance = newTol;
-                    food.status = newTol;
                     await idbPutFood(food);
                     const row = pill.closest('.food-item-row');
                     if (row) {

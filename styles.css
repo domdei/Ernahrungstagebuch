@@ -211,18 +211,9 @@ button {
   overflow: hidden;
 }
 
-.today-quick-btn {
-  font-size: 0.8rem;
+.today-reset-btn {
+  color: var(--primary);
   font-weight: 700;
-  height: 32px;
-  min-height: 32px;
-  padding: 0 12px;
-  border-radius: 999px;
-  width: auto;
-}
-
-.today-quick-btn.hidden {
-  display: none !important;
 }
 
 .search-filter-bar {

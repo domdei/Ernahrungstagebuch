@@ -13,7 +13,6 @@ import {
     normalizeText,
     getFoodTolerance,
     normalizeFoodRecord,
-    toStateFood,
     getBackupFilename,
     getTolerancesBackupFilename,
     downloadBlob,
@@ -258,7 +257,7 @@ export async function loadFoodDatabase() {
         }
     }
 
-    state.foods = foods.map(toStateFood);
+    state.foods = foods.map(normalizeFoodRecord);
 
     if (isFirstRun && !localStorage.getItem('food_tolerances_notice_dismissed')) {
         const noticeEl = document.getElementById('firstRunNotice');
@@ -274,7 +273,7 @@ export async function resetFoodTolerancesToDefault() {
         const defaultFoods = await response.json();
         const normalized = defaultFoods.map(normalizeFoodRecord);
         await idbSetAllFoods(normalized);
-        state.foods = normalized.map(toStateFood);
+        state.foods = normalized.map(normalizeFoodRecord);
         return true;
     } catch (e) {
         console.error('Fehler beim Zurücksetzen der Lebensmittel:', e);
@@ -469,7 +468,6 @@ export function normalizeImportedEntry(entry, getFoodByNameFn) {
         name: food ? food.name : name,
         category: food ? food.category : entry.category || 'Unbekannt',
         tolerance: tol,
-        status: tol,
         createdAt: entry.createdAt || Date.now(),
     };
 }

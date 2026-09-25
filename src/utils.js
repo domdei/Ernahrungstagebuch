@@ -39,12 +39,20 @@ export function normalizeStatus(rawStatus) {
 
 export const normalizeTolerance = normalizeStatus;
 
-// Reads a food's tolerance, falling back to the legacy `status` field kept in sync with it.
+// Reads a food's tolerance; falls back to the legacy `status` field found in old imports/backups.
 export function getFoodTolerance(food) {
     if (!food) {
         return 'green';
     }
     return food.tolerance || food.status || 'green';
+}
+
+// Reads a diary entry's tolerance; falls back to the legacy `status` field found in old imports/backups.
+export function getEntryTolerance(entry) {
+    if (!entry) {
+        return 'green';
+    }
+    return entry.tolerance || entry.status || 'green';
 }
 
 // Normalizes a raw food-like object (from JSON/IndexedDB) into a clean {name, category, tolerance} record.
@@ -54,12 +62,6 @@ export function normalizeFoodRecord(raw) {
         category: String(raw.category || 'Sonstiges').trim(),
         tolerance: normalizeTolerance(raw.tolerance ?? raw.status),
     };
-}
-
-// Same as normalizeFoodRecord, but also sets the legacy `status` field for state.foods entries.
-export function toStateFood(raw) {
-    const record = normalizeFoodRecord(raw);
-    return { ...record, status: record.tolerance };
 }
 
 export function toStatusLabel(status) {
