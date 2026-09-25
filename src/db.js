@@ -2,6 +2,7 @@ import {
     IDB_NAME,
     IDB_VERSION,
     IDB_STORE_ENTRIES,
+    IDB_STORE_FOOD_TOLERANCES,
     IDB_KEY_ENTRIES,
     LEGACY_STORAGE_KEY,
     DRAFT_STORAGE_KEY,
@@ -9,8 +10,10 @@ import {
     FOOD_DB_PATH,
     APP_VERSION_PATH,
     normalizeStatus,
+    normalizeTolerance,
     normalizeText,
     getBackupFilename,
+    getTolerancesBackupFilename,
     downloadBlob,
     generateEntryId,
     getTodayString,
@@ -31,11 +34,114 @@ export function openDatabase() {
             if (!db.objectStoreNames.contains(IDB_STORE_ENTRIES)) {
                 db.createObjectStore(IDB_STORE_ENTRIES);
             }
+            if (!db.objectStoreNames.contains(IDB_STORE_FOOD_TOLERANCES)) {
+                db.createObjectStore(IDB_STORE_FOOD_TOLERANCES, { keyPath: 'name' });
+            }
         };
 
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
     });
+}
+
+export async function idbGetAllFoods() {
+    try {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(IDB_STORE_FOOD_TOLERANCES, 'readonly');
+            const store = tx.objectStore(IDB_STORE_FOOD_TOLERANCES);
+            const req = store.getAll();
+            req.onsuccess = () => {
+                const list = req.result || [];
+                list.sort((a, b) => a.name.localeCompare(b.name, 'de', { sensitivity: 'base' }));
+                resolve(list);
+            };
+            req.onerror = () => reject(req.error);
+        });
+    } catch (e) {
+        return [];
+    }
+}
+
+export async function idbPutFood(foodItem) {
+    try {
+        const db = await openDatabase();
+        const record = {
+            name: String(foodItem.name || '').trim(),
+            category: String(foodItem.category || 'Sonstiges').trim(),
+            tolerance: normalizeTolerance(foodItem.tolerance ?? foodItem.status),
+        };
+        if (!record.name) {
+            throw new Error('Name ist erforderlich');
+        }
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(IDB_STORE_FOOD_TOLERANCES, 'readwrite');
+            const store = tx.objectStore(IDB_STORE_FOOD_TOLERANCES);
+            const req = store.put(record);
+            req.onsuccess = () => resolve(record);
+            req.onerror = () => reject(req.error);
+        });
+    } catch (e) {
+        console.error('Fehler beim Speichern des Lebensmittels:', e);
+        return null;
+    }
+}
+
+export async function idbDeleteFood(foodName) {
+    try {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(IDB_STORE_FOOD_TOLERANCES, 'readwrite');
+            const store = tx.objectStore(IDB_STORE_FOOD_TOLERANCES);
+            const req = store.delete(foodName);
+            req.onsuccess = () => resolve(true);
+            req.onerror = () => reject(req.error);
+        });
+    } catch (e) {
+        console.error('Fehler beim Löschen des Lebensmittels:', e);
+        return false;
+    }
+}
+
+export async function idbSetAllFoods(foodArray) {
+    try {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(IDB_STORE_FOOD_TOLERANCES, 'readwrite');
+            const store = tx.objectStore(IDB_STORE_FOOD_TOLERANCES);
+            store.clear();
+            for (const item of foodArray) {
+                const name = String(item.name || '').trim();
+                if (!name) continue;
+                store.put({
+                    name,
+                    category: String(item.category || 'Sonstiges').trim(),
+                    tolerance: normalizeTolerance(item.tolerance ?? item.status),
+                });
+            }
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => reject(tx.error);
+            tx.onabort = () => reject(new Error('Transaktion abgebrochen'));
+        });
+    } catch (e) {
+        console.error('Fehler beim Batch-Speichern der Lebensmittel:', e);
+        return false;
+    }
+}
+
+export async function idbClearFoods() {
+    try {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(IDB_STORE_FOOD_TOLERANCES, 'readwrite');
+            const store = tx.objectStore(IDB_STORE_FOOD_TOLERANCES);
+            const req = store.clear();
+            req.onsuccess = () => resolve(true);
+            req.onerror = () => reject(req.error);
+        });
+    } catch (e) {
+        return false;
+    }
 }
 
 export async function idbGetEntries() {
@@ -141,13 +247,66 @@ export function persistDraftState() {
 }
 
 export async function loadFoodDatabase() {
-    const response = await fetch(FOOD_DB_PATH);
-    const foods = await response.json();
-    state.foods = foods.map((food) => ({
-        name: food.name,
-        category: food.category,
-        status: normalizeStatus(food.tolerance ?? food.status),
-    }));
+    let foods = await idbGetAllFoods();
+    let isFirstRun = false;
+
+    if (!foods || foods.length === 0) {
+        try {
+            const response = await fetch(FOOD_DB_PATH);
+            const defaultFoods = await response.json();
+            const normalized = defaultFoods.map((food) => ({
+                name: String(food.name || '').trim(),
+                category: String(food.category || 'Sonstiges').trim(),
+                tolerance: normalizeTolerance(food.tolerance ?? food.status),
+            }));
+            await idbSetAllFoods(normalized);
+            foods = normalized;
+            isFirstRun = true;
+        } catch (error) {
+            console.error('Standard-Lebensmittel konnten nicht geladen werden:', error);
+            foods = [];
+        }
+    }
+
+    state.foods = foods.map((food) => {
+        const tol = normalizeTolerance(food.tolerance ?? food.status);
+        return {
+            name: food.name,
+            category: food.category,
+            tolerance: tol,
+            status: tol,
+        };
+    });
+
+    if (isFirstRun && !localStorage.getItem('food_tolerances_notice_dismissed')) {
+        const noticeEl = document.getElementById('firstRunNotice');
+        if (noticeEl) {
+            noticeEl.classList.remove('hidden');
+        }
+    }
+}
+
+export async function resetFoodTolerancesToDefault() {
+    try {
+        const response = await fetch(FOOD_DB_PATH);
+        const defaultFoods = await response.json();
+        const normalized = defaultFoods.map((food) => ({
+            name: String(food.name || '').trim(),
+            category: String(food.category || 'Sonstiges').trim(),
+            tolerance: normalizeTolerance(food.tolerance ?? food.status),
+        }));
+        await idbSetAllFoods(normalized);
+        state.foods = normalized.map((f) => ({
+            name: f.name,
+            category: f.category,
+            tolerance: f.tolerance,
+            status: f.tolerance,
+        }));
+        return true;
+    } catch (e) {
+        console.error('Fehler beim Zurücksetzen der Lebensmittel:', e);
+        return false;
+    }
 }
 
 export async function loadVersionInfo() {
@@ -206,8 +365,14 @@ export function updateStorageStatus(persisted) {
 export async function exportJsonBackup() {
     const fileName = getBackupFilename(new Date(), true);
     const payload = JSON.stringify({
+        version: '1.1.0',
         exportedAt: new Date().toISOString(),
         entries: state.entries,
+        foodTolerances: state.foods.map((food) => ({
+            name: food.name,
+            category: food.category,
+            tolerance: food.tolerance || food.status || 'green',
+        })),
     }, null, 2);
 
     if (window.showSaveFilePicker && typeof window.showSaveFilePicker === 'function') {
@@ -257,13 +422,93 @@ export async function exportJsonBackup() {
     downloadBlob(blob, fileName);
 }
 
+export async function exportTolerancesBackup() {
+    const fileName = getTolerancesBackupFilename(new Date(), true);
+    const payload = JSON.stringify({
+        type: 'food_tolerances_backup',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        foods: state.foods.map((food) => ({
+            name: food.name,
+            category: food.category,
+            tolerance: food.tolerance || food.status || 'green',
+        })),
+    }, null, 2);
+
+    if (window.showSaveFilePicker && typeof window.showSaveFilePicker === 'function') {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: fileName,
+                types: [
+                    {
+                        description: 'JSON-Lebensmittel-Toleranzen',
+                        accept: { 'application/json': ['.json'] },
+                    },
+                ],
+            });
+            const writable = await handle.createWritable();
+            await writable.write(payload);
+            await writable.close();
+            return;
+        } catch (error) {
+            if (error && error.name === 'AbortError') {
+                return;
+            }
+            console.warn('showSaveFilePicker fehlgeschlagen, versuche Web Share:', error);
+        }
+    }
+
+    const blob = new Blob([payload], { type: 'application/json' });
+    const candidateTypes = ['application/json', 'text/plain'];
+    for (const mimeType of candidateTypes) {
+        try {
+            const backupFile = new File([blob], fileName, { type: mimeType });
+            if (navigator.canShare && navigator.canShare({ files: [backupFile] })) {
+                await navigator.share({
+                    title: 'Lebensmittel & Verträglichkeiten',
+                    text: `Export vom ${new Date().toLocaleDateString('de-DE')}`,
+                    files: [backupFile],
+                });
+                return;
+            }
+        } catch (error) {
+            if (error && error.name === 'AbortError') {
+                return;
+            }
+            console.warn(`Share mit ${mimeType} fehlgeschlagen:`, error);
+        }
+    }
+
+    downloadBlob(blob, fileName);
+}
+
 export function parseImportedJson(content) {
     const parsed = JSON.parse(content);
     if (Array.isArray(parsed)) {
+        return { entries: parsed, foodTolerances: [] };
+    }
+    if (parsed && typeof parsed === 'object') {
+        const entries = Array.isArray(parsed.entries) ? parsed.entries : [];
+        const foodTolerances = Array.isArray(parsed.foodTolerances)
+            ? parsed.foodTolerances
+            : Array.isArray(parsed.foods)
+            ? parsed.foods
+            : [];
+        return { entries, foodTolerances };
+    }
+    return { entries: [], foodTolerances: [] };
+}
+
+export function parseImportedTolerancesJson(content) {
+    const parsed = JSON.parse(content);
+    if (parsed && Array.isArray(parsed.foods)) {
+        return parsed.foods;
+    }
+    if (Array.isArray(parsed)) {
         return parsed;
     }
-    if (parsed && Array.isArray(parsed.entries)) {
-        return parsed.entries;
+    if (parsed && Array.isArray(parsed.foodTolerances)) {
+        return parsed.foodTolerances;
     }
     return [];
 }
@@ -275,12 +520,14 @@ export function normalizeImportedEntry(entry, getFoodByNameFn) {
     }
 
     const food = getFoodByNameFn ? getFoodByNameFn(name) : state.foods.find((item) => normalizeText(item.name) === normalizeText(name));
+    const tol = normalizeTolerance(entry.tolerance || entry.status || (food ? (food.tolerance || food.status) : 'green'));
     return {
         id: entry.id || generateEntryId(),
         date: entry.date || entry.day || getTodayString(),
         name: food ? food.name : name,
         category: food ? food.category : entry.category || 'Unbekannt',
-        status: normalizeStatus(entry.status || (food ? food.status : 'green')),
+        tolerance: tol,
+        status: tol,
         createdAt: entry.createdAt || Date.now(),
     };
 }

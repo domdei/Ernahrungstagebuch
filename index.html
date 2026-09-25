@@ -15,7 +15,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.0.50" />
+    <link rel="stylesheet" href="./styles.css?v=1.1.0" />
     <script>
       (function() {
         try {
@@ -42,6 +42,20 @@
           </button>
         </div>
       </header>
+
+      <div id="firstRunNotice" class="first-run-notice hidden" role="alert">
+        <div class="first-run-notice-content">
+          <span class="first-run-notice-icon">💡</span>
+          <div class="first-run-notice-text">
+            <strong>Standard-Werte geladen</strong>
+            <span>Lebensmittel-Verträglichkeiten wurden initialisiert. Passe sie an deine persönlichen Testergebnisse an.</span>
+          </div>
+        </div>
+        <div class="first-run-notice-actions">
+          <button id="noticeOpenManagerButton" class="notice-action-btn" type="button">Anpassen</button>
+          <button id="noticeDismissButton" class="icon-button small-icon-button" type="button" aria-label="Schließen" title="Schließen">✕</button>
+        </div>
+      </div>
 
       <main class="container">
         <section class="panel form-panel">
@@ -224,7 +238,27 @@
         </div>
         <div class="settings-content">
           <div class="settings-section">
-            <h4>Datensicherung</h4>
+            <h4>Lebensmittel &amp; Verträglichkeiten</h4>
+            <div class="settings-food-overview">
+              <button id="openFoodManagerButton" class="modal-btn modal-btn-option" type="button">
+                <div class="settings-btn-row">
+                  <strong>Lebensmittel verwalten</strong>
+                  <span id="foodCountBadge" class="count-badge">0</span>
+                </div>
+                <small>Verträglichkeiten (Grün/Orange/Rot) anpassen, hinzufügen oder löschen</small>
+              </button>
+            </div>
+            <div class="export-actions">
+              <button id="exportTolerancesButton" class="secondary-button" type="button">Toleranzen exportieren (JSON)</button>
+              <label class="import-label">
+                <span>Toleranzen importieren</span>
+                <input id="importTolerancesFile" type="file" accept=".json" />
+              </label>
+            </div>
+            <button id="resetTolerancesButton" class="ghost-button danger-ghost-btn" type="button">Auf Standardwerte zurücksetzen</button>
+          </div>
+          <div class="settings-section">
+            <h4>Datensicherung (Gesamtes Tagebuch)</h4>
             <div class="export-actions">
               <button id="exportJsonButton" class="secondary-button" type="button">Backup speichern (Export)</button>
               <label class="import-label">
@@ -241,10 +275,87 @@
             </div>
             <div class="version-row">
               <span class="version-label">Version:</span>
-              <strong id="appVersion">1.0.0</strong>
+              <strong id="appVersion">1.1.0</strong>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div id="foodManagerModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="foodManagerModalTitle">
+      <div class="modal-card food-manager-modal-card">
+        <div class="modal-header">
+          <div class="food-manager-header-title">
+            <h3 id="foodManagerModalTitle">Lebensmittel verwalten</h3>
+            <span id="foodManagerCount" class="count-badge">0</span>
+          </div>
+          <button id="foodManagerCloseButton" class="icon-button small-icon-button modal-close-btn" type="button" aria-label="Schließen" title="Schließen">✕</button>
+        </div>
+
+        <!-- Add / Edit Form (collapsible / toggleable) -->
+        <div id="foodFormContainer" class="food-form-container hidden">
+          <div class="food-form-header">
+            <h4 id="foodFormTitle">Neues Lebensmittel</h4>
+            <button id="foodFormCancelBtn" class="icon-button small-icon-button" type="button" title="Abbrechen">✕</button>
+          </div>
+          <div class="food-form-body">
+            <div class="food-form-row">
+              <div class="food-form-group">
+                <label for="foodFormName">Name</label>
+                <input id="foodFormName" type="text" placeholder="z. B. Hafermilch" class="food-form-input" autocomplete="off" />
+              </div>
+              <div class="food-form-group">
+                <label for="foodFormCategory">Kategorie</label>
+                <input id="foodFormCategory" type="text" placeholder="z. B. Milchprodukte" class="food-form-input" list="foodCategoryDatalist" autocomplete="off" />
+                <datalist id="foodCategoryDatalist"></datalist>
+              </div>
+            </div>
+            <div class="food-form-group">
+              <label>Verträglichkeitsstatus</label>
+              <div class="tolerance-radio-group">
+                <label class="tolerance-radio-option tolerance-option-green">
+                  <input type="radio" name="foodFormTolerance" value="green" checked />
+                  <span>🟢 Grün</span>
+                </label>
+                <label class="tolerance-radio-option tolerance-option-orange">
+                  <input type="radio" name="foodFormTolerance" value="orange" />
+                  <span>🟠 Orange</span>
+                </label>
+                <label class="tolerance-radio-option tolerance-option-red">
+                  <input type="radio" name="foodFormTolerance" value="red" />
+                  <span>🔴 Rot</span>
+                </label>
+              </div>
+            </div>
+            <input type="hidden" id="foodFormOriginalName" value="" />
+            <div class="food-form-actions">
+              <button id="foodFormSaveBtn" class="primary-button" type="button">Speichern</button>
+              <button id="foodFormCancelBtn2" class="ghost-button" type="button">Abbrechen</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters & Add button -->
+        <div class="food-manager-toolbar">
+          <div class="food-manager-search-wrap">
+            <input id="foodManagerSearch" type="search" placeholder="Lebensmittel suchen..." class="food-manager-search-input" />
+          </div>
+          <div class="food-manager-filters-row">
+            <select id="foodManagerCategoryFilter" class="food-manager-select" aria-label="Kategorie filtern">
+              <option value="all">Alle Kategorien</option>
+            </select>
+            <select id="foodManagerToleranceFilter" class="food-manager-select" aria-label="Verträglichkeit filtern">
+              <option value="all">Alle Status</option>
+              <option value="green">🟢 Grün</option>
+              <option value="orange">🟠 Orange</option>
+              <option value="red">🔴 Rot</option>
+            </select>
+            <button id="openAddFoodBtn" class="primary-button food-add-btn" type="button">+ Neu</button>
+          </div>
+        </div>
+
+        <!-- List of foods -->
+        <div id="foodManagerList" class="food-manager-list" role="list"></div>
       </div>
     </div>
 
@@ -300,6 +411,6 @@
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script type="module" src="./app.js?v=1.0.50"></script>
+    <script type="module" src="./app.js?v=1.1.0"></script>
   </body>
 </html>

@@ -3,6 +3,8 @@ import {
     getTodayString,
     debounce,
     generateEntryId,
+    normalizeText,
+    normalizeTolerance,
 } from './src/utils.js';
 import {
     restoreEntries,
@@ -15,6 +17,13 @@ import {
     exportJsonBackup,
     parseImportedJson,
     normalizeImportedEntry,
+    idbPutFood,
+    idbDeleteFood,
+    idbSetAllFoods,
+    idbGetAllFoods,
+    resetFoodTolerancesToDefault,
+    exportTolerancesBackup,
+    parseImportedTolerancesJson,
 } from './src/db.js';
 import {
     getFoodByName,
@@ -38,6 +47,7 @@ import {
     updateHistoryControls,
     renderHistory,
     renderEverything,
+    updateFoodCountBadge,
 } from './src/ui.js';
 import {
     openSettingsModal,
@@ -48,6 +58,14 @@ import {
     openStatusModal,
     closeCategoryModal,
     promptImportAction,
+    openFoodManagerModal,
+    closeFoodManagerModal,
+    renderFoodManagerList,
+    renderFoodManagerCategoryOptions,
+    openFoodForm,
+    closeFoodForm,
+    promptFoodDeleteConfirmation,
+    promptTolerancesImportAction,
 } from './src/modals.js';
 
 let deferredPrompt = null;
@@ -207,14 +225,18 @@ function executeSaveEntries() {
         .map((foodName) => getFoodByName(foodName))
         .filter(Boolean)
         .filter((food) => !existingNames.has(food.name.toLowerCase()))
-        .map((food) => ({
-            id: generateEntryId(),
-            date,
-            name: food.name,
-            category: food.category,
-            status: food.status,
-            createdAt: Date.now(),
-        }));
+        .map((food) => {
+            const tol = food.tolerance || food.status || 'green';
+            return {
+                id: generateEntryId(),
+                date,
+                name: food.name,
+                category: food.category,
+                tolerance: tol,
+                status: tol,
+                createdAt: Date.now(),
+            };
+        });
 
     if (newEntries.length > 0) {
         state.entries.push(...newEntries);
@@ -257,15 +279,14 @@ async function handleImport(event) {
 
     try {
         const content = await file.text();
-        const parsed = parseImportedJson(content);
-        const nextEntries = Array.isArray(parsed) ? parsed : Array.isArray(parsed.entries) ? parsed.entries : [];
+        const { entries: nextEntries, foodTolerances: nextFoods } = parseImportedJson(content);
 
         const imported = nextEntries
             .map((entry) => normalizeImportedEntry(entry, getFoodByName))
             .filter(Boolean);
 
-        if (!imported.length) {
-            alert('Es wurden keine Einträge gefunden, die importiert werden können.');
+        if (!imported.length && (!nextFoods || !nextFoods.length)) {
+            alert('Es wurden keine Einträge oder Lebensmittel gefunden, die importiert werden können.');
             return;
         }
 
@@ -276,6 +297,13 @@ async function handleImport(event) {
 
         if (choice === 'replace') {
             state.entries = imported;
+            if (nextFoods && nextFoods.length > 0) {
+                await idbSetAllFoods(nextFoods);
+                state.foods = nextFoods.map((f) => {
+                    const tol = normalizeTolerance(f.tolerance ?? f.status);
+                    return { name: f.name, category: f.category || 'Sonstiges', tolerance: tol, status: tol };
+                });
+            }
         } else if (choice === 'merge') {
             const existingKeys = new Set(
                 state.entries.map((e) => `${e.date}__${e.name.toLowerCase()}`)
@@ -284,6 +312,24 @@ async function handleImport(event) {
                 (e) => !existingKeys.has(`${e.date}__${e.name.toLowerCase()}`)
             );
             state.entries = [...state.entries, ...nonDuplicates];
+
+            if (nextFoods && nextFoods.length > 0) {
+                for (const item of nextFoods) {
+                    await idbPutFood(item);
+                }
+                const reloaded = await idbGetAllFoods();
+                state.foods = reloaded.map((f) => {
+                    const tol = normalizeTolerance(f.tolerance ?? f.status);
+                    return { name: f.name, category: f.category || 'Sonstiges', tolerance: tol, status: tol };
+                });
+            }
+        }
+
+        if (nextFoods && nextFoods.length > 0) {
+            createCategoryOptions();
+            updateFoodCountBadge();
+            renderFoodManagerCategoryOptions();
+            renderFoodManagerList();
         }
 
         state.entries.sort((a, b) => new Date(b.date) - new Date(a.date) || b.createdAt - a.createdAt);
@@ -291,6 +337,53 @@ async function handleImport(event) {
         renderEverything(isSearchOverlayOpen);
     } catch (error) {
         console.error('Fehler beim Import:', error);
+        alert('Die Datei konnte nicht importiert werden. Bitte prüfe das Format.');
+    } finally {
+        event.target.value = '';
+    }
+}
+
+async function handleTolerancesImport(event) {
+    const file = event.target.files?.[0];
+    if (!file) {
+        return;
+    }
+
+    try {
+        const content = await file.text();
+        const importedFoods = parseImportedTolerancesJson(content);
+
+        if (!importedFoods || !importedFoods.length) {
+            alert('Es wurden keine Lebensmittel in der Datei gefunden.');
+            return;
+        }
+
+        const choice = await promptTolerancesImportAction(importedFoods.length, state.foods.length);
+        if (choice === 'replace') {
+            await idbSetAllFoods(importedFoods);
+            state.foods = importedFoods.map((f) => {
+                const tol = normalizeTolerance(f.tolerance ?? f.status);
+                return { name: f.name, category: f.category || 'Sonstiges', tolerance: tol, status: tol };
+            });
+        } else if (choice === 'merge') {
+            for (const item of importedFoods) {
+                await idbPutFood(item);
+            }
+            const reloaded = await idbGetAllFoods();
+            state.foods = reloaded.map((f) => {
+                const tol = normalizeTolerance(f.tolerance ?? f.status);
+                return { name: f.name, category: f.category || 'Sonstiges', tolerance: tol, status: tol };
+            });
+        }
+
+        createCategoryOptions();
+        updateFoodCountBadge();
+        renderFoodManagerCategoryOptions();
+        renderFoodManagerList();
+        renderEverything(isSearchOverlayOpen);
+        alert(`${importedFoods.length} Lebensmittel erfolgreich importiert (${choice === 'replace' ? 'ersetzt' : 'ergänzt'}).`);
+    } catch (error) {
+        console.error('Fehler beim Importieren der Toleranzen:', error);
         alert('Die Datei konnte nicht importiert werden. Bitte prüfe das Format.');
     } finally {
         event.target.value = '';
@@ -410,6 +503,8 @@ function bindEvents() {
                     closeConfirmModal();
                 } else if (ui.settingsModal && !ui.settingsModal.classList.contains('hidden')) {
                     closeSettingsModal();
+                } else if (ui.foodManagerModal && !ui.foodManagerModal.classList.contains('hidden')) {
+                    closeFoodManagerModal();
                 } else {
                     ui.foodSearch.blur();
                     if (ui.suggestions) {
@@ -772,6 +867,217 @@ function bindEvents() {
     if (ui.importFile) {
         ui.importFile.addEventListener('change', handleImport);
     }
+
+    if (ui.noticeOpenManagerButton) {
+        ui.noticeOpenManagerButton.addEventListener('click', () => {
+            if (ui.firstRunNotice) ui.firstRunNotice.classList.add('hidden');
+            localStorage.setItem('food_tolerances_notice_dismissed', 'true');
+            openFoodManagerModal();
+        });
+    }
+
+    if (ui.noticeDismissButton) {
+        ui.noticeDismissButton.addEventListener('click', () => {
+            if (ui.firstRunNotice) ui.firstRunNotice.classList.add('hidden');
+            localStorage.setItem('food_tolerances_notice_dismissed', 'true');
+        });
+    }
+
+    if (ui.openFoodManagerButton) {
+        ui.openFoodManagerButton.addEventListener('click', () => {
+            closeSettingsModal();
+            openFoodManagerModal();
+        });
+    }
+
+    if (ui.exportTolerancesButton) {
+        ui.exportTolerancesButton.addEventListener('click', exportTolerancesBackup);
+    }
+
+    if (ui.importTolerancesFile) {
+        ui.importTolerancesFile.addEventListener('change', handleTolerancesImport);
+    }
+
+    if (ui.resetTolerancesButton) {
+        ui.resetTolerancesButton.addEventListener('click', async () => {
+            const confirmed = window.confirm(
+                'Möchtest du alle Lebensmittel und Verträglichkeiten auf die Standardwerte aus der Datenbank zurücksetzen? Eigene Änderungen gehen dabei verloren.'
+            );
+            if (!confirmed) return;
+            const success = await resetFoodTolerancesToDefault();
+            if (success) {
+                createCategoryOptions();
+                renderFoodManagerCategoryOptions();
+                renderFoodManagerList();
+                renderEverything(isSearchOverlayOpen);
+                updateFoodCountBadge();
+                alert('Lebensmittel und Verträglichkeiten wurden auf die Standardwerte zurückgesetzt.');
+            } else {
+                alert('Zurücksetzen fehlgeschlagen.');
+            }
+        });
+    }
+
+    if (ui.foodManagerCloseButton) {
+        ui.foodManagerCloseButton.addEventListener('click', closeFoodManagerModal);
+    }
+
+    if (ui.foodManagerModal) {
+        ui.foodManagerModal.addEventListener('click', (event) => {
+            if (event.target === ui.foodManagerModal) {
+                closeFoodManagerModal();
+            }
+        });
+    }
+
+    if (ui.foodManagerSearch) {
+        ui.foodManagerSearch.addEventListener('input', () => {
+            renderFoodManagerList();
+        });
+    }
+
+    if (ui.foodManagerCategoryFilter) {
+        ui.foodManagerCategoryFilter.addEventListener('change', () => {
+            renderFoodManagerList();
+        });
+    }
+
+    if (ui.foodManagerToleranceFilter) {
+        ui.foodManagerToleranceFilter.addEventListener('change', () => {
+            renderFoodManagerList();
+        });
+    }
+
+    if (ui.openAddFoodBtn) {
+        ui.openAddFoodBtn.addEventListener('click', () => {
+            openFoodForm(null);
+        });
+    }
+
+    if (ui.foodFormCancelBtn) {
+        ui.foodFormCancelBtn.addEventListener('click', closeFoodForm);
+    }
+
+    if (ui.foodFormCancelBtn2) {
+        ui.foodFormCancelBtn2.addEventListener('click', closeFoodForm);
+    }
+
+    if (ui.foodFormSaveBtn) {
+        ui.foodFormSaveBtn.addEventListener('click', async () => {
+            const name = ui.foodFormName ? ui.foodFormName.value.trim() : '';
+            const category = ui.foodFormCategory ? ui.foodFormCategory.value.trim() || 'Sonstiges' : 'Sonstiges';
+            const originalName = ui.foodFormOriginalName ? ui.foodFormOriginalName.value.trim() : '';
+            const checkedRadio = ui.foodFormContainer ? ui.foodFormContainer.querySelector('input[name="foodFormTolerance"]:checked') : null;
+            const tolerance = checkedRadio ? checkedRadio.value : 'green';
+
+            if (!name) {
+                alert('Bitte gib einen Namen für das Lebensmittel ein.');
+                if (ui.foodFormName) ui.foodFormName.focus();
+                return;
+            }
+
+            const normName = normalizeText(name);
+            const existing = state.foods.find((f) => normalizeText(f.name) === normName);
+            if (existing && (!originalName || normalizeText(originalName) !== normName)) {
+                alert(`Ein Lebensmittel mit dem Namen "${existing.name}" existiert bereits.`);
+                return;
+            }
+
+            if (originalName && normalizeText(originalName) !== normName) {
+                await idbDeleteFood(originalName);
+                state.foods = state.foods.filter((f) => normalizeText(f.name) !== normalizeText(originalName));
+            }
+
+            const saved = await idbPutFood({ name, category, tolerance });
+            if (!saved) {
+                alert('Speichern in der Datenbank fehlgeschlagen.');
+                return;
+            }
+
+            const foodObj = { name, category, tolerance, status: tolerance };
+            const idx = state.foods.findIndex((f) => normalizeText(f.name) === normName);
+            if (idx >= 0) {
+                state.foods[idx] = foodObj;
+            } else {
+                state.foods.push(foodObj);
+            }
+            state.foods.sort((a, b) => a.name.localeCompare(b.name, 'de', { sensitivity: 'base' }));
+
+            closeFoodForm();
+            createCategoryOptions();
+            renderFoodManagerCategoryOptions();
+            renderFoodManagerList();
+            renderEverything(isSearchOverlayOpen);
+            updateFoodCountBadge();
+        });
+    }
+
+    if (ui.foodManagerList) {
+        ui.foodManagerList.addEventListener('click', async (event) => {
+            const pill = event.target.closest('.tolerance-pill');
+            if (pill) {
+                const foodName = pill.dataset.name;
+                const newTol = pill.dataset.tol;
+                const food = state.foods.find((f) => f.name === foodName);
+                if (food && (food.tolerance || food.status) !== newTol) {
+                    food.tolerance = newTol;
+                    food.status = newTol;
+                    await idbPutFood(food);
+                    const row = pill.closest('.food-item-row');
+                    if (row) {
+                        row.querySelectorAll('.tolerance-pill').forEach((p) => {
+                            p.classList.toggle('active', p.dataset.tol === newTol);
+                        });
+                    }
+                    renderEverything(isSearchOverlayOpen);
+                }
+                return;
+            }
+
+            const editBtn = event.target.closest('.edit-food-btn');
+            if (editBtn) {
+                const foodName = editBtn.dataset.name;
+                const food = state.foods.find((f) => f.name === foodName);
+                if (food) {
+                    openFoodForm(food);
+                    if (ui.foodFormContainer) {
+                        ui.foodFormContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
+                return;
+            }
+
+            const deleteBtn = event.target.closest('.delete-food-btn');
+            if (deleteBtn) {
+                const foodName = deleteBtn.dataset.name;
+                const food = state.foods.find((f) => f.name === foodName);
+                if (!food) return;
+
+                const usageCount = state.entries.filter(
+                    (e) => normalizeText(e.name) === normalizeText(food.name)
+                ).length;
+
+                const confirmed = await promptFoodDeleteConfirmation(food.name, usageCount);
+                if (confirmed) {
+                    await idbDeleteFood(food.name);
+                    state.foods = state.foods.filter((f) => f.name !== food.name);
+                    createCategoryOptions();
+                    renderFoodManagerCategoryOptions();
+                    renderFoodManagerList();
+                    renderEverything(isSearchOverlayOpen);
+                    updateFoodCountBadge();
+                }
+            }
+        });
+    }
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (ui.foodManagerModal && !ui.foodManagerModal.classList.contains('hidden')) {
+                closeFoodManagerModal();
+            }
+        }
+    });
 }
 
 async function initApp() {
@@ -788,11 +1094,12 @@ async function initApp() {
     }
     state.filterCategory = 'all';
     state.filterStatus = 'all';
-    createCategoryOptions();
     await loadFoodDatabase();
+    createCategoryOptions();
     await loadVersionInfo();
     updateHistoryControls();
     renderEverything(isSearchOverlayOpen);
+    updateFoodCountBadge();
     initTheme();
     initPersistentStorage();
     bindEvents();

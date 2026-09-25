@@ -86,7 +86,8 @@ export function getWarningsForFood(foodName, selectedDate) {
         }
     }
 
-    if (food.status === 'orange' || food.status === 'red') {
+    const tolerance = food.tolerance || food.status;
+    if (tolerance === 'orange' || tolerance === 'red') {
         warnings.push({
             kind: 'red',
             title: 'Unverträglichkeit',
@@ -119,7 +120,7 @@ export function getSuggestions(query) {
         .filter((food) => {
             const matchesCategory = category === 'all' || food.category === category;
             const matchesQuery = !normalizedQuery || normalizeText(food.name).includes(normalizedQuery);
-            const matchesGreenFilter = !onlyFreshGreen || (food.status === 'green' && isFoodAvailableForSelectedDate(food.name, selectedDateValue));
+            const matchesGreenFilter = !onlyFreshGreen || ((food.tolerance || food.status) === 'green' && isFoodAvailableForSelectedDate(food.name, selectedDateValue));
             return matchesCategory && matchesQuery && matchesGreenFilter;
         })
         .sort((a, b) => {
@@ -157,7 +158,7 @@ export function filterEntries() {
     return state.entries.filter((entry) => {
         const matchesDate = (!fromDate || entry.date >= fromDate) && (!toDate || entry.date <= toDate);
         const matchesCategory = category === 'all' || entry.category === category;
-        const matchesStatus = status === 'all' || entry.status === status;
+        const matchesStatus = status === 'all' || (entry.tolerance || entry.status) === status;
         return matchesDate && matchesCategory && matchesStatus;
     });
 }

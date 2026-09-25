@@ -179,7 +179,7 @@ export function createCategoryOptions() {
 
 export function renderFoodChipHtml(foodName, selectedDate) {
     const food = getFoodByName(foodName);
-    const status = food ? food.status : 'green';
+    const status = food ? (food.tolerance || food.status) : 'green';
     const warnings = getWarningsForFood(foodName, selectedDate);
     const recentLabel = getRecentMealLabel(foodName, selectedDate);
     const recentTitle = getRecentMealTitle(recentLabel);
@@ -304,7 +304,7 @@ export function renderSuggestionList(query, isSearchOverlayOpen = false) {
             <span class="tag">${escapeHtml(food.category)}</span>
             ${statusChip}
           </div>
-          <span class="status-dot status-${food.status}" title="${toStatusLabel(food.status)}"></span>
+          <span class="status-dot status-${food.tolerance || food.status}" title="${toStatusLabel(food.tolerance || food.status)}"></span>
         </button>
       `;
         })
@@ -390,7 +390,7 @@ export function renderHistory() {
 
             const counts = { green: 0, orange: 0, red: 0 };
             dayEntries.forEach((e) => {
-                const s = e.status || 'green';
+                const s = e.tolerance || e.status || 'green';
                 counts[s] = (counts[s] || 0) + 1;
             });
 
@@ -415,14 +415,15 @@ export function renderHistory() {
                     const items = categoryGroups[category]
                         .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
                         .map((entry) => {
+                            const entryTol = entry.tolerance || entry.status || 'green';
                             const deleteButton = state.historyDeleteMode
                                 ? `<button type="button" class="delete-entry-button" data-entry-id="${escapeHtml(entry.id)}" aria-label="Eintrag löschen" title="Eintrag löschen">✕</button>`
                                 : '';
 
                             return `
-                <div class="history-item" title="${toStatusLabel(entry.status)}">
+                <div class="history-item" title="${toStatusLabel(entryTol)}">
                   <span class="name">${escapeHtml(entry.name)}</span>
-                  <span class="status-dot status-${entry.status}" title="${toStatusLabel(entry.status)}" aria-label="${toStatusLabel(entry.status)}"></span>
+                  <span class="status-dot status-${entryTol}" title="${toStatusLabel(entryTol)}" aria-label="${toStatusLabel(entryTol)}"></span>
                   ${deleteButton}
                 </div>
               `;
@@ -461,6 +462,13 @@ export function renderHistory() {
     ui.historyList.innerHTML = html;
 }
 
+export function updateFoodCountBadge() {
+    const badge = document.getElementById('foodCountBadge');
+    if (badge) {
+        badge.textContent = state.foods.length;
+    }
+}
+
 export function renderEverything(isSearchOverlayOpen = false) {
     updateDateChipUI();
     if (ui.filterFromDate) {
@@ -477,4 +485,5 @@ export function renderEverything(isSearchOverlayOpen = false) {
     updateSearchDoneButton();
     renderSuggestions(isSearchOverlayOpen);
     renderHistory();
+    updateFoodCountBadge();
 }

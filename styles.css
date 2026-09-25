@@ -1594,3 +1594,447 @@ select:focus {
     padding: 16px;
   }
 }
+
+/* -------------------------------------------------------------
+   First-Run Notice Banner
+------------------------------------------------------------- */
+.first-run-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px auto 0;
+  max-width: 900px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  border-left: 4px solid var(--primary);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+}
+
+.first-run-notice.hidden {
+  display: none !important;
+}
+
+.first-run-notice-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.first-run-notice-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.first-run-notice-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.first-run-notice-text strong {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.first-run-notice-text span {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.first-run-notice-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.notice-action-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.notice-action-btn:hover {
+  opacity: 0.9;
+}
+
+/* -------------------------------------------------------------
+   Settings & Food Manager Extensions
+------------------------------------------------------------- */
+.settings-btn-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.danger-ghost-btn {
+  color: var(--red) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  text-align: center;
+}
+
+.danger-ghost-btn:hover {
+  background: var(--red-soft) !important;
+  color: var(--red) !important;
+}
+
+.food-manager-modal-card {
+  max-width: 600px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.food-manager-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.food-manager-header-title h3 {
+  margin: 0;
+}
+
+.food-manager-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.food-manager-search-wrap {
+  width: 100%;
+}
+
+.food-manager-search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-alt);
+  color: var(--text);
+  font-size: 0.92rem;
+  box-sizing: border-box;
+}
+
+.food-manager-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--panel);
+}
+
+.food-manager-filters-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.food-manager-select {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel-alt);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.food-manager-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.food-add-btn {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  height: 38px;
+  min-height: 38px;
+  border-radius: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Add / Edit Form */
+.food-form-container {
+  background: var(--panel-alt);
+  border: 1px solid rgba(37, 99, 235, 0.35);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.food-form-container.hidden {
+  display: none !important;
+}
+
+.food-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.food-form-header h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.food-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.food-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 500px) {
+  .food-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.food-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.food-form-group label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.food-form-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  font-size: 0.88rem;
+  box-sizing: border-box;
+}
+
+.food-form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.tolerance-radio-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tolerance-radio-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.tolerance-radio-option:hover {
+  border-color: var(--primary);
+}
+
+.tolerance-radio-option input[type="radio"] {
+  accent-color: var(--primary);
+}
+
+.food-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.food-form-actions button {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+}
+
+/* Food Manager List */
+.food-manager-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 48vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px 2px 6px 0;
+}
+
+.empty-food-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  color: var(--muted);
+  text-align: center;
+  gap: 8px;
+}
+
+.empty-food-state p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.food-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.food-item-row:hover {
+  background: var(--primary-soft);
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.food-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.food-item-name {
+  font-size: 0.92rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.food-item-category {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.food-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.tolerance-segmented-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.tolerance-pill {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 3px 6px;
+  border-radius: 999px;
+  line-height: 1;
+  transition: background-color 0.15s ease, transform 0.12s ease, opacity 0.12s ease;
+  opacity: 0.35;
+}
+
+.tolerance-pill:hover {
+  opacity: 0.75;
+}
+
+.tolerance-pill.active {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.tolerance-pill.pill-green.active {
+  background: var(--green-soft);
+}
+
+.tolerance-pill.pill-orange.active {
+  background: var(--orange-soft);
+}
+
+.tolerance-pill.pill-red.active {
+  background: var(--red-soft);
+}
+
+.edit-food-btn,
+.delete-food-btn {
+  font-size: 0.85rem;
+  padding: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.edit-food-btn:hover {
+  color: var(--primary);
+  background: var(--panel);
+}
+
+.delete-food-btn:hover {
+  color: var(--red);
+  background: var(--red-soft);
+}

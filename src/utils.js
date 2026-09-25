@@ -2,14 +2,16 @@ export const LEGACY_STORAGE_KEY = 'ernaehrungstagebuch-diary-v1';
 export const DRAFT_STORAGE_KEY = 'ernaehrungstagebuch-draft-v1';
 export const THEME_STORAGE_KEY = 'ernaehrungstagebuch-theme';
 export const IDB_NAME = 'ernaehrungstagebuch_db';
-export const IDB_VERSION = 1;
+export const IDB_VERSION = 2;
 export const IDB_STORE_ENTRIES = 'entries';
+export const IDB_STORE_FOOD_TOLERANCES = 'food_tolerances';
 export const IDB_KEY_ENTRIES = 'current_entries';
 export const FOOD_DB_PATH = './food-tolerance.json';
 export const APP_VERSION_PATH = './version.json';
 export const MAX_SUGGESTIONS = 20;
 export const ROTATION_WARNING_DAYS = 3;
 export const BACKUP_FILENAME_PREFIX = 'backup';
+export const TOLERANCES_BACKUP_PREFIX = 'food-tolerances';
 
 export function escapeHtml(value) {
     return String(value)
@@ -35,11 +37,15 @@ export function normalizeStatus(rawStatus) {
     return 'green';
 }
 
+export const normalizeTolerance = normalizeStatus;
+
 export function toStatusLabel(status) {
     if (status === 'orange') return 'Orange';
     if (status === 'red') return 'Rot';
     return 'Grün';
 }
+
+export const toToleranceLabel = toStatusLabel;
 
 export function formatDateInput(date) {
     const year = date.getFullYear();
@@ -117,6 +123,11 @@ export function getDateTimeStamp(date = new Date()) {
 export function getBackupFilename(date = new Date(), includeTime = true) {
     const stamp = includeTime ? getDateTimeStamp(date) : getDateStamp(date);
     return `${BACKUP_FILENAME_PREFIX}_${stamp}.json`;
+}
+
+export function getTolerancesBackupFilename(date = new Date(), includeTime = true) {
+    const stamp = includeTime ? getDateTimeStamp(date) : getDateStamp(date);
+    return `${TOLERANCES_BACKUP_PREFIX}_${stamp}.json`;
 }
 
 export function generateEntryId() {
