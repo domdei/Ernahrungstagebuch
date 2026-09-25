@@ -295,10 +295,6 @@ export function renderFoodManagerList() {
         return matchesQuery && matchesCategory && matchesTol;
     });
 
-    if (ui.foodManagerCount) {
-        ui.foodManagerCount.textContent = `${filtered.length} von ${state.foods.length}`;
-    }
-
     if (filtered.length === 0) {
         ui.foodManagerList.innerHTML = `
           <div class="empty-food-state">

@@ -1843,14 +1843,27 @@ select:focus {
   gap: 14px;
 }
 
-.food-manager-header-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.modal-done-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1.2;
+  transition: opacity 0.15s ease, transform 0.12s ease;
+  flex-shrink: 0;
 }
 
-.food-manager-header-title h3 {
-  margin: 0;
+.modal-done-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.modal-done-btn:active {
+  transform: scale(0.96);
 }
 
 .food-manager-toolbar {
