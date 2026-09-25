@@ -42,7 +42,6 @@ def parse_food_data() -> list[dict[str, str]]:
         records.append({
             'name': name,
             'category': category,
-            'status': status_value,
             'tolerance': status_value,
         })
 
