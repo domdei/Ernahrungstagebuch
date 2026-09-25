@@ -39,7 +39,12 @@ def parse_food_data() -> list[dict[str, str]]:
             status_value = 'orange'
         else:
             status_value = 'red'
-        records.append({'name': name, 'category': category, 'status': status_value})
+        records.append({
+            'name': name,
+            'category': category,
+            'status': status_value,
+            'tolerance': status_value,
+        })
 
     return records
 

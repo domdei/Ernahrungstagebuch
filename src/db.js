@@ -146,7 +146,7 @@ export async function loadFoodDatabase() {
     state.foods = foods.map((food) => ({
         name: food.name,
         category: food.category,
-        status: normalizeStatus(food.status),
+        status: normalizeStatus(food.tolerance ?? food.status),
     }));
 }
 
