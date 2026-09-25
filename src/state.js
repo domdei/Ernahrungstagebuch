@@ -23,8 +23,12 @@ export const state = {
 };
 
 export const ui = {
+    dateChipButton: document.getElementById('dateChipButton'),
+    dateChipText: document.getElementById('dateChipText'),
     entryDate: document.getElementById('entryDate'),
     todayButton: document.getElementById('todayButton'),
+    categoryChipButton: document.getElementById('categoryChipButton'),
+    categoryChipText: document.getElementById('categoryChipText'),
     searchCategory: document.getElementById('searchCategory'),
     categoryClearButton: document.getElementById('categoryClearButton'),
     onlyFreshGreenFoods: document.getElementById('onlyFreshGreenFoods'),

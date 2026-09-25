@@ -1,4 +1,4 @@
-import { THEME_STORAGE_KEY, escapeHtml, formatFriendlyDate, toStatusLabel, MAX_SUGGESTIONS, getTodayString } from './utils.js';
+import { THEME_STORAGE_KEY, escapeHtml, formatFriendlyDate, formatShortFriendlyDate, toStatusLabel, MAX_SUGGESTIONS, getTodayString } from './utils.js';
 import { state, ui, isMobileView } from './state.js';
 import {
     getFoodByName,
@@ -39,6 +39,28 @@ export function toggleTheme() {
     applyTheme(next, true);
 }
 
+export function updateDateChipUI() {
+    const selected = state.selectedDate || getTodayString();
+    const today = getTodayString();
+    const isToday = selected === today;
+
+    if (ui.entryDate) {
+        ui.entryDate.value = selected;
+    }
+
+    if (ui.dateChipText) {
+        ui.dateChipText.textContent = formatShortFriendlyDate(selected);
+    }
+
+    if (ui.dateChipButton) {
+        ui.dateChipButton.classList.toggle('is-custom-date', !isToday);
+    }
+
+    if (ui.todayButton) {
+        ui.todayButton.classList.toggle('hidden', isToday);
+    }
+}
+
 export function updateSearchClearButton() {
     if (!ui.searchClearButton) {
         return;
@@ -57,14 +79,18 @@ export function updateSearchDoneButton() {
 }
 
 export function updateCategoryClearButton() {
-    if (!ui.categoryClearButton || !ui.searchCategory) {
+    if (!ui.searchCategory) {
         return;
     }
     const hasFilter = ui.searchCategory.value !== 'all';
-    ui.categoryClearButton.classList.toggle('hidden', !hasFilter);
-    const wrap = ui.searchCategory.closest('.category-input-inner');
-    if (wrap) {
-        wrap.classList.toggle('has-selection', hasFilter);
+    if (ui.categoryClearButton) {
+        ui.categoryClearButton.classList.toggle('hidden', !hasFilter);
+    }
+    if (ui.categoryChipButton) {
+        ui.categoryChipButton.classList.toggle('has-filter', hasFilter);
+    }
+    if (ui.categoryChipText) {
+        ui.categoryChipText.textContent = hasFilter ? ui.searchCategory.value : 'Alle Kategorien';
     }
 }
 
@@ -349,6 +375,7 @@ export function renderHistory() {
 }
 
 export function renderEverything(isSearchOverlayOpen = false) {
+    updateDateChipUI();
     if (ui.filterFromDate) {
         ui.filterFromDate.value = state.filterFromDate;
     }

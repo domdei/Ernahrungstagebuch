@@ -15,7 +15,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.0.32" />
+    <link rel="stylesheet" href="./styles.css?v=1.0.37" />
     <script>
       (function() {
         try {
@@ -45,78 +45,81 @@
 
       <main class="container">
         <section class="panel form-panel">
-          <div class="field-grid">
-            <div class="date-field-wrap">
-              <label class="field">
-                <span>Datum</span>
-                <input id="entryDate" type="date" />
-              </label>
-              <button id="todayButton" class="icon-button" type="button" aria-label="Auf heute setzen" title="Auf heute setzen">↺</button>
+          <div class="date-selector-bar">
+            <button id="dateChipButton" class="date-chip-btn" type="button" aria-label="Datum ändern" title="Datum ändern">
+              <span class="date-chip-icon">📅</span>
+              <span id="dateChipText" class="date-chip-text">Heute</span>
+              <span class="date-chip-arrow">▾</span>
+            </button>
+            <input id="entryDate" class="hidden-date-input" type="date" tabindex="-1" aria-hidden="true" />
+            <button id="todayButton" class="icon-button today-quick-btn hidden" type="button" aria-label="Auf heute zurücksetzen" title="Auf heute zurücksetzen">↺ Heute</button>
+          </div>
+
+          <div class="field search-field" id="searchField">
+            <label id="foodSearchLabel" for="foodSearch">Lebensmittel</label>
+            <div class="search-input-wrap">
+              <button
+                id="searchCloseButton"
+                class="icon-button search-close-button"
+                type="button"
+                aria-label="Suche schließen"
+                title="Suche schließen"
+              >
+                ←
+              </button>
+              <div class="search-input-inner">
+                <input
+                  id="foodSearch"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="Suche nach einem Lebensmittel..."
+                />
+                <button
+                  id="searchClearButton"
+                  class="search-clear-button hidden"
+                  type="button"
+                  aria-label="Eingabe löschen"
+                  title="Eingabe löschen"
+                >
+                  ✕
+                </button>
+              </div>
+              <button
+                id="searchDoneButton"
+                class="search-done-button"
+                type="button"
+                aria-label="Einträge speichern"
+                title="Einträge speichern"
+              >
+                Speichern
+              </button>
             </div>
 
-            <div class="category-field-wrap">
-              <div class="field category-field">
-                <label for="searchCategory">Kategorie</label>
-                <div class="category-input-inner">
-                  <select id="searchCategory">
-                    <option value="all">Alle</option>
-                  </select>
-                  <button
-                    id="categoryClearButton"
-                    class="search-clear-button category-clear-button hidden"
-                    type="button"
-                    aria-label="Kategorie-Filter zurücksetzen"
-                    title="Kategorie auf Alle zurücksetzen"
-                  >
-                    ✕
-                  </button>
-                </div>
+            <div class="search-filter-bar">
+              <div class="category-chip-wrap">
+                <button id="categoryChipButton" class="category-chip-btn" type="button" aria-label="Kategorie filtern" title="Kategorie filtern">
+                  <span class="category-chip-icon">🏷️</span>
+                  <span id="categoryChipText" class="category-chip-text">Alle Kategorien</span>
+                  <span class="category-chip-arrow">▾</span>
+                </button>
+                <select id="searchCategory" class="hidden-category-select" tabindex="-1" aria-label="Kategorie auswählen">
+                  <option value="all">Alle</option>
+                </select>
+                <button
+                  id="categoryClearButton"
+                  class="category-reset-btn hidden"
+                  type="button"
+                  aria-label="Kategorie-Filter zurücksetzen"
+                  title="Kategorie auf Alle zurücksetzen"
+                >
+                  ✕
+                </button>
               </div>
               <button id="onlyFreshGreenFoods" class="icon-button green-filter-button" type="button" aria-pressed="false" aria-label="Nur grüne, noch nicht erfasste Lebensmittel" title="Nur grüne, noch nicht erfasste Lebensmittel">🟢</button>
             </div>
 
-            <div class="field search-field" id="searchField">
-              <label id="foodSearchLabel" for="foodSearch">Lebensmittel</label>
-              <div class="search-input-wrap">
-                <button
-                  id="searchCloseButton"
-                  class="icon-button search-close-button"
-                  type="button"
-                  aria-label="Suche schließen"
-                  title="Suche schließen"
-                >
-                  ←
-                </button>
-                <div class="search-input-inner">
-                  <input
-                    id="foodSearch"
-                    type="text"
-                    autocomplete="off"
-                    placeholder="Suche nach einem Lebensmittel..."
-                  />
-                  <button
-                    id="searchClearButton"
-                    class="search-clear-button hidden"
-                    type="button"
-                    aria-label="Eingabe löschen"
-                    title="Eingabe löschen"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <button
-                  id="searchDoneButton"
-                  class="search-done-button"
-                  type="button"
-                  aria-label="Einträge speichern"
-                  title="Einträge speichern"
-                >
-                  Speichern
-                </button>
-              </div>
-              <div id="overlaySelectedFoods" class="overlay-selected-foods hidden" aria-live="polite"></div>
-              <div id="suggestions" class="suggestions" aria-live="polite"></div>
-            </div>
+            <div id="overlaySelectedFoods" class="overlay-selected-foods hidden" aria-live="polite"></div>
+            <div id="suggestions" class="suggestions" aria-live="polite"></div>
           </div>
         </section>
 
@@ -251,6 +254,6 @@
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script type="module" src="./app.js?v=1.0.32"></script>
+    <script type="module" src="./app.js?v=1.0.37"></script>
   </body>
 </html>

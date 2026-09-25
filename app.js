@@ -497,6 +497,20 @@ function bindEvents() {
         ui.saveButton.addEventListener('click', handleSaveAction);
     }
 
+    if (ui.dateChipButton && ui.entryDate) {
+        ui.dateChipButton.addEventListener('click', () => {
+            if (typeof ui.entryDate.showPicker === 'function') {
+                try {
+                    ui.entryDate.showPicker();
+                } catch (e) {
+                    ui.entryDate.focus();
+                }
+            } else {
+                ui.entryDate.focus();
+            }
+        });
+    }
+
     if (ui.entryDate) {
         ui.entryDate.addEventListener('change', () => {
             state.selectedDate = ui.entryDate.value || getTodayString();
@@ -508,17 +522,35 @@ function bindEvents() {
             if (!ui.entryDate.value) {
                 ui.entryDate.value = state.selectedDate || getTodayString();
             }
+            state.selectedDate = ui.entryDate.value;
             persistDraftState();
+            renderEverything(isSearchOverlayOpen);
         });
     }
 
     if (ui.todayButton) {
         ui.todayButton.addEventListener('click', () => {
             const today = getTodayString();
-            ui.entryDate.value = today;
+            if (ui.entryDate) {
+                ui.entryDate.value = today;
+            }
             state.selectedDate = today;
             persistDraftState();
             renderEverything(isSearchOverlayOpen);
+        });
+    }
+
+    if (ui.categoryChipButton && ui.searchCategory) {
+        ui.categoryChipButton.addEventListener('click', () => {
+            if (typeof ui.searchCategory.showPicker === 'function') {
+                try {
+                    ui.searchCategory.showPicker();
+                } catch (e) {
+                    ui.searchCategory.focus();
+                }
+            } else {
+                ui.searchCategory.focus();
+            }
         });
     }
 
@@ -652,7 +684,7 @@ function bindEvents() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initApp() {
     await restoreEntries();
     restoreDraftState();
     if (ui.entryDate) {
@@ -676,4 +708,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     bindEvents();
     registerServiceWorker();
     bindInstallPrompt();
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}

@@ -53,10 +53,10 @@ export function openConfirmModal(conflicts, onProceed) {
         .join('');
 
     ui.confirmProceedButton.onclick = () => {
+        const callback = onConfirmSaveCallback;
         closeConfirmModal();
-        if (typeof onConfirmSaveCallback === 'function') {
-            onConfirmSaveCallback();
-            onConfirmSaveCallback = null;
+        if (typeof callback === 'function') {
+            callback();
         }
     };
 

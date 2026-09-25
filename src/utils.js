@@ -74,6 +74,29 @@ export function formatFriendlyDate(dateString) {
     }).format(date);
 }
 
+export function formatShortFriendlyDate(dateString) {
+    const date = parseDateInput(dateString);
+    const today = getTodayString();
+    const diff = diffInDays(today, dateString);
+
+    const formatted = new Intl.DateTimeFormat('de-DE', {
+        weekday: 'short',
+        day: '2-digit',
+        month: '2-digit',
+    }).format(date);
+
+    if (diff === 0) {
+        return `Heute (${formatted})`;
+    }
+    if (diff === 1) {
+        return `Gestern (${formatted})`;
+    }
+    if (diff === -1) {
+        return `Morgen (${formatted})`;
+    }
+    return formatted;
+}
+
 export function getDateStamp(date = new Date()) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');

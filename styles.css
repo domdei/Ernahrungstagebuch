@@ -92,7 +92,7 @@ button {
 
 .topbar h1 {
   margin: 4px 0 0;
-  font-size: clamp(1.35rem, 5vw, 2.7rem);
+  font-size: clamp(1.15rem, 5vw, 2.7rem);
   line-height: 1.15;
 }
 
@@ -169,23 +169,188 @@ button {
   line-height: 1.5;
 }
 
+.date-selector-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.date-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel-alt);
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.date-chip-btn:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.date-chip-btn.is-custom-date {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #b45309;
+}
+
+[data-theme="dark"] .date-chip-btn.is-custom-date {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+}
+
+.date-chip-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.date-chip-arrow {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.hidden-date-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+}
+
+.today-quick-btn {
+  font-size: 0.8rem;
+  font-weight: 700;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  width: auto;
+}
+
+.today-quick-btn.hidden {
+  display: none !important;
+}
+
+.search-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.category-chip-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.category-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel-alt);
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.category-chip-btn:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.category-chip-btn.has-filter {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.category-chip-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.category-chip-arrow {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.hidden-category-select {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+}
+
+.category-reset-btn {
+  border: none;
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.category-reset-btn:hover {
+  color: var(--red);
+  background: var(--border);
+}
+
+.category-reset-btn.hidden {
+  display: none !important;
+}
+
 .field-grid {
   display: grid;
-  grid-template-columns: minmax(220px, 260px) minmax(220px, 280px);
+  grid-template-columns: 1fr;
   gap: 16px;
-}
-
-.date-field-wrap,
-.category-field-wrap {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-.date-field-wrap .field,
-.category-field-wrap .field {
-  flex: 1 1 auto;
-  min-width: 0;
 }
 
 .icon-button {
@@ -359,6 +524,7 @@ select:focus {
 .search-field {
   position: relative;
   grid-column: 1 / -1;
+  min-width: 0;
 }
 
 .search-input-wrap {
@@ -452,13 +618,16 @@ select:focus {
 
 .overlay-selected-foods {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 120px;
+  max-width: 100%;
+  width: 100%;
   padding: 8px 4px 6px;
   margin-top: 8px;
-  min-height: 44px;
   box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
 }
@@ -1403,14 +1572,15 @@ select:focus {
 
   body.search-overlay-active .overlay-selected-foods {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 120px;
     padding: 8px 4px 6px;
     margin-top: 4px;
     flex-shrink: 0;
-    min-height: 44px;
     box-sizing: border-box;
     -webkit-overflow-scrolling: touch;
   }
@@ -1463,6 +1633,11 @@ select:focus {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
+  }
+
+  .topbar h1 {
+    font-size: clamp(1.1rem, 4.5vw, 1.6rem);
   }
 
   .hero-panel {
