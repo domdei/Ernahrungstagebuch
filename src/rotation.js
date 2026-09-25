@@ -131,13 +131,6 @@ export function getSuggestions(query) {
             }
 
             const refDate = state.selectedDate || getTodayString();
-            const aLogged = isFoodLoggedOnDate(a.name, refDate);
-            const bLogged = isFoodLoggedOnDate(b.name, refDate);
-
-            if (aLogged !== bLogged) {
-                return aLogged ? 1 : -1;
-            }
-
             const aRecent = findMostRecentOccurrence(a.name, refDate);
             const bRecent = findMostRecentOccurrence(b.name, refDate);
             const aBlocked = aRecent && Math.abs(aRecent.daysDifference) >= 1 && Math.abs(aRecent.daysDifference) <= ROTATION_WARNING_DAYS;

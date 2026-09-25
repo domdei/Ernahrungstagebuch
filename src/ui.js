@@ -207,6 +207,7 @@ export function renderSelectedFoods() {
 }
 
 export function renderSuggestionList(query, isSearchOverlayOpen = false) {
+    const isOverlay = isSearchOverlayOpen || state.isSearchOverlayOpen;
     const allResults = getSuggestions(query);
     const results = query ? allResults.slice(0, MAX_SUGGESTIONS) : allResults;
 
@@ -216,7 +217,8 @@ export function renderSuggestionList(query, isSearchOverlayOpen = false) {
         return;
     }
 
-    if (!query && !ui.foodSearch.matches(':focus') && !isSearchOverlayOpen) {
+    const isSearchFocused = document.activeElement === ui.foodSearch || ui.foodSearch?.matches(':focus');
+    if (!query && !isSearchFocused && !isOverlay) {
         ui.suggestions.innerHTML = '';
         ui.suggestions.classList.remove('visible');
         return;
@@ -232,6 +234,9 @@ export function renderSuggestionList(query, isSearchOverlayOpen = false) {
         .map((food) => {
             const referenceDate = ui.entryDate?.value || state.selectedDate || getTodayString();
             const isLogged = isFoodLoggedOnDate(food.name, referenceDate);
+            const isSelected = state.selectedFoods.includes(food.name);
+            const isDone = isLogged || isSelected;
+
             const recentLabel = getRecentMealLabel(food.name, referenceDate);
             const recentTitle = getRecentMealTitle(recentLabel);
             const isRecent = Boolean(recentLabel);
@@ -239,19 +244,21 @@ export function renderSuggestionList(query, isSearchOverlayOpen = false) {
             let statusChip = '';
             if (isLogged) {
                 statusChip = `<span class="recent-chip logged-chip" title="Für diesen Tag bereits erfasst">✓</span>`;
+            } else if (isSelected) {
+                statusChip = `<span class="recent-chip logged-chip" title="Bereits in der aktuellen Auswahl">✓</span>`;
             } else if (recentLabel) {
                 statusChip = `<span class="recent-chip recent-chip-alert" title="${recentTitle}">${recentLabel}</span>`;
             }
 
             const itemClasses = ['suggestion-item'];
-            if (isLogged) {
+            if (isDone) {
                 itemClasses.push('is-already-logged');
             } else if (isRecent) {
                 itemClasses.push('is-recent');
             }
 
             return `
-        <button type="button" class="${itemClasses.join(' ')}" data-name="${escapeHtml(food.name)}"${isLogged ? ' disabled aria-disabled="true"' : ''}>
+        <button type="button" class="${itemClasses.join(' ')}" data-name="${escapeHtml(food.name)}"${isDone ? ' disabled aria-disabled="true"' : ''}>
           <strong>${escapeHtml(food.name)}</strong>
           <div class="suggestion-meta">
             <span class="tag">${escapeHtml(food.category)}</span>
@@ -267,15 +274,17 @@ export function renderSuggestionList(query, isSearchOverlayOpen = false) {
 }
 
 export function renderSuggestions(isSearchOverlayOpen = false) {
+    const isOverlay = isSearchOverlayOpen || state.isSearchOverlayOpen;
     const query = ui.foodSearch ? ui.foodSearch.value.trim() : '';
-    if (!query && !ui.foodSearch?.matches(':focus') && !isSearchOverlayOpen) {
+    const isSearchFocused = document.activeElement === ui.foodSearch || ui.foodSearch?.matches(':focus');
+    if (!query && !isSearchFocused && !isOverlay) {
         if (ui.suggestions) {
             ui.suggestions.classList.remove('visible');
             ui.suggestions.innerHTML = '';
         }
         return;
     }
-    renderSuggestionList(query, isSearchOverlayOpen);
+    renderSuggestionList(query, isOverlay);
 }
 
 export function updateHistoryControls() {

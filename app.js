@@ -59,6 +59,7 @@ function openSearchOverlay(preventKeyboard = false) {
     }
 
     isSearchOverlayOpen = true;
+    state.isSearchOverlayOpen = true;
     document.body.classList.add('search-overlay-active');
     updateSearchClearButton();
     updateOverlaySelectedFoods();
@@ -83,6 +84,7 @@ function closeSearchOverlay(fromPopState = false) {
     }
 
     isSearchOverlayOpen = false;
+    state.isSearchOverlayOpen = false;
     document.body.classList.remove('search-overlay-active');
     if (ui.foodSearch) {
         ui.foodSearch.blur();
@@ -352,10 +354,14 @@ function bindEvents() {
         });
 
         let wasFocusedBeforeClick = false;
+        let overlayJustOpened = false;
 
         ui.foodSearch.addEventListener('focus', () => {
             if (isMobileView()) {
-                openSearchOverlay(true);
+                if (!isSearchOverlayOpen) {
+                    openSearchOverlay(true);
+                    overlayJustOpened = true;
+                }
             } else {
                 renderSuggestionList(ui.foodSearch.value.trim(), isSearchOverlayOpen);
             }
@@ -373,6 +379,9 @@ function bindEvents() {
             if (isMobileView()) {
                 if (!isSearchOverlayOpen) {
                     openSearchOverlay(true);
+                    overlayJustOpened = true;
+                } else if (overlayJustOpened) {
+                    overlayJustOpened = false;
                 } else if (wasFocusedBeforeClick) {
                     ui.foodSearch.blur();
                     wasFocusedBeforeClick = false;

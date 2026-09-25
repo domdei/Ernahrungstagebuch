@@ -20,6 +20,7 @@ export const state = {
     filterStatus: 'all',
     historyMode: false,
     historyDeleteMode: false,
+    isSearchOverlayOpen: false,
 };
 
 export const ui = {
