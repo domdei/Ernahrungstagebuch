@@ -19,6 +19,7 @@ import {
 import {
     getFoodByName,
     getWarningsForFood,
+    isFoodLoggedOnDate,
 } from './src/rotation.js';
 import {
     initTheme,
@@ -113,6 +114,11 @@ function closeSearchOverlay(fromPopState = false) {
 function addSelectedFood(foodName) {
     const food = getFoodByName(foodName);
     if (!food) {
+        return;
+    }
+
+    const targetDate = ui.entryDate?.value || state.selectedDate || getTodayString();
+    if (isFoodLoggedOnDate(food.name, targetDate)) {
         return;
     }
 
@@ -380,7 +386,7 @@ function bindEvents() {
         ui.foodSearch.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
-                const firstSuggestion = ui.suggestions ? ui.suggestions.querySelector('.suggestion-item') : null;
+                const firstSuggestion = ui.suggestions ? ui.suggestions.querySelector('.suggestion-item:not(.is-already-logged):not([disabled])') : null;
                 if (firstSuggestion) {
                     addSelectedFood(firstSuggestion.dataset.name);
                 }
@@ -651,7 +657,7 @@ function bindEvents() {
     if (ui.suggestions) {
         ui.suggestions.addEventListener('click', (event) => {
             const item = event.target.closest('.suggestion-item');
-            if (!item) {
+            if (!item || item.classList.contains('is-already-logged') || item.disabled) {
                 return;
             }
             addSelectedFood(item.dataset.name);

@@ -5,6 +5,14 @@ export function getFoodByName(name) {
     return state.foods.find((food) => food.name.toLowerCase() === name.trim().toLowerCase()) || null;
 }
 
+export function isFoodLoggedOnDate(foodName, targetDate) {
+    if (!foodName || !targetDate) {
+        return false;
+    }
+    const norm = foodName.trim().toLowerCase();
+    return state.entries.some((entry) => entry.date === targetDate && entry.name.toLowerCase() === norm);
+}
+
 export function findMostRecentOccurrence(foodName, targetDate) {
     const logs = state.entries.filter((entry) => entry.name === foodName && entry.date !== targetDate);
     if (!logs.length) {
@@ -123,6 +131,13 @@ export function getSuggestions(query) {
             }
 
             const refDate = state.selectedDate || getTodayString();
+            const aLogged = isFoodLoggedOnDate(a.name, refDate);
+            const bLogged = isFoodLoggedOnDate(b.name, refDate);
+
+            if (aLogged !== bLogged) {
+                return aLogged ? 1 : -1;
+            }
+
             const aRecent = findMostRecentOccurrence(a.name, refDate);
             const bRecent = findMostRecentOccurrence(b.name, refDate);
             const aBlocked = aRecent && Math.abs(aRecent.daysDifference) >= 1 && Math.abs(aRecent.daysDifference) <= ROTATION_WARNING_DAYS;

@@ -644,6 +644,17 @@ select:focus {
   background: rgba(0, 0, 0, 0.25);
 }
 
+.suggestion-item.is-already-logged {
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--muted);
+  opacity: 0.45;
+  cursor: default;
+}
+
+[data-theme="dark"] .suggestion-item.is-already-logged {
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .suggestion-item strong {
   font-size: 0.95rem;
   flex: 1 1 auto;
@@ -653,7 +664,8 @@ select:focus {
   white-space: nowrap;
 }
 
-.suggestion-item.is-recent strong {
+.suggestion-item.is-recent strong,
+.suggestion-item.is-already-logged strong {
   color: var(--muted);
 }
 
@@ -674,7 +686,8 @@ select:focus {
   color: var(--muted);
 }
 
-.suggestion-item.is-recent .tag {
+.suggestion-item.is-recent .tag,
+.suggestion-item.is-already-logged .tag {
   background: transparent;
   color: var(--muted);
   opacity: 0.85;
@@ -685,6 +698,20 @@ select:focus {
   color: var(--primary);
   border: 1px solid rgba(87, 119, 255, 0.15);
   font-weight: 700;
+}
+
+.suggestion-item .logged-chip {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  color: var(--green);
+  font-weight: 800;
+  font-size: 0.65rem;
+}
+
+[data-theme="dark"] .suggestion-item .logged-chip {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #34d399;
 }
 
 .suggestion-item .recent-chip-alert {

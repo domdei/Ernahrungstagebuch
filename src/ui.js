@@ -5,6 +5,7 @@ import {
     getWarningsForFood,
     getRecentMealLabel,
     getRecentMealTitle,
+    isFoodLoggedOnDate,
     getSuggestions,
     filterEntries,
 } from './rotation.js';
@@ -229,20 +230,32 @@ export function renderSuggestionList(query, isSearchOverlayOpen = false) {
 
     ui.suggestions.innerHTML = results
         .map((food) => {
-            const referenceDate = ui.entryDate.value || state.selectedDate || getTodayString();
+            const referenceDate = ui.entryDate?.value || state.selectedDate || getTodayString();
+            const isLogged = isFoodLoggedOnDate(food.name, referenceDate);
             const recentLabel = getRecentMealLabel(food.name, referenceDate);
             const recentTitle = getRecentMealTitle(recentLabel);
             const isRecent = Boolean(recentLabel);
-            const recentChip = recentLabel
-                ? `<span class="recent-chip recent-chip-alert" title="${recentTitle}">${recentLabel}</span>`
-                : '';
+
+            let statusChip = '';
+            if (isLogged) {
+                statusChip = `<span class="recent-chip logged-chip" title="Für diesen Tag bereits erfasst">✓</span>`;
+            } else if (recentLabel) {
+                statusChip = `<span class="recent-chip recent-chip-alert" title="${recentTitle}">${recentLabel}</span>`;
+            }
+
+            const itemClasses = ['suggestion-item'];
+            if (isLogged) {
+                itemClasses.push('is-already-logged');
+            } else if (isRecent) {
+                itemClasses.push('is-recent');
+            }
 
             return `
-        <button type="button" class="suggestion-item ${isRecent ? 'is-recent' : ''}" data-name="${escapeHtml(food.name)}">
+        <button type="button" class="${itemClasses.join(' ')}" data-name="${escapeHtml(food.name)}"${isLogged ? ' disabled aria-disabled="true"' : ''}>
           <strong>${escapeHtml(food.name)}</strong>
           <div class="suggestion-meta">
             <span class="tag">${escapeHtml(food.category)}</span>
-            ${recentChip}
+            ${statusChip}
           </div>
           <span class="status-dot status-${food.status}" title="${toStatusLabel(food.status)}"></span>
         </button>
