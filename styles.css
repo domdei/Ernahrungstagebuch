@@ -118,20 +118,6 @@ button {
   padding: 20px;
 }
 
-.hero-panel {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  background: linear-gradient(135deg, var(--primary-soft), #f4f8ff);
-}
-
-.hero-panel h2,
-.summary-panel h2 {
-  margin: 0;
-  font-size: 1.4rem;
-}
-
 .section-header h2 {
   margin: 0;
   font-size: 1rem;
@@ -143,17 +129,7 @@ button {
   margin-bottom: 12px;
 }
 
-.version-panel {
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.version-row,
-.version-actions {
+.version-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -164,19 +140,6 @@ button {
 .version-label {
   color: var(--muted);
   font-weight: 600;
-}
-
-.update-status {
-  color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.subtle-text {
-  margin: 0;
-  color: var(--muted);
-  max-width: 560px;
-  line-height: 1.5;
 }
 
 .date-selector-bar {
@@ -363,12 +326,6 @@ button {
   display: none !important;
 }
 
-.field-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
 .icon-button {
   display: inline-flex;
   align-items: center;
@@ -494,27 +451,6 @@ select {
 select option {
   background: var(--panel);
   color: var(--text);
-}
-
-.category-input-inner {
-  position: relative;
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  width: 100%;
-}
-
-.category-input-inner select {
-  width: 100%;
-}
-
-.category-input-inner.has-selection select {
-  padding-right: 64px;
-}
-
-.category-clear-button {
-  right: 36px;
 }
 
 input[type="date"]::-webkit-clear-button {
@@ -792,18 +728,10 @@ select:focus {
   background: var(--red);
 }
 
-.action-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
-  flex-wrap: wrap;
-}
-
 .primary-button,
 .secondary-button,
 .ghost-button,
-.import-label,
-.mini-button {
+.import-label {
   border: none;
   border-radius: 12px;
   padding: 0.8rem 1.1rem;
@@ -816,8 +744,7 @@ select:focus {
 .primary-button:hover,
 .secondary-button:hover,
 .ghost-button:hover,
-.import-label:hover,
-.mini-button:hover {
+.import-label:hover {
   transform: translateY(-1px);
 }
 
@@ -836,42 +763,16 @@ select:focus {
   color: var(--muted);
 }
 
-.mini-button {
-  background: var(--primary-soft);
-  color: var(--primary);
-  min-height: 48px;
-  align-self: flex-end;
-  white-space: nowrap;
-}
-
-.wide-button {
-  display: block;
-  width: 100%;
-  margin-top: 18px;
-}
-
 .hidden {
   display: none !important;
 }
 
-.selected-foods,
-.selection-warnings,
-.history-list,
-.day-summary {
+.history-list {
   margin-top: 18px;
 }
 
-.selection-chip-list,
-.history-day-list,
-.day-summary-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
 .selection-chip,
-.history-item,
-.day-summary-card {
+.history-item {
   border-radius: 14px;
   border: 1px solid var(--border);
   background: var(--panel-alt);
@@ -990,32 +891,6 @@ select:focus {
 .remove-chip:hover {
   color: var(--red);
   transform: scale(1.15);
-}
-
-.warning-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0.8rem 0.9rem;
-  border-radius: 12px;
-  margin-top: 10px;
-  border: 1px solid transparent;
-}
-
-.warning-box.yellow {
-  background: #fff4c7;
-  border-color: rgba(244, 201, 93, 0.4);
-  color: #7a5801;
-}
-
-.warning-box.red {
-  background: #ffe2e2;
-  border-color: rgba(217, 61, 61, 0.25);
-  color: #7b1d1d;
-}
-
-.warning-box strong {
-  font-size: 0.92rem;
 }
 
 .section-header {
@@ -1217,51 +1092,6 @@ select:focus {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-}
-
-.status-green {
-  background: var(--green);
-  color: #fff;
-}
-
-.status-orange {
-  background: var(--orange);
-  color: #fff;
-}
-
-.status-red {
-  background: var(--red);
-  color: #fff;
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: 20px;
-}
-
-.day-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.day-summary-card {
-  padding: 0.8rem 0.9rem;
-  min-width: 116px;
-  flex: 1 1 110px;
-  background: var(--panel-alt);
-}
-
-.day-summary-card h4 {
-  margin: 0 0 8px;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-
-.day-summary-card .count {
-  font-size: 1.5rem;
-  font-weight: 800;
 }
 
 .export-actions {
@@ -1704,11 +1534,6 @@ select:focus {
     padding: 0.75rem 0.85rem;
   }
 
-  .field-grid,
-  .summary-grid {
-    grid-template-columns: 1fr;
-  }
-
   .topbar {
     flex-direction: row;
     align-items: center;
@@ -1718,11 +1543,6 @@ select:focus {
 
   .topbar h1 {
     font-size: clamp(1.1rem, 4.5vw, 1.6rem);
-  }
-
-  .hero-panel {
-    flex-direction: column;
-    align-items: stretch;
   }
 
   .section-header {

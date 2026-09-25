@@ -6,16 +6,18 @@ Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft a
 
 - **4-Tage-Rotationswarnung:** Warnt, wenn ein Lebensmittel in den letzten 3 Tagen gegessen wurde. Ab Tag 5 ist es wieder ohne Warnung erlaubt.
 - **Unverträglichkeitsprüfung:** Markiert Lebensmittel nach eigener Einstufung farblich (Grün, Orange, Rot).
-- **Direktes Speichern aus der Suche:** Zutaten werden direkt in der Suche angetippt und über `Speichern (X)` ohne Umwege im Tagebuch abgelegt. Die Hauptseite bleibt frei von redundanten Zwischenablagen.
+- **Kompakter Smart-Date-Chip:** Zeigt das Erfassungsdatum platzsparend als interaktiven Button (`📅 Heute (Fr., 25.09.) ▾`). Klick öffnet den Datepicker; bei abweichendem Datum erscheint ein Schnell-Reset-Button (`↺ Heute`).
+- **Aufgeräumte Hauptseite & Symmetrische Typografie:** Beide Bereiche (`Lebensmittel erfassen` und `Verlauf`) nutzen eine einheitliche, dezente Überschriftengröße. Auf der Hauptseite gibt es keine störenden Filter-Dropdowns mehr.
+- **Filterleiste in der Suche & Custom-Kategorie-Modal:** Die Kategorieauswahl (`🏷️ Alle Kategorien ▾`) und der Grün-Filter (`🟢`) sitzen direkt in der Suchleiste und erscheinen nur bei aktiver Suche. Ein Klick auf den Kategorie-Button öffnet ein elegantes, an das App-Design angepasstes Modal statt des nativen System-Auswahldialogs.
+- **Direktes Speichern & Idempotenz:** Zutaten werden direkt in der Suche gewählt und über `Speichern (X)` ohne Umwege im Tagebuch abgelegt. Lebensmittel, die am selben Tag bereits erfasst wurden, werden lautlos ignoriert (kein blockierendes Alert-Pop-up).
+- **Mehrzeilige Tag-Cloud:** Ausgewählte Lebensmittel brechen bei Bedarf automatisch mehrzeilig um (`max-height: 120px` mit Scrollbalken), damit man immer den Überblick behält.
 - **Konflikt-Dialog beim Speichern:** Verletzt ein gewähltes Lebensmittel die Rotationsfrist oder eine Verträglichkeitsregel, erscheint beim Speichern ein Bestätigungs-Modal (Ja/Nein) mit genauer Begründung.
 - **Visuell optimierte Chips & Dark Mode:** Konfliktbehaftete Lebensmittel werden direkt am Chip durch Rahmen und Badges (`1T` / `!`) hervorgehoben. Gesperrte Lebensmittel treten im Dark Mode dezent in den Hintergrund, ohne zu blenden.
 - **Tastatur-Verhalten (Mobile):** Das mobile Vollbild-Such-Overlay öffnet sich standardmäßig ohne Bildschirmtastatur für freies Scrollen. Antippen des Suchfelds blendet die Tastatur ein/aus; nach dem Auswählen springt sie nicht ungewollt auf.
-- **Kompakter Kategorie-Filter mit Schnell-Reset (✕):** Einheitlich gestaltete Kategorieauswahl mit 1-Klick-Reset auf „Alle“.
-- **Schnellfilter (🟢):** Filtert die Suche per Knopfdruck auf verträgliche und heute rotationsfreie Lebensmittel (`Lebensmittel (gefiltert)`).
 - **Tag- und Nachtmodus (☾ / ☼):** Wechselt das Farbschema über die Kopfzeile und speichert die Wahl.
 - **Tagesabstand-Badges:** Zeigt bei Vorschlägen an, vor wie vielen Tagen ein Lebensmittel gegessen wurde (`1T`, `2T`, `3T`).
-- **Kompaktes Verlaufs-Akkordeon:** Alle Tage starten eingeklappt als übersichtliche Einzeiler mit Ampel-Zusammenfassung (`14 🟢 · 2 🟠`). Ein Klick klappt die Details auf.
-- **Kompakte Werkzeuge (🔍 / 🗑️):** Filterleiste und Löschmodus sitzen platzsparend als Icon-Buttons direkt neben der Überschrift „Verlauf“.
+- **Kompaktes Verlaufs-Akkordeon (4 Tage Standard):** Zeigt standardmäßig die letzten 4 Tage (3 Tage Rotation + heute) zugeklappt als Einzeiler mit Ampel-Zusammenfassung (`14 🟢 · 2 🟠`). Ein Klick klappt die nach Kategorien gruppierten Details auf.
+- **Kompakte Werkzeuge (🔍 / 🗑️):** Filterleiste (für beliebige Zeiträume) und Löschmodus sitzen platzsparend als Icon-Buttons direkt neben der Überschrift „Verlauf“.
 - **Einstellungen & Backup (⚙):** Export und Import sowie Speicherstatus und Version sind aufgeräumt über das Zahnrad-Icon in der Topbar erreichbar.
 - **Intelligenter Import-Dialog:** Bietet die Wahl zwischen *Ergänzen* (mit Duplikaterkennung), *Ersetzen* und *Abbrechen* im einheitlichen App-Design.
 - **Moderne Browser-Datenbank (IndexedDB):** Zuverlässige, transaktionssichere Speicherung mit automatischem Schutz gegen Cache-Bereinigung (`navigator.storage.persist()`).
@@ -64,15 +66,15 @@ http://localhost:8001/
 
 ## Bedienung
 
-1. Wähle das Datum (mit `↺` setzt du es sofort auf heute zurück).
-2. Wähle optional eine Kategorie oder aktiviere den Grün-Filter (`🟢`).
-3. Tippe auf das Lebensmittelfeld:
-   - Auf dem Handy öffnet sich das Vollbild-Such-Overlay.
-   - Tippe nacheinander alle Zutaten an – das Suchfeld leert sich automatisch für die nächste Eingabe.
-   - Tippe auf `Speichern`, um die Auswahl direkt zu sichern und das Suchfeld zu schließen.
-4. Falls ein Lebensmittel das Rotationsprinzip verletzt oder unverträglich ist, erscheint beim Klick auf `Speichern` ein Hinweisfenster (Ja/Nein).
-5. Im **Verlauf** kannst du vergangene Tage aufklappen, über `🔍` filtern oder über `🗑️` unerwünschte Einträge entfernen.
-6. Über das Zahnrad `⚙` oben rechts kannst du jederzeit Backups exportieren oder wieder einspielen.
+1. **Datum anpassen:** Das Datum steht standardmäßig auf `Heute`. Bei Bedarf klickst du auf den Datums-Chip `📅 Heute ▾`, um einen vergangenen Tag nachzutragen (über `↺ Heute` kommst du jederzeit zurück).
+2. **Lebensmittel erfassen:** Tippe in das Suchfeld:
+   - Auf dem Handy öffnet sich das Vollbild-Such-Overlay ohne störende Tastatur (freies Scrollen).
+   - In der Suche kannst du optional über `🏷️ Alle Kategorien ▾` (im App-Design) oder den Grün-Filter (`🟢`) filtern.
+   - Tippe nacheinander alle gegessenen Zutaten an.
+   - Tippe auf `Speichern (X)`, um alle Einträge sofort zu sichern.
+3. **Konfliktprüfung:** Falls ein Lebensmittel das Rotationsprinzip verletzt oder unverträglich ist, poppt beim Speichern ein Bestätigungsdialog (Ja/Nein) auf. Bereits erfasste Lebensmittel werden lautlos ignoriert.
+4. **Verlauf einsehen:** Der Verlauf zeigt standardmäßig die letzten 4 Tage zugeklappt an. Klicke auf einen Tag, um die Details zu sehen. Über `🔍` kannst du nach Zeiträumen/Kategorien filtern, über `🗑️` Einträge löschen.
+5. **Backups:** Über das Zahnrad `⚙` oben rechts kannst du jederzeit Backups als JSON exportieren oder importieren.
 
 ## Datenbasis pflegen & Versionieren
 
