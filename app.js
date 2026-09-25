@@ -29,6 +29,8 @@ import {
     updateSearchClearButton,
     updateSearchDoneButton,
     updateCategoryClearButton,
+    updateHistoryCategoryFilterUI,
+    updateHistoryStatusFilterUI,
     updateOverlaySelectedFoods,
     renderSelectedFoods,
     renderSuggestionList,
@@ -43,6 +45,7 @@ import {
     openConfirmModal,
     closeConfirmModal,
     openCategoryModal,
+    openStatusModal,
     closeCategoryModal,
     promptImportAction,
 } from './src/modals.js';
@@ -557,14 +560,46 @@ function bindEvents() {
 
     if (ui.categoryChipButton) {
         ui.categoryChipButton.addEventListener('click', () => {
-            openCategoryModal((selectedCat) => {
-                if (ui.searchCategory) {
-                    ui.searchCategory.value = selectedCat;
-                }
-                state.searchCategory = selectedCat;
-                updateCategoryClearButton();
-                renderSuggestionList(ui.foodSearch ? ui.foodSearch.value.trim() : '', isSearchOverlayOpen);
-            });
+            openCategoryModal(
+                (selectedCat) => {
+                    if (ui.searchCategory) {
+                        ui.searchCategory.value = selectedCat;
+                    }
+                    state.searchCategory = selectedCat;
+                    updateCategoryClearButton();
+                    renderSuggestionList(ui.foodSearch ? ui.foodSearch.value.trim() : '', isSearchOverlayOpen);
+                },
+                state.searchCategory || 'all',
+                'Kategorie auswählen'
+            );
+        });
+    }
+
+    if (ui.historyCategoryChipButton) {
+        ui.historyCategoryChipButton.addEventListener('click', () => {
+            openCategoryModal(
+                (selectedCat) => {
+                    if (ui.filterCategory) {
+                        ui.filterCategory.value = selectedCat;
+                    }
+                    state.filterCategory = selectedCat;
+                    updateHistoryCategoryFilterUI();
+                    renderHistory();
+                },
+                state.filterCategory || 'all',
+                'Verlauf: Kategorie filtern'
+            );
+        });
+    }
+
+    if (ui.historyCategoryClearButton) {
+        ui.historyCategoryClearButton.addEventListener('click', () => {
+            if (ui.filterCategory) {
+                ui.filterCategory.value = 'all';
+            }
+            state.filterCategory = 'all';
+            updateHistoryCategoryFilterUI();
+            renderHistory();
         });
     }
 
@@ -622,6 +657,34 @@ function bindEvents() {
     if (ui.filterCategory) {
         ui.filterCategory.addEventListener('change', () => {
             state.filterCategory = ui.filterCategory.value;
+            updateHistoryCategoryFilterUI();
+            renderHistory();
+        });
+    }
+
+    if (ui.historyStatusChipButton) {
+        ui.historyStatusChipButton.addEventListener('click', () => {
+            openStatusModal(
+                (selectedStatus) => {
+                    if (ui.filterStatus) {
+                        ui.filterStatus.value = selectedStatus;
+                    }
+                    state.filterStatus = selectedStatus;
+                    updateHistoryStatusFilterUI();
+                    renderHistory();
+                },
+                state.filterStatus || 'all'
+            );
+        });
+    }
+
+    if (ui.historyStatusClearButton) {
+        ui.historyStatusClearButton.addEventListener('click', () => {
+            if (ui.filterStatus) {
+                ui.filterStatus.value = 'all';
+            }
+            state.filterStatus = 'all';
+            updateHistoryStatusFilterUI();
             renderHistory();
         });
     }
@@ -629,6 +692,7 @@ function bindEvents() {
     if (ui.filterStatus) {
         ui.filterStatus.addEventListener('change', () => {
             state.filterStatus = ui.filterStatus.value;
+            updateHistoryStatusFilterUI();
             renderHistory();
         });
     }

@@ -18,7 +18,7 @@ Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft a
 - **Tag- und Nachtmodus (☾ / ☼):** Wechselt das Farbschema über die Kopfzeile und speichert die Wahl.
 - **Tagesabstand-Badges:** Zeigt bei Vorschlägen an, vor wie vielen Tagen ein Lebensmittel gegessen wurde (`1T`, `2T`, `3T`).
 - **Kompaktes Verlaufs-Akkordeon (4 Tage Standard):** Zeigt standardmäßig die letzten 4 Tage (3 Tage Rotation + heute) zugeklappt als Einzeiler mit Ampel-Zusammenfassung (`14 🟢 · 2 🟠`). Ein Klick klappt die nach Kategorien gruppierten Details auf.
-- **Kompakte Werkzeuge (🔍 / 🗑️):** Filterleiste (für beliebige Zeiträume) und Löschmodus sitzen platzsparend als Icon-Buttons direkt neben der Überschrift „Verlauf“.
+- **Kompakte Werkzeuge & Modale Verlaufsfilter (🔍 / 🗑️):** Die Filterleiste im Verlauf bietet einheitliche App-Modals für Kategorie (`🏷️ Alle Kategorien ▾`) und Verträglichkeitsstatus (`🚦 Alle Status ▾`) jeweils mit Schnell-Reset (`✕`). Daneben sitzt der Löschmodus (`🗑️`) direkt neben der Überschrift „Verlauf“.
 - **Einstellungen & Backup (⚙):** Export und Import sowie Speicherstatus und Version sind aufgeräumt über das Zahnrad-Icon in der Topbar erreichbar.
 - **Intelligenter Import-Dialog:** Bietet die Wahl zwischen *Ergänzen* (mit Duplikaterkennung), *Ersetzen* und *Abbrechen* im einheitlichen App-Design.
 - **Moderne Browser-Datenbank (IndexedDB):** Zuverlässige, transaktionssichere Speicherung mit automatischem Schutz gegen Cache-Bereinigung (`navigator.storage.persist()`).
@@ -74,7 +74,7 @@ http://localhost:8001/
    - Tippe nacheinander alle gegessenen Zutaten an.
    - Tippe auf `Speichern (X)`, um alle Einträge sofort zu sichern.
 3. **Konfliktprüfung:** Falls ein Lebensmittel das Rotationsprinzip verletzt oder unverträglich ist, poppt beim Speichern ein Bestätigungsdialog (Ja/Nein) auf. Bereits erfasste Lebensmittel werden lautlos ignoriert.
-4. **Verlauf einsehen:** Der Verlauf zeigt standardmäßig die letzten 4 Tage zugeklappt an. Klicke auf einen Tag, um die Details zu sehen. Über `🔍` kannst du nach Zeiträumen/Kategorien filtern, über `🗑️` Einträge löschen.
+4. **Verlauf einsehen:** Der Verlauf zeigt standardmäßig die letzten 4 Tage zugeklappt an. Klicke auf einen Tag, um die Details zu sehen. Über `🔍` kannst du nach Zeiträumen sowie per Modal nach Kategorie (`🏷️`) und Verträglichkeitsstatus (`🚦`) filtern, über `🗑️` Einträge löschen.
 5. **Backups:** Über das Zahnrad `⚙` oben rechts kannst du jederzeit Backups als JSON exportieren oder importieren.
 
 ## Datenbasis pflegen & Versionieren

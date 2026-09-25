@@ -71,22 +71,30 @@ export function closeConfirmModal() {
     onConfirmSaveCallback = null;
 }
 
-export function openCategoryModal(onSelectCategory) {
+export function openSelectionModal({
+    items,
+    activeItem = 'all',
+    title = 'Auswahl',
+    description = 'Wähle eine Option.',
+    onSelect,
+}) {
     if (!ui.categoryModal || !ui.categoryModalGrid) {
         return;
     }
 
-    const categories = ['all', ...[...new Set(state.foods.map((food) => food.category))].sort()];
-    const current = state.searchCategory || 'all';
+    if (ui.categoryModalTitle) {
+        ui.categoryModalTitle.textContent = title;
+    }
+    if (ui.categoryModalDescription) {
+        ui.categoryModalDescription.textContent = description;
+    }
 
-    ui.categoryModalGrid.innerHTML = categories
-        .map((cat) => {
-            const isAll = cat === 'all';
-            const label = isAll ? 'Alle Kategorien' : cat;
-            const isSelected = cat === current;
+    ui.categoryModalGrid.innerHTML = items
+        .map((item) => {
+            const isSelected = item.value === activeItem;
             return `
-        <button type="button" class="category-modal-item ${isSelected ? 'selected' : ''}" data-category="${escapeHtml(cat)}">
-          <span class="category-modal-item-name">${escapeHtml(label)}</span>
+        <button type="button" class="category-modal-item ${isSelected ? 'selected' : ''}" data-value="${escapeHtml(item.value)}">
+          <span class="category-modal-item-name">${item.icon ? `<span style="margin-right:8px;">${item.icon}</span>` : ''}${escapeHtml(item.label)}</span>
           ${isSelected ? '<span class="category-modal-check">✓</span>' : ''}
         </button>
       `;
@@ -96,14 +104,53 @@ export function openCategoryModal(onSelectCategory) {
     ui.categoryModalGrid.onclick = (e) => {
         const btn = e.target.closest('.category-modal-item');
         if (!btn) return;
-        const cat = btn.dataset.category;
+        const val = btn.dataset.value;
         closeCategoryModal();
-        if (typeof onSelectCategory === 'function') {
-            onSelectCategory(cat);
+        if (typeof onSelect === 'function') {
+            onSelect(val);
         }
     };
 
     ui.categoryModal.classList.remove('hidden');
+}
+
+export function openCategoryModal(
+    onSelectCategory,
+    activeCategory = 'all',
+    title = 'Kategorie auswählen',
+    description = 'Wähle eine Kategorie, um die Anzeige einzugrenzen.'
+) {
+    const categories = ['all', ...[...new Set(state.foods.map((food) => food.category))].sort()];
+    const items = categories.map((cat) => ({
+        value: cat,
+        label: cat === 'all' ? 'Alle Kategorien' : cat,
+        icon: '🏷️',
+    }));
+
+    openSelectionModal({
+        items,
+        activeItem: activeCategory,
+        title,
+        description,
+        onSelect: onSelectCategory,
+    });
+}
+
+export function openStatusModal(onSelectStatus, activeStatus = 'all') {
+    const items = [
+        { value: 'all', label: 'Alle Status', icon: '🚦' },
+        { value: 'green', label: 'Grün (Verträglich)', icon: '🟢' },
+        { value: 'orange', label: 'Orange (Eingeschränkt)', icon: '🟠' },
+        { value: 'red', label: 'Rot (Unverträglich)', icon: '🔴' },
+    ];
+
+    openSelectionModal({
+        items,
+        activeItem: activeStatus,
+        title: 'Verlauf: Status filtern',
+        description: 'Wähle einen Verträglichkeitsstatus, um den Verlauf zu filtern.',
+        onSelect: onSelectStatus,
+    });
 }
 
 export function closeCategoryModal() {

@@ -130,16 +130,6 @@ export function getSuggestions(query) {
                 }
             }
 
-            const refDate = state.selectedDate || getTodayString();
-            const aRecent = findMostRecentOccurrence(a.name, refDate);
-            const bRecent = findMostRecentOccurrence(b.name, refDate);
-            const aBlocked = aRecent && Math.abs(aRecent.daysDifference) >= 1 && Math.abs(aRecent.daysDifference) <= ROTATION_WARNING_DAYS;
-            const bBlocked = bRecent && Math.abs(bRecent.daysDifference) >= 1 && Math.abs(bRecent.daysDifference) <= ROTATION_WARNING_DAYS;
-
-            if (aBlocked !== bBlocked) {
-                return aBlocked ? 1 : -1;
-            }
-
             return a.name.localeCompare(b.name, 'de', { sensitivity: 'base' });
         });
 }

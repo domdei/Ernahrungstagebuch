@@ -941,12 +941,19 @@ select:focus {
   margin-top: 14px;
 }
 
-.filter-row label {
+.filter-row label,
+.filter-row .filter-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-weight: 600;
   min-width: 140px;
+}
+
+.filter-row .category-chip-wrap {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .history-list {

@@ -15,7 +15,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.0.45" />
+    <link rel="stylesheet" href="./styles.css?v=1.0.47" />
     <script>
       (function() {
         try {
@@ -162,21 +162,53 @@
               <span>Datum bis</span>
               <input id="filterToDate" type="date" />
             </label>
-            <label>
+            <div class="filter-field">
               <span>Kategorie</span>
-              <select id="filterCategory">
-                <option value="all">Alle</option>
-              </select>
-            </label>
-            <label>
+              <div class="category-chip-wrap">
+                <button id="historyCategoryChipButton" class="category-chip-btn" type="button" aria-label="Verlauf nach Kategorie filtern" title="Kategorie filtern">
+                  <span class="category-chip-icon">🏷️</span>
+                  <span id="historyCategoryChipText" class="category-chip-text">Alle Kategorien</span>
+                  <span class="category-chip-arrow">▾</span>
+                </button>
+                <select id="filterCategory" class="hidden-category-select" tabindex="-1" aria-label="Kategorie auswählen">
+                  <option value="all">Alle</option>
+                </select>
+                <button
+                  id="historyCategoryClearButton"
+                  class="category-reset-btn hidden"
+                  type="button"
+                  aria-label="Kategorie-Filter zurücksetzen"
+                  title="Kategorie auf Alle zurücksetzen"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            <div class="filter-field">
               <span>Status</span>
-              <select id="filterStatus">
-                <option value="all">Alle</option>
-                <option value="green">Grün</option>
-                <option value="orange">Orange</option>
-                <option value="red">Rot</option>
-              </select>
-            </label>
+              <div class="category-chip-wrap">
+                <button id="historyStatusChipButton" class="category-chip-btn" type="button" aria-label="Verlauf nach Status filtern" title="Status filtern">
+                  <span class="category-chip-icon">🚦</span>
+                  <span id="historyStatusChipText" class="category-chip-text">Alle Status</span>
+                  <span class="category-chip-arrow">▾</span>
+                </button>
+                <select id="filterStatus" class="hidden-category-select" tabindex="-1" aria-label="Status auswählen">
+                  <option value="all">Alle</option>
+                  <option value="green">Grün</option>
+                  <option value="orange">Orange</option>
+                  <option value="red">Rot</option>
+                </select>
+                <button
+                  id="historyStatusClearButton"
+                  class="category-reset-btn hidden"
+                  type="button"
+                  aria-label="Status-Filter zurücksetzen"
+                  title="Status auf Alle zurücksetzen"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
           </div>
 
           <div id="historyList" class="history-list"></div>
@@ -259,7 +291,7 @@
           <h3 id="categoryModalTitle">Kategorie auswählen</h3>
           <button id="categoryModalCloseButton" class="icon-button small-icon-button modal-close-btn" type="button" aria-label="Schließen" title="Schließen">✕</button>
         </div>
-        <p class="modal-description">Wähle eine Kategorie, um die Lebensmittelsuche einzugrenzen.</p>
+        <p id="categoryModalDescription" class="modal-description">Wähle eine Kategorie, um die Anzeige einzugrenzen.</p>
         <div id="categoryModalGrid" class="category-modal-grid"></div>
       </div>
     </div>
@@ -268,6 +300,6 @@
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script type="module" src="./app.js?v=1.0.45"></script>
+    <script type="module" src="./app.js?v=1.0.47"></script>
   </body>
 </html>

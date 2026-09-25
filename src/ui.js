@@ -1,5 +1,5 @@
 import { THEME_STORAGE_KEY, escapeHtml, formatFriendlyDate, formatShortFriendlyDate, toStatusLabel, MAX_SUGGESTIONS, getTodayString } from './utils.js';
-import { state, ui, isMobileView } from './state.js';
+import { state, ui, isMobileView, getDefaultHistoryFromDate } from './state.js';
 import {
     getFoodByName,
     getWarningsForFood,
@@ -96,6 +96,44 @@ export function updateCategoryClearButton() {
     updateSearchFilterBarVisibility();
 }
 
+export function updateHistoryCategoryFilterUI() {
+    const hasFilter = Boolean(state.filterCategory && state.filterCategory !== 'all');
+    if (ui.filterCategory) {
+        ui.filterCategory.value = state.filterCategory || 'all';
+    }
+    if (ui.historyCategoryClearButton) {
+        ui.historyCategoryClearButton.classList.toggle('hidden', !hasFilter);
+    }
+    if (ui.historyCategoryChipButton) {
+        ui.historyCategoryChipButton.classList.toggle('has-filter', hasFilter);
+    }
+    if (ui.historyCategoryChipText) {
+        ui.historyCategoryChipText.textContent = hasFilter ? state.filterCategory : 'Alle Kategorien';
+    }
+}
+
+export function updateHistoryStatusFilterUI() {
+    const hasFilter = Boolean(state.filterStatus && state.filterStatus !== 'all');
+    if (ui.filterStatus) {
+        ui.filterStatus.value = state.filterStatus || 'all';
+    }
+    if (ui.historyStatusClearButton) {
+        ui.historyStatusClearButton.classList.toggle('hidden', !hasFilter);
+    }
+    if (ui.historyStatusChipButton) {
+        ui.historyStatusChipButton.classList.toggle('has-filter', hasFilter);
+    }
+    if (ui.historyStatusChipText) {
+        const labels = {
+            all: 'Alle Status',
+            green: 'Grün',
+            orange: 'Orange',
+            red: 'Rot',
+        };
+        ui.historyStatusChipText.textContent = hasFilter ? labels[state.filterStatus] || state.filterStatus : 'Alle Status';
+    }
+}
+
 export function updateGreenFilterUI() {
     if (ui.onlyFreshGreenFoods) {
         ui.onlyFreshGreenFoods.setAttribute('aria-pressed', String(state.onlyFreshGreen));
@@ -126,6 +164,7 @@ export function createCategoryOptions() {
     if (ui.filterCategory) {
         ui.filterCategory.innerHTML = categoryOptions;
         ui.filterCategory.value = categories.includes(currentFilter) ? currentFilter : 'all';
+        state.filterCategory = ui.filterCategory.value;
     }
 
     const currentSearch = ui.searchCategory ? ui.searchCategory.value : 'all';
@@ -135,6 +174,7 @@ export function createCategoryOptions() {
         state.searchCategory = ui.searchCategory.value;
     }
     updateCategoryClearButton();
+    updateHistoryCategoryFilterUI();
 }
 
 export function renderFoodChipHtml(foodName, selectedDate) {
@@ -295,6 +335,19 @@ export function updateHistoryControls() {
         const filterTitle = state.historyMode ? 'Filter ausblenden' : 'Historie filtern';
         ui.historyModeToggle.setAttribute('title', filterTitle);
         ui.historyModeToggle.setAttribute('aria-label', filterTitle);
+
+        if (!state.historyMode) {
+            state.filterFromDate = getDefaultHistoryFromDate();
+            state.filterToDate = getTodayString();
+            state.filterCategory = 'all';
+            state.filterStatus = 'all';
+            if (ui.filterFromDate) ui.filterFromDate.value = state.filterFromDate;
+            if (ui.filterToDate) ui.filterToDate.value = state.filterToDate;
+            if (ui.filterCategory) ui.filterCategory.value = 'all';
+            if (ui.filterStatus) ui.filterStatus.value = 'all';
+            updateHistoryCategoryFilterUI();
+            updateHistoryStatusFilterUI();
+        }
     }
 
     if (ui.historyDeleteToggle) {
@@ -417,6 +470,8 @@ export function renderEverything(isSearchOverlayOpen = false) {
         ui.filterToDate.value = state.filterToDate;
     }
     createCategoryOptions();
+    updateHistoryCategoryFilterUI();
+    updateHistoryStatusFilterUI();
     renderSelectedFoods();
     updateOverlaySelectedFoods();
     updateSearchDoneButton();
