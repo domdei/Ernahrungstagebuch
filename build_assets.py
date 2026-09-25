@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 DATA_FILE = ROOT / 'data.md'
-JSON_OUT = ROOT / 'food-data.json'
+JSON_OUT = ROOT / 'food-tolerance.json'
 ICONS_DIR = ROOT / 'icons'
 
 

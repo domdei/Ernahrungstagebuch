@@ -40,8 +40,8 @@ Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft a
 - [sw.js](sw.js): Service Worker für Caching und Offlinebetrieb.
 - [version.json](version.json): Versionsnummer der App.
 - [data.md](data.md): Quelldatei der Lebensmittel als Tabelle.
-- [build_assets.py](build_assets.py): Erzeugt [food-data.json](food-data.json) aus [data.md](data.md) und ermöglicht Version-Bumps.
-- [food-data.json](food-data.json): Von der App geladene Lebensmittel-Datenbank.
+- [build_assets.py](build_assets.py): Erzeugt [food-tolerance.json](food-tolerance.json) aus [data.md](data.md) und ermöglicht Version-Bumps.
+- [food-tolerance.json](food-tolerance.json): Von der App geladene Lebensmittel-Datenbank.
 - icons/: App-Symbole für Mobilgeräte.
 
 ## Lokale Ausführung
@@ -80,7 +80,7 @@ http://localhost:8001/
 ## Datenbasis pflegen & Versionieren
 
 1. Öffne [data.md](data.md) und passe die Tabelle an (`Kategorie,Lebensmittel,Status`).
-2. Führe das Build-Skript aus, um [food-data.json](food-data.json) zu aktualisieren:
+2. Führe das Build-Skript aus, um [food-tolerance.json](food-tolerance.json) zu aktualisieren:
 
 ```bash
 python build_assets.py

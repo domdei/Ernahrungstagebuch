@@ -55,7 +55,7 @@ Das ist eine statische PWA-Variante und funktioniert ohne Server, ohne Node.js u
    - app.js
    - manifest.json
    - sw.js
-   - food-data.json
+   - food-tolerance.json
    - optional: offline.html
 3. Lade den Ordner in ein GitHub-Repository hoch.
 4. Melde dich bei Cloudflare an und öffne “Workers & Pages”.
