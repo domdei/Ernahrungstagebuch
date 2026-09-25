@@ -4,7 +4,8 @@ import {
     debounce,
     generateEntryId,
     normalizeText,
-    normalizeTolerance,
+    getFoodTolerance,
+    toStateFood,
 } from './src/utils.js';
 import {
     restoreEntries,
@@ -68,8 +69,8 @@ import {
     promptFoodDeleteConfirmation,
     promptTolerancesImportAction,
 } from './src/modals.js';
+import { bindInstallPrompt, registerServiceWorker } from './src/pwa.js';
 
-let deferredPrompt = null;
 let isSearchOverlayOpen = false;
 
 function openSearchOverlay(preventKeyboard = false) {
@@ -81,7 +82,6 @@ function openSearchOverlay(preventKeyboard = false) {
     }
 
     isSearchOverlayOpen = true;
-    state.isSearchOverlayOpen = true;
     document.body.classList.add('search-overlay-active');
     updateSearchClearButton();
     updateOverlaySelectedFoods();
@@ -106,7 +106,6 @@ function closeSearchOverlay(fromPopState = false) {
     }
 
     isSearchOverlayOpen = false;
-    state.isSearchOverlayOpen = false;
     document.body.classList.remove('search-overlay-active');
     if (ui.foodSearch) {
         ui.foodSearch.blur();
@@ -227,7 +226,7 @@ function executeSaveEntries() {
         .filter(Boolean)
         .filter((food) => !existingNames.has(food.name.toLowerCase()))
         .map((food) => {
-            const tol = food.tolerance || food.status || 'green';
+            const tol = getFoodTolerance(food);
             return {
                 id: generateEntryId(),
                 date,
@@ -300,10 +299,7 @@ async function handleImport(event) {
             state.entries = imported;
             if (nextFoods && nextFoods.length > 0) {
                 await idbSetAllFoods(nextFoods);
-                state.foods = nextFoods.map((f) => {
-                    const tol = normalizeTolerance(f.tolerance ?? f.status);
-                    return { name: f.name, category: f.category || 'Sonstiges', tolerance: tol, status: tol };
-                });
+                state.foods = nextFoods.map(toStateFood);
             }
         } else if (choice === 'merge') {
             const existingKeys = new Set(
@@ -319,10 +315,7 @@ async function handleImport(event) {
                     await idbPutFood(item);
                 }
                 const reloaded = await idbGetAllFoods();
-                state.foods = reloaded.map((f) => {
-                    const tol = normalizeTolerance(f.tolerance ?? f.status);
-                    return { name: f.name, category: f.category || 'Sonstiges', tolerance: tol, status: tol };
-                });
+                state.foods = reloaded.map(toStateFood);
             }
         }
 
@@ -362,19 +355,13 @@ async function handleTolerancesImport(event) {
         const choice = await promptTolerancesImportAction(importedFoods.length, state.foods.length);
         if (choice === 'replace') {
             await idbSetAllFoods(importedFoods);
-            state.foods = importedFoods.map((f) => {
-                const tol = normalizeTolerance(f.tolerance ?? f.status);
-                return { name: f.name, category: f.category || 'Sonstiges', tolerance: tol, status: tol };
-            });
+            state.foods = importedFoods.map(toStateFood);
         } else if (choice === 'merge') {
             for (const item of importedFoods) {
                 await idbPutFood(item);
             }
             const reloaded = await idbGetAllFoods();
-            state.foods = reloaded.map((f) => {
-                const tol = normalizeTolerance(f.tolerance ?? f.status);
-                return { name: f.name, category: f.category || 'Sonstiges', tolerance: tol, status: tol };
-            });
+            state.foods = reloaded.map(toStateFood);
         }
 
         createCategoryOptions();
@@ -394,54 +381,6 @@ async function handleTolerancesImport(event) {
 const debouncedSearch = debounce(() => {
     renderSuggestionList(ui.foodSearch ? ui.foodSearch.value.trim() : '', isSearchOverlayOpen);
 }, 120);
-
-function bindInstallPrompt() {
-    window.addEventListener('beforeinstallprompt', (event) => {
-        event.preventDefault();
-        deferredPrompt = event;
-        if (ui.installButton) {
-            ui.installButton.classList.remove('hidden');
-        }
-    });
-
-    if (ui.installButton) {
-        ui.installButton.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                return;
-            }
-
-            deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
-            deferredPrompt = null;
-            ui.installButton.classList.add('hidden');
-        });
-    }
-}
-
-function registerServiceWorker() {
-    if (!('serviceWorker' in navigator)) {
-        return;
-    }
-
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').then((registration) => {
-            registration.addEventListener('updatefound', () => {
-                const installingWorker = registration.installing;
-                if (!installingWorker) {
-                    return;
-                }
-
-                installingWorker.addEventListener('statechange', () => {
-                    if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        console.info('Service Worker-Update installiert und aktiv.');
-                    }
-                });
-            });
-        }).catch((error) => {
-            console.error('Service Worker konnte nicht registriert werden:', error);
-        });
-    });
-}
 
 function bindEvents() {
     if (ui.foodSearch) {
@@ -1052,7 +991,7 @@ function bindEvents() {
                 const foodName = pill.dataset.name;
                 const newTol = pill.dataset.tol;
                 const food = state.foods.find((f) => f.name === foodName);
-                if (food && (food.tolerance || food.status) !== newTol) {
+                if (food && getFoodTolerance(food) !== newTol) {
                     food.tolerance = newTol;
                     food.status = newTol;
                     await idbPutFood(food);

@@ -1,4 +1,4 @@
-import { ROTATION_WARNING_DAYS, diffInDays, normalizeText, getTodayString } from './utils.js';
+import { ROTATION_WARNING_DAYS, diffInDays, normalizeText, getTodayString, getFoodTolerance } from './utils.js';
 import { state } from './state.js';
 
 export function getFoodByName(name) {
@@ -86,7 +86,7 @@ export function getWarningsForFood(foodName, selectedDate) {
         }
     }
 
-    const tolerance = food.tolerance || food.status;
+    const tolerance = getFoodTolerance(food);
     if (tolerance === 'orange' || tolerance === 'red') {
         warnings.push({
             kind: 'red',
@@ -120,7 +120,7 @@ export function getSuggestions(query) {
         .filter((food) => {
             const matchesCategory = category === 'all' || food.category === category;
             const matchesQuery = !normalizedQuery || normalizeText(food.name).includes(normalizedQuery);
-            const matchesGreenFilter = !onlyFreshGreen || ((food.tolerance || food.status) === 'green' && isFoodAvailableForSelectedDate(food.name, selectedDateValue));
+            const matchesGreenFilter = !onlyFreshGreen || (getFoodTolerance(food) === 'green' && isFoodAvailableForSelectedDate(food.name, selectedDateValue));
             return matchesCategory && matchesQuery && matchesGreenFilter;
         })
         .sort((a, b) => {

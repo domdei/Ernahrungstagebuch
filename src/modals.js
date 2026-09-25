@@ -1,5 +1,5 @@
 import { state, ui } from './state.js';
-import { escapeHtml, normalizeText, toToleranceLabel } from './utils.js';
+import { escapeHtml, normalizeText, toToleranceLabel, getFoodTolerance } from './utils.js';
 
 let onConfirmSaveCallback = null;
 
@@ -291,7 +291,7 @@ export function renderFoodManagerList() {
     const filtered = state.foods.filter((food) => {
         const matchesQuery = !query || normalizeText(food.name).includes(query);
         const matchesCategory = category === 'all' || food.category === category;
-        const matchesTol = tolerance === 'all' || (food.tolerance || food.status) === tolerance;
+        const matchesTol = tolerance === 'all' || getFoodTolerance(food) === tolerance;
         return matchesQuery && matchesCategory && matchesTol;
     });
 
@@ -307,7 +307,7 @@ export function renderFoodManagerList() {
 
     ui.foodManagerList.innerHTML = filtered
         .map((food) => {
-            const tol = food.tolerance || food.status || 'green';
+            const tol = getFoodTolerance(food);
             return `
         <div class="food-item-row" data-name="${escapeHtml(food.name)}">
           <div class="food-item-info">
@@ -338,7 +338,7 @@ export function openFoodForm(food = null) {
         if (ui.foodFormName) ui.foodFormName.value = food.name;
         if (ui.foodFormCategory) ui.foodFormCategory.value = food.category;
         if (ui.foodFormOriginalName) ui.foodFormOriginalName.value = food.name;
-        const tol = food.tolerance || food.status || 'green';
+        const tol = getFoodTolerance(food);
         const radio = ui.foodFormContainer.querySelector(`input[name="foodFormTolerance"][value="${tol}"]`);
         if (radio) radio.checked = true;
     } else {

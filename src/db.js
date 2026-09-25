@@ -9,9 +9,11 @@ import {
     THEME_STORAGE_KEY,
     FOOD_DB_PATH,
     APP_VERSION_PATH,
-    normalizeStatus,
     normalizeTolerance,
     normalizeText,
+    getFoodTolerance,
+    normalizeFoodRecord,
+    toStateFood,
     getBackupFilename,
     getTolerancesBackupFilename,
     downloadBlob,
@@ -66,11 +68,7 @@ export async function idbGetAllFoods() {
 export async function idbPutFood(foodItem) {
     try {
         const db = await openDatabase();
-        const record = {
-            name: String(foodItem.name || '').trim(),
-            category: String(foodItem.category || 'Sonstiges').trim(),
-            tolerance: normalizeTolerance(foodItem.tolerance ?? foodItem.status),
-        };
+        const record = normalizeFoodRecord(foodItem);
         if (!record.name) {
             throw new Error('Name ist erforderlich');
         }
@@ -111,13 +109,9 @@ export async function idbSetAllFoods(foodArray) {
             const store = tx.objectStore(IDB_STORE_FOOD_TOLERANCES);
             store.clear();
             for (const item of foodArray) {
-                const name = String(item.name || '').trim();
-                if (!name) continue;
-                store.put({
-                    name,
-                    category: String(item.category || 'Sonstiges').trim(),
-                    tolerance: normalizeTolerance(item.tolerance ?? item.status),
-                });
+                const record = normalizeFoodRecord(item);
+                if (!record.name) continue;
+                store.put(record);
             }
             tx.oncomplete = () => resolve(true);
             tx.onerror = () => reject(tx.error);
@@ -254,11 +248,7 @@ export async function loadFoodDatabase() {
         try {
             const response = await fetch(FOOD_DB_PATH);
             const defaultFoods = await response.json();
-            const normalized = defaultFoods.map((food) => ({
-                name: String(food.name || '').trim(),
-                category: String(food.category || 'Sonstiges').trim(),
-                tolerance: normalizeTolerance(food.tolerance ?? food.status),
-            }));
+            const normalized = defaultFoods.map(normalizeFoodRecord);
             await idbSetAllFoods(normalized);
             foods = normalized;
             isFirstRun = true;
@@ -268,15 +258,7 @@ export async function loadFoodDatabase() {
         }
     }
 
-    state.foods = foods.map((food) => {
-        const tol = normalizeTolerance(food.tolerance ?? food.status);
-        return {
-            name: food.name,
-            category: food.category,
-            tolerance: tol,
-            status: tol,
-        };
-    });
+    state.foods = foods.map(toStateFood);
 
     if (isFirstRun && !localStorage.getItem('food_tolerances_notice_dismissed')) {
         const noticeEl = document.getElementById('firstRunNotice');
@@ -290,18 +272,9 @@ export async function resetFoodTolerancesToDefault() {
     try {
         const response = await fetch(FOOD_DB_PATH);
         const defaultFoods = await response.json();
-        const normalized = defaultFoods.map((food) => ({
-            name: String(food.name || '').trim(),
-            category: String(food.category || 'Sonstiges').trim(),
-            tolerance: normalizeTolerance(food.tolerance ?? food.status),
-        }));
+        const normalized = defaultFoods.map(normalizeFoodRecord);
         await idbSetAllFoods(normalized);
-        state.foods = normalized.map((f) => ({
-            name: f.name,
-            category: f.category,
-            tolerance: f.tolerance,
-            status: f.tolerance,
-        }));
+        state.foods = normalized.map(toStateFood);
         return true;
     } catch (e) {
         console.error('Fehler beim Zurücksetzen der Lebensmittel:', e);
@@ -362,26 +335,15 @@ export function updateStorageStatus(persisted) {
     }
 }
 
-export async function exportJsonBackup() {
-    const fileName = getBackupFilename(new Date(), true);
-    const payload = JSON.stringify({
-        version: '1.1.0',
-        exportedAt: new Date().toISOString(),
-        entries: state.entries,
-        foodTolerances: state.foods.map((food) => ({
-            name: food.name,
-            category: food.category,
-            tolerance: food.tolerance || food.status || 'green',
-        })),
-    }, null, 2);
-
+// Tries the native save-file picker, then Web Share, then falls back to a plain download.
+async function saveOrShareBackup(payload, fileName, { pickerDescription, shareTitle, shareText }) {
     if (window.showSaveFilePicker && typeof window.showSaveFilePicker === 'function') {
         try {
             const handle = await window.showSaveFilePicker({
                 suggestedName: fileName,
                 types: [
                     {
-                        description: 'JSON-Backup',
+                        description: pickerDescription,
                         accept: { 'application/json': ['.json'] },
                     },
                 ],
@@ -405,8 +367,8 @@ export async function exportJsonBackup() {
             const backupFile = new File([blob], fileName, { type: mimeType });
             if (navigator.canShare && navigator.canShare({ files: [backupFile] })) {
                 await navigator.share({
-                    title: 'Ernährungstagebuch Backup',
-                    text: `Backup vom ${new Date().toLocaleDateString('de-DE')}`,
+                    title: shareTitle,
+                    text: shareText,
                     files: [backupFile],
                 });
                 return;
@@ -422,6 +384,26 @@ export async function exportJsonBackup() {
     downloadBlob(blob, fileName);
 }
 
+export async function exportJsonBackup() {
+    const fileName = getBackupFilename(new Date(), true);
+    const payload = JSON.stringify({
+        version: '1.1.0',
+        exportedAt: new Date().toISOString(),
+        entries: state.entries,
+        foodTolerances: state.foods.map((food) => ({
+            name: food.name,
+            category: food.category,
+            tolerance: getFoodTolerance(food),
+        })),
+    }, null, 2);
+
+    await saveOrShareBackup(payload, fileName, {
+        pickerDescription: 'JSON-Backup',
+        shareTitle: 'Ernährungstagebuch Backup',
+        shareText: `Backup vom ${new Date().toLocaleDateString('de-DE')}`,
+    });
+}
+
 export async function exportTolerancesBackup() {
     const fileName = getTolerancesBackupFilename(new Date(), true);
     const payload = JSON.stringify({
@@ -431,55 +413,15 @@ export async function exportTolerancesBackup() {
         foods: state.foods.map((food) => ({
             name: food.name,
             category: food.category,
-            tolerance: food.tolerance || food.status || 'green',
+            tolerance: getFoodTolerance(food),
         })),
     }, null, 2);
 
-    if (window.showSaveFilePicker && typeof window.showSaveFilePicker === 'function') {
-        try {
-            const handle = await window.showSaveFilePicker({
-                suggestedName: fileName,
-                types: [
-                    {
-                        description: 'JSON-Lebensmittel-Toleranzen',
-                        accept: { 'application/json': ['.json'] },
-                    },
-                ],
-            });
-            const writable = await handle.createWritable();
-            await writable.write(payload);
-            await writable.close();
-            return;
-        } catch (error) {
-            if (error && error.name === 'AbortError') {
-                return;
-            }
-            console.warn('showSaveFilePicker fehlgeschlagen, versuche Web Share:', error);
-        }
-    }
-
-    const blob = new Blob([payload], { type: 'application/json' });
-    const candidateTypes = ['application/json', 'text/plain'];
-    for (const mimeType of candidateTypes) {
-        try {
-            const backupFile = new File([blob], fileName, { type: mimeType });
-            if (navigator.canShare && navigator.canShare({ files: [backupFile] })) {
-                await navigator.share({
-                    title: 'Lebensmittel & Verträglichkeiten',
-                    text: `Export vom ${new Date().toLocaleDateString('de-DE')}`,
-                    files: [backupFile],
-                });
-                return;
-            }
-        } catch (error) {
-            if (error && error.name === 'AbortError') {
-                return;
-            }
-            console.warn(`Share mit ${mimeType} fehlgeschlagen:`, error);
-        }
-    }
-
-    downloadBlob(blob, fileName);
+    await saveOrShareBackup(payload, fileName, {
+        pickerDescription: 'JSON-Lebensmittel-Toleranzen',
+        shareTitle: 'Lebensmittel & Verträglichkeiten',
+        shareText: `Export vom ${new Date().toLocaleDateString('de-DE')}`,
+    });
 }
 
 export function parseImportedJson(content) {
@@ -520,7 +462,7 @@ export function normalizeImportedEntry(entry, getFoodByNameFn) {
     }
 
     const food = getFoodByNameFn ? getFoodByNameFn(name) : state.foods.find((item) => normalizeText(item.name) === normalizeText(name));
-    const tol = normalizeTolerance(entry.tolerance || entry.status || (food ? (food.tolerance || food.status) : 'green'));
+    const tol = normalizeTolerance(entry.tolerance || entry.status || getFoodTolerance(food));
     return {
         id: entry.id || generateEntryId(),
         date: entry.date || entry.day || getTodayString(),

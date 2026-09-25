@@ -1,4 +1,4 @@
-import { THEME_STORAGE_KEY, escapeHtml, formatFriendlyDate, formatShortFriendlyDate, toStatusLabel, MAX_SUGGESTIONS, getTodayString } from './utils.js';
+import { THEME_STORAGE_KEY, escapeHtml, formatFriendlyDate, formatShortFriendlyDate, toStatusLabel, MAX_SUGGESTIONS, getTodayString, getFoodTolerance } from './utils.js';
 import { state, ui, isMobileView, getDefaultHistoryFromDate } from './state.js';
 import {
     getFoodByName,
@@ -179,7 +179,7 @@ export function createCategoryOptions() {
 
 export function renderFoodChipHtml(foodName, selectedDate) {
     const food = getFoodByName(foodName);
-    const status = food ? (food.tolerance || food.status) : 'green';
+    const status = getFoodTolerance(food);
     const warnings = getWarningsForFood(foodName, selectedDate);
     const recentLabel = getRecentMealLabel(foodName, selectedDate);
     const recentTitle = getRecentMealTitle(recentLabel);
@@ -247,7 +247,7 @@ export function renderSelectedFoods() {
 }
 
 export function renderSuggestionList(query, isSearchOverlayOpen = false) {
-    const isOverlay = isSearchOverlayOpen || state.isSearchOverlayOpen;
+    const isOverlay = isSearchOverlayOpen;
     const allResults = getSuggestions(query);
     const results = query ? allResults.slice(0, MAX_SUGGESTIONS) : allResults;
 
@@ -304,7 +304,7 @@ export function renderSuggestionList(query, isSearchOverlayOpen = false) {
             <span class="tag">${escapeHtml(food.category)}</span>
             ${statusChip}
           </div>
-          <span class="status-dot status-${food.tolerance || food.status}" title="${toStatusLabel(food.tolerance || food.status)}"></span>
+          <span class="status-dot status-${getFoodTolerance(food)}" title="${toStatusLabel(getFoodTolerance(food))}"></span>
         </button>
       `;
         })
@@ -314,7 +314,7 @@ export function renderSuggestionList(query, isSearchOverlayOpen = false) {
 }
 
 export function renderSuggestions(isSearchOverlayOpen = false) {
-    const isOverlay = isSearchOverlayOpen || state.isSearchOverlayOpen;
+    const isOverlay = isSearchOverlayOpen;
     const query = ui.foodSearch ? ui.foodSearch.value.trim() : '';
     const isSearchFocused = document.activeElement === ui.foodSearch || ui.foodSearch?.matches(':focus');
     if (!query && !isSearchFocused && !isOverlay) {

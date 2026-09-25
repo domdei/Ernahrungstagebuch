@@ -22,7 +22,6 @@ export const state = {
     foodManagerTolerance: 'all',
     historyMode: false,
     historyDeleteMode: false,
-    isSearchOverlayOpen: false,
 };
 
 export const ui = {
