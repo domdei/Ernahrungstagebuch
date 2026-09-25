@@ -15,7 +15,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.1.0" />
+    <link rel="stylesheet" href="./styles.css?v=1.1.2" />
     <script>
       (function() {
         try {
@@ -79,8 +79,8 @@
                 id="searchCloseButton"
                 class="icon-button search-close-button"
                 type="button"
-                aria-label="Suche schließen"
-                title="Suche schließen"
+                aria-label="Zurück zur Übersicht"
+                title="Zurück zur Übersicht"
               >
                 ←
               </button>
@@ -254,11 +254,9 @@
             </button>
             <div class="settings-action-pair">
               <button id="exportTolerancesButton" class="settings-action-btn" type="button">
-                <span class="settings-btn-icon">↑</span>
                 <span>Exportieren</span>
               </button>
               <label class="settings-action-btn import-action-btn">
-                <span class="settings-btn-icon">↓</span>
                 <span>Importieren</span>
                 <input id="importTolerancesFile" type="file" accept=".json" />
               </label>
@@ -272,25 +270,19 @@
             <h4>Datensicherung (Tagebuch)</h4>
             <div class="settings-action-pair">
               <button id="exportJsonButton" class="settings-action-btn" type="button">
-                <span class="settings-btn-icon">↑</span>
-                <span>Backup exportieren</span>
+                <span>Exportieren</span>
               </button>
               <label class="settings-action-btn import-action-btn">
-                <span class="settings-btn-icon">↓</span>
                 <span>Importieren</span>
                 <input id="importFile" type="file" accept=".json" />
               </label>
             </div>
           </div>
           <div class="settings-section">
-            <h4>Speicherstatus &amp; Info</h4>
-            <div class="version-row">
-              <span class="version-label">Browser-Speicher:</span>
-              <strong id="storageStatus">Standard</strong>
-            </div>
+            <h4>Info</h4>
             <div class="version-row">
               <span class="version-label">Version:</span>
-              <strong id="appVersion">1.1.0</strong>
+              <strong id="appVersion">1.1.2</strong>
             </div>
           </div>
         </div>
@@ -385,7 +377,7 @@
                 ✕
               </button>
             </div>
-            <button id="openAddFoodBtn" class="primary-button food-add-btn" type="button">+ Neu</button>
+            <button id="openAddFoodBtn" class="food-add-btn" type="button">+ Neu</button>
           </div>
         </div>
 
@@ -446,6 +438,6 @@
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script type="module" src="./app.js?v=1.1.0"></script>
+    <script type="module" src="./app.js?v=1.1.2"></script>
   </body>
 </html>
