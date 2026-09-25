@@ -104,7 +104,41 @@ def write_icons() -> None:
         (ICONS_DIR / f'icon-{size}.png').write_bytes(png_bytes)
 
 
+def bump_version() -> str:
+    version_file = ROOT / 'version.json'
+    index_file = ROOT / 'index.html'
+    sw_file = ROOT / 'sw.js'
+
+    v_data = json.loads(version_file.read_text(encoding='utf-8'))
+    current_v = v_data.get('version', '1.0.0')
+    parts = current_v.split('.')
+    parts[-1] = str(int(parts[-1]) + 1)
+    new_v = '.'.join(parts)
+    v_data['version'] = new_v
+    version_file.write_text(json.dumps(v_data, indent=2) + '\n', encoding='utf-8')
+
+    # index.html anpassen
+    index_text = index_file.read_text(encoding='utf-8')
+    index_text = re.sub(r'styles\.css\?v=[^"]+', f'styles.css?v={new_v}', index_text)
+    index_text = re.sub(r'app\.js\?v=[^"]+', f'app.js?v={new_v}', index_text)
+    index_file.write_text(index_text, encoding='utf-8')
+
+    # sw.js anpassen
+    sw_text = sw_file.read_text(encoding='utf-8')
+    v_num = parts[-1]
+    sw_text = re.sub(r"CACHE_NAME = 'ernaehrungstagebuch-pwa-v\d+';", f"CACHE_NAME = 'ernaehrungstagebuch-pwa-v{v_num}';", sw_text)
+    sw_text = re.sub(r'styles\.css\?v=[^\']+', f'styles.css?v={new_v}', sw_text)
+    sw_text = re.sub(r'app\.js\?v=[^\']+', f'app.js?v={new_v}', sw_text)
+    sw_file.write_text(sw_text, encoding='utf-8')
+
+    print(f'Bumped version to {new_v} (sw-cache: v{v_num})')
+    return new_v
+
+
 if __name__ == '__main__':
+    import sys
+    if '--bump' in sys.argv:
+        bump_version()
     records = parse_food_data()
     write_food_json(records)
     # write_icons()  # Deaktiviert, um die benutzerdefinierten Icons nicht zu überschreiben

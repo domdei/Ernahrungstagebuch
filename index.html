@@ -15,7 +15,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.0.28" />
+    <link rel="stylesheet" href="./styles.css?v=1.0.31" />
     <script>
       (function() {
         try {
@@ -108,20 +108,16 @@
                   id="searchDoneButton"
                   class="search-done-button"
                   type="button"
-                  aria-label="Auswahl abschließen"
-                  title="Auswahl abschließen"
+                  aria-label="Einträge speichern"
+                  title="Einträge speichern"
                 >
-                  Fertig
+                  Speichern
                 </button>
               </div>
               <div id="overlaySelectedFoods" class="overlay-selected-foods hidden" aria-live="polite"></div>
               <div id="suggestions" class="suggestions" aria-live="polite"></div>
             </div>
           </div>
-
-          <div id="selectedFoods" class="selected-foods" aria-live="polite"></div>
-
-          <button id="saveButton" class="primary-button wide-button" type="button">Einträge speichern</button>
         </section>
 
         <section class="panel overview-panel">
@@ -255,6 +251,6 @@
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script src="./app.js?v=1.0.28" defer></script>
+    <script type="module" src="./app.js?v=1.0.31"></script>
   </body>
 </html>

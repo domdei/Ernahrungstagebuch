@@ -419,11 +419,60 @@ select:focus {
 }
 
 .search-done-button {
-  display: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  height: 44px;
+  min-height: 44px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+}
+
+.search-done-button:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.search-done-button:active {
+  transform: scale(0.96);
+}
+
+.search-done-button.hidden {
+  display: none !important;
 }
 
 .overlay-selected-foods {
-  display: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 4px 6px;
+  margin-top: 8px;
+  min-height: 44px;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+.overlay-selected-foods.hidden {
+  display: none !important;
+}
+
+.overlay-selected-foods .selection-chip {
+  padding: 0.45rem 0.8rem;
+  font-size: 0.88rem;
+  line-height: 1.2;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .suggestions {
@@ -1434,12 +1483,5 @@ select:focus {
 
   .panel {
     padding: 16px;
-  }
-
-  #saveButton {
-    position: sticky;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-    z-index: 40;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   }
 }

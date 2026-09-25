@@ -6,7 +6,10 @@ Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft a
 
 - **4-Tage-Rotationswarnung:** Warnt, wenn ein Lebensmittel in den letzten 3 Tagen gegessen wurde. Ab Tag 5 ist es wieder ohne Warnung erlaubt.
 - **Unverträglichkeitsprüfung:** Markiert Lebensmittel nach eigener Einstufung farblich (Grün, Orange, Rot).
-- **Vollbild-Suche & Mehrfachauswahl (Mobile):** Auf Smartphones öffnet sich beim Suchen ein aufgeräumtes Vollbild-Overlay. Mehrere Zutaten können hintereinander angetippt werden, während das Suchfeld für die nächste Zutat bereitbleibt und eine obere Leiste die Auswahl anzeigt (`[ Fertig (X) ]`).
+- **Direktes Speichern aus der Suche:** Zutaten werden direkt in der Suche angetippt und über `Speichern (X)` ohne Umwege im Tagebuch abgelegt. Die Hauptseite bleibt frei von redundanten Zwischenablagen.
+- **Konflikt-Dialog beim Speichern:** Verletzt ein gewähltes Lebensmittel die Rotationsfrist oder eine Verträglichkeitsregel, erscheint beim Speichern ein Bestätigungs-Modal (Ja/Nein) mit genauer Begründung.
+- **Visuell optimierte Chips & Dark Mode:** Konfliktbehaftete Lebensmittel werden direkt am Chip durch Rahmen und Badges (`1T` / `!`) hervorgehoben. Gesperrte Lebensmittel treten im Dark Mode dezent in den Hintergrund, ohne zu blenden.
+- **Tastatur-Verhalten (Mobile):** Das mobile Vollbild-Such-Overlay öffnet sich standardmäßig ohne Bildschirmtastatur für freies Scrollen. Antippen des Suchfelds blendet die Tastatur ein/aus; nach dem Auswählen springt sie nicht ungewollt auf.
 - **Kompakter Kategorie-Filter mit Schnell-Reset (✕):** Einheitlich gestaltete Kategorieauswahl mit 1-Klick-Reset auf „Alle“.
 - **Schnellfilter (🟢):** Filtert die Suche per Knopfdruck auf verträgliche und heute rotationsfreie Lebensmittel (`Lebensmittel (gefiltert)`).
 - **Tag- und Nachtmodus (☾ / ☼):** Wechselt das Farbschema über die Kopfzeile und speichert die Wahl.
@@ -15,20 +18,26 @@ Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft a
 - **Kompakte Werkzeuge (🔍 / 🗑️):** Filterleiste und Löschmodus sitzen platzsparend als Icon-Buttons direkt neben der Überschrift „Verlauf“.
 - **Einstellungen & Backup (⚙):** Export und Import sowie Speicherstatus und Version sind aufgeräumt über das Zahnrad-Icon in der Topbar erreichbar.
 - **Intelligenter Import-Dialog:** Bietet die Wahl zwischen *Ergänzen* (mit Duplikaterkennung), *Ersetzen* und *Abbrechen* im einheitlichen App-Design.
-- **Sticky Speichern-Button:** Bleibt auf Mobilgeräten am unteren Bildschirmrand griffbereit.
 - **Moderne Browser-Datenbank (IndexedDB):** Zuverlässige, transaktionssichere Speicherung mit automatischem Schutz gegen Cache-Bereinigung (`navigator.storage.persist()`).
-- **Offlinefähig:** Lässt sich auf Android und Desktop als vollwertige PWA installieren und offline nutzen.
+- **Offlinefähig & Modular:** Vollwertige PWA mit modularem ES6-Code (`src/`) ohne Build-Tool-Ballast.
 
 ## Projektstruktur
 
 - [index.html](index.html): HTML-Gerüst der App samt Modals für Suche, Backup und Einstellungen.
 - [styles.css](styles.css): Styles für mobile Geräte und Desktop (inklusive Theme-Variablen und Responsive-Layouts).
-- [app.js](app.js): Gesamte Anwendungslogik, IndexedDB-Speicher, Rotation und PWA-Verwaltung.
+- [app.js](app.js): Einstiegspunkt und Event-Handling der Anwendung (als ES6-Modul).
+- [src/](src/): Modularer Anwendungscode:
+  - [src/state.js](src/state.js): Zentraler State (`state`), DOM-Referenzen (`ui`) und Viewport-Erkennung.
+  - [src/rotation.js](src/rotation.js): Rotationsregeln, Verträglichkeitsprüfung, Such-Scoring und Filter.
+  - [src/db.js](src/db.js): IndexedDB-Zugriff, Draft-Persistenz, Backup-Export/Import und Versionierung.
+  - [src/ui.js](src/ui.js): DOM-Rendering für Verlauf, Chips, Vorschläge, Filter und Theme-Verwaltung.
+  - [src/modals.js](src/modals.js): Bestätigungs- und Import-Dialoge.
+  - [src/utils.js](src/utils.js): Datums- und Hilfsfunktionen, Formatierung und Konstanten.
 - [manifest.json](manifest.json): PWA-Konfiguration für die Installation.
 - [sw.js](sw.js): Service Worker für Caching und Offlinebetrieb.
 - [version.json](version.json): Versionsnummer der App.
 - [data.md](data.md): Quelldatei der Lebensmittel als Tabelle.
-- [build_assets.py](build_assets.py): Erzeugt [food-data.json](food-data.json) aus [data.md](data.md).
+- [build_assets.py](build_assets.py): Erzeugt [food-data.json](food-data.json) aus [data.md](data.md) und ermöglicht Version-Bumps.
 - [food-data.json](food-data.json): Von der App geladene Lebensmittel-Datenbank.
 - icons/: App-Symbole für Mobilgeräte.
 
@@ -60,22 +69,27 @@ http://localhost:8001/
 3. Tippe auf das Lebensmittelfeld:
    - Auf dem Handy öffnet sich das Vollbild-Such-Overlay.
    - Tippe nacheinander alle Zutaten an – das Suchfeld leert sich automatisch für die nächste Eingabe.
-   - Tippe auf `Fertig`, um zurück zum Formular zu gelangen.
-4. Prüfe eventuelle Rotations- oder Unverträglichkeitswarnungen.
-5. Speichere die Auswahl mit „Einträge speichern“.
-6. Im **Verlauf** kannst du vergangene Tage aufklappen, über `🔍` filtern oder über `🗑️` unerwünschte Einträge entfernen.
-7. Über das Zahnrad `⚙` oben rechts kannst du jederzeit Backups exportieren oder wieder einspielen.
+   - Tippe auf `Speichern`, um die Auswahl direkt zu sichern und das Suchfeld zu schließen.
+4. Falls ein Lebensmittel das Rotationsprinzip verletzt oder unverträglich ist, erscheint beim Klick auf `Speichern` ein Hinweisfenster (Ja/Nein).
+5. Im **Verlauf** kannst du vergangene Tage aufklappen, über `🔍` filtern oder über `🗑️` unerwünschte Einträge entfernen.
+6. Über das Zahnrad `⚙` oben rechts kannst du jederzeit Backups exportieren oder wieder einspielen.
 
-## Datenbasis pflegen
+## Datenbasis pflegen & Versionieren
 
 1. Öffne [data.md](data.md) und passe die Tabelle an (`Kategorie,Lebensmittel,Status`).
-2. Führe das Build-Skript aus:
+2. Führe das Build-Skript aus, um [food-data.json](food-data.json) zu aktualisieren:
 
 ```bash
 python build_assets.py
 ```
 
-3. Das Skript aktualisiert [food-data.json](food-data.json) (bestehende Icons bleiben unverändert).
+3. Um ein neues Release mit automatischer Versionsanhebung und Cache-Aktualisierung zu erstellen:
+
+```bash
+python build_assets.py --bump
+```
+
+Das Skript erhöht die Versionsnummer automatisch in [version.json](version.json), aktualisiert die Cache-Buster in [index.html](index.html) und passt den Cache-Namen in [sw.js](sw.js) an.
 
 ## Hinweise
 

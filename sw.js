@@ -1,9 +1,15 @@
-const CACHE_NAME = 'ernaehrungstagebuch-pwa-v28';
+const CACHE_NAME = 'ernaehrungstagebuch-pwa-v31';
 const APP_SHELL = [
     './',
     './index.html',
-    './styles.css?v=1.0.28',
-    './app.js?v=1.0.28',
+    './styles.css?v=1.0.31',
+    './app.js?v=1.0.31',
+    './src/utils.js',
+    './src/state.js',
+    './src/db.js',
+    './src/rotation.js',
+    './src/ui.js',
+    './src/modals.js',
     './manifest.json',
     './offline.html',
     './food-data.json',
