@@ -62,6 +62,7 @@ import {
     closeFoodManagerModal,
     renderFoodManagerList,
     renderFoodManagerCategoryOptions,
+    updateFoodManagerFiltersUI,
     openFoodForm,
     closeFoodForm,
     promptFoodDeleteConfirmation,
@@ -936,14 +937,46 @@ function bindEvents() {
         });
     }
 
-    if (ui.foodManagerCategoryFilter) {
-        ui.foodManagerCategoryFilter.addEventListener('change', () => {
+    if (ui.foodManagerCategoryChipButton) {
+        ui.foodManagerCategoryChipButton.addEventListener('click', () => {
+            openCategoryModal(
+                (selectedCategory) => {
+                    state.foodManagerCategory = selectedCategory;
+                    updateFoodManagerFiltersUI();
+                    renderFoodManagerList();
+                },
+                state.foodManagerCategory || 'all',
+                'Kategorie filtern',
+                'Wähle eine Kategorie, um die Lebensmittel einzugrenzen.'
+            );
+        });
+    }
+
+    if (ui.foodManagerCategoryClearButton) {
+        ui.foodManagerCategoryClearButton.addEventListener('click', () => {
+            state.foodManagerCategory = 'all';
+            updateFoodManagerFiltersUI();
             renderFoodManagerList();
         });
     }
 
-    if (ui.foodManagerToleranceFilter) {
-        ui.foodManagerToleranceFilter.addEventListener('change', () => {
+    if (ui.foodManagerToleranceChipButton) {
+        ui.foodManagerToleranceChipButton.addEventListener('click', () => {
+            openStatusModal(
+                (selectedStatus) => {
+                    state.foodManagerTolerance = selectedStatus;
+                    updateFoodManagerFiltersUI();
+                    renderFoodManagerList();
+                },
+                state.foodManagerTolerance || 'all'
+            );
+        });
+    }
+
+    if (ui.foodManagerToleranceClearButton) {
+        ui.foodManagerToleranceClearButton.addEventListener('click', () => {
+            state.foodManagerTolerance = 'all';
+            updateFoodManagerFiltersUI();
             renderFoodManagerList();
         });
     }

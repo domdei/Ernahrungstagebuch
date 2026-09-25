@@ -1675,11 +1675,152 @@ select:focus {
 /* -------------------------------------------------------------
    Settings & Food Manager Extensions
 ------------------------------------------------------------- */
-.settings-btn-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.settings-tile-btn {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.settings-tile-btn:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.settings-tile-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.settings-tile-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.settings-tile-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.settings-tile-text strong {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.settings-tile-text small {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.settings-tile-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.settings-tile-chevron {
+  font-size: 1.2rem;
+  color: var(--muted);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.settings-action-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.settings-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-alt);
+  color: var(--text);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.settings-action-btn:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.settings-btn-icon {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--primary);
+}
+
+.import-action-btn {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+}
+
+.import-action-btn input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.settings-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-top: -2px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  align-self: center;
+}
+
+.settings-reset-btn:hover {
+  color: var(--red);
+  background: var(--red-soft);
 }
 
 .count-badge {
@@ -1692,17 +1833,6 @@ select:focus {
   color: var(--primary);
   font-size: 0.78rem;
   font-weight: 700;
-}
-
-.danger-ghost-btn {
-  color: var(--red) !important;
-  border-color: rgba(239, 68, 68, 0.25) !important;
-  text-align: center;
-}
-
-.danger-ghost-btn:hover {
-  background: var(--red-soft) !important;
-  color: var(--red) !important;
 }
 
 .food-manager-modal-card {
@@ -1755,24 +1885,15 @@ select:focus {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
-.food-manager-select {
-  flex: 1;
-  min-width: 0;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--panel-alt);
-  color: var(--text);
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
+.food-manager-filters-row .category-chip-wrap {
+  flex: 0 0 auto;
 }
 
-.food-manager-select:focus {
-  outline: none;
-  border-color: var(--primary);
+.food-manager-filters-row .food-add-btn {
+  margin-left: auto;
 }
 
 .food-add-btn {

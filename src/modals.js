@@ -226,6 +226,7 @@ export function openFoodManagerModal() {
     if (!ui.foodManagerModal) return;
     ui.foodManagerModal.classList.remove('hidden');
     renderFoodManagerCategoryOptions();
+    updateFoodManagerFiltersUI();
     renderFoodManagerList();
     closeFoodForm();
 }
@@ -237,17 +238,9 @@ export function closeFoodManagerModal() {
 }
 
 export function renderFoodManagerCategoryOptions() {
-    if (!ui.foodManagerCategoryFilter) return;
-    const currentVal = ui.foodManagerCategoryFilter.value || 'all';
     const categories = [...new Set(state.foods.map((f) => f.category))].sort((a, b) =>
         a.localeCompare(b, 'de', { sensitivity: 'base' })
     );
-    const options = [
-        '<option value="all">Alle Kategorien</option>',
-        ...categories.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`),
-    ].join('');
-    ui.foodManagerCategoryFilter.innerHTML = options;
-    ui.foodManagerCategoryFilter.value = categories.includes(currentVal) ? currentVal : 'all';
 
     if (ui.foodCategoryDatalist) {
         ui.foodCategoryDatalist.innerHTML = categories
@@ -256,12 +249,44 @@ export function renderFoodManagerCategoryOptions() {
     }
 }
 
+export function updateFoodManagerFiltersUI() {
+    const cat = state.foodManagerCategory || 'all';
+    const hasCatFilter = Boolean(cat && cat !== 'all');
+    if (ui.foodManagerCategoryChipText) {
+        ui.foodManagerCategoryChipText.textContent = hasCatFilter ? cat : 'Alle Kategorien';
+    }
+    if (ui.foodManagerCategoryChipButton) {
+        ui.foodManagerCategoryChipButton.classList.toggle('has-filter', hasCatFilter);
+    }
+    if (ui.foodManagerCategoryClearButton) {
+        ui.foodManagerCategoryClearButton.classList.toggle('hidden', !hasCatFilter);
+    }
+
+    const tol = state.foodManagerTolerance || 'all';
+    const hasTolFilter = Boolean(tol && tol !== 'all');
+    const tolLabels = {
+        all: 'Alle Status',
+        green: 'Grün',
+        orange: 'Orange',
+        red: 'Rot',
+    };
+    if (ui.foodManagerToleranceChipText) {
+        ui.foodManagerToleranceChipText.textContent = hasTolFilter ? tolLabels[tol] || tol : 'Alle Status';
+    }
+    if (ui.foodManagerToleranceChipButton) {
+        ui.foodManagerToleranceChipButton.classList.toggle('has-filter', hasTolFilter);
+    }
+    if (ui.foodManagerToleranceClearButton) {
+        ui.foodManagerToleranceClearButton.classList.toggle('hidden', !hasTolFilter);
+    }
+}
+
 export function renderFoodManagerList() {
     if (!ui.foodManagerList) return;
 
     const query = ui.foodManagerSearch ? normalizeText(ui.foodManagerSearch.value) : '';
-    const category = ui.foodManagerCategoryFilter ? ui.foodManagerCategoryFilter.value : 'all';
-    const tolerance = ui.foodManagerToleranceFilter ? ui.foodManagerToleranceFilter.value : 'all';
+    const category = state.foodManagerCategory || 'all';
+    const tolerance = state.foodManagerTolerance || 'all';
 
     const filtered = state.foods.filter((food) => {
         const matchesQuery = !query || normalizeText(food.name).includes(query);
@@ -324,8 +349,8 @@ export function openFoodForm(food = null) {
         if (ui.foodFormTitle) ui.foodFormTitle.textContent = 'Neues Lebensmittel';
         if (ui.foodFormName) ui.foodFormName.value = '';
         if (ui.foodFormCategory) {
-            const currentCat = ui.foodManagerCategoryFilter ? ui.foodManagerCategoryFilter.value : '';
-            ui.foodFormCategory.value = currentCat !== 'all' ? currentCat : '';
+            const currentCat = state.foodManagerCategory;
+            ui.foodFormCategory.value = currentCat && currentCat !== 'all' ? currentCat : '';
         }
         if (ui.foodFormOriginalName) ui.foodFormOriginalName.value = '';
         const radio = ui.foodFormContainer.querySelector(`input[name="foodFormTolerance"][value="green"]`);

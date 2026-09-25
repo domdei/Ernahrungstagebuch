@@ -239,30 +239,45 @@
         <div class="settings-content">
           <div class="settings-section">
             <h4>Lebensmittel &amp; Verträglichkeiten</h4>
-            <div class="settings-food-overview">
-              <button id="openFoodManagerButton" class="modal-btn modal-btn-option" type="button">
-                <div class="settings-btn-row">
+            <button id="openFoodManagerButton" class="settings-tile-btn" type="button">
+              <div class="settings-tile-content">
+                <span class="settings-tile-icon">🏷️</span>
+                <div class="settings-tile-text">
                   <strong>Lebensmittel verwalten</strong>
-                  <span id="foodCountBadge" class="count-badge">0</span>
+                  <small>Verträglichkeiten anpassen, ergänzen &amp; löschen</small>
                 </div>
-                <small>Verträglichkeiten (Grün/Orange/Rot) anpassen, hinzufügen oder löschen</small>
+              </div>
+              <div class="settings-tile-end">
+                <span id="foodCountBadge" class="count-badge">0</span>
+                <span class="settings-tile-chevron">›</span>
+              </div>
+            </button>
+            <div class="settings-action-pair">
+              <button id="exportTolerancesButton" class="settings-action-btn" type="button">
+                <span class="settings-btn-icon">↑</span>
+                <span>Exportieren</span>
               </button>
-            </div>
-            <div class="export-actions">
-              <button id="exportTolerancesButton" class="secondary-button" type="button">Toleranzen exportieren (JSON)</button>
-              <label class="import-label">
-                <span>Toleranzen importieren</span>
+              <label class="settings-action-btn import-action-btn">
+                <span class="settings-btn-icon">↓</span>
+                <span>Importieren</span>
                 <input id="importTolerancesFile" type="file" accept=".json" />
               </label>
             </div>
-            <button id="resetTolerancesButton" class="ghost-button danger-ghost-btn" type="button">Auf Standardwerte zurücksetzen</button>
+            <button id="resetTolerancesButton" class="settings-reset-btn" type="button">
+              <span>↺</span>
+              <span>Auf Standardwerte zurücksetzen</span>
+            </button>
           </div>
           <div class="settings-section">
-            <h4>Datensicherung (Gesamtes Tagebuch)</h4>
-            <div class="export-actions">
-              <button id="exportJsonButton" class="secondary-button" type="button">Backup speichern (Export)</button>
-              <label class="import-label">
-                <span>Backup importieren</span>
+            <h4>Datensicherung (Tagebuch)</h4>
+            <div class="settings-action-pair">
+              <button id="exportJsonButton" class="settings-action-btn" type="button">
+                <span class="settings-btn-icon">↑</span>
+                <span>Backup exportieren</span>
+              </button>
+              <label class="settings-action-btn import-action-btn">
+                <span class="settings-btn-icon">↓</span>
+                <span>Importieren</span>
                 <input id="importFile" type="file" accept=".json" />
               </label>
             </div>
@@ -341,15 +356,38 @@
             <input id="foodManagerSearch" type="search" placeholder="Lebensmittel suchen..." class="food-manager-search-input" />
           </div>
           <div class="food-manager-filters-row">
-            <select id="foodManagerCategoryFilter" class="food-manager-select" aria-label="Kategorie filtern">
-              <option value="all">Alle Kategorien</option>
-            </select>
-            <select id="foodManagerToleranceFilter" class="food-manager-select" aria-label="Verträglichkeit filtern">
-              <option value="all">Alle Status</option>
-              <option value="green">🟢 Grün</option>
-              <option value="orange">🟠 Orange</option>
-              <option value="red">🔴 Rot</option>
-            </select>
+            <div class="category-chip-wrap">
+              <button id="foodManagerCategoryChipButton" class="category-chip-btn" type="button" aria-label="Lebensmittel nach Kategorie filtern" title="Kategorie filtern">
+                <span class="category-chip-icon">🏷️</span>
+                <span id="foodManagerCategoryChipText" class="category-chip-text">Alle Kategorien</span>
+                <span class="category-chip-arrow">▾</span>
+              </button>
+              <button
+                id="foodManagerCategoryClearButton"
+                class="category-reset-btn hidden"
+                type="button"
+                aria-label="Kategorie-Filter zurücksetzen"
+                title="Kategorie auf Alle zurücksetzen"
+              >
+                ✕
+              </button>
+            </div>
+            <div class="category-chip-wrap">
+              <button id="foodManagerToleranceChipButton" class="category-chip-btn" type="button" aria-label="Lebensmittel nach Status filtern" title="Status filtern">
+                <span class="category-chip-icon">🚦</span>
+                <span id="foodManagerToleranceChipText" class="category-chip-text">Alle Status</span>
+                <span class="category-chip-arrow">▾</span>
+              </button>
+              <button
+                id="foodManagerToleranceClearButton"
+                class="category-reset-btn hidden"
+                type="button"
+                aria-label="Status-Filter zurücksetzen"
+                title="Status auf Alle zurücksetzen"
+              >
+                ✕
+              </button>
+            </div>
             <button id="openAddFoodBtn" class="primary-button food-add-btn" type="button">+ Neu</button>
           </div>
         </div>
