@@ -381,12 +381,24 @@ export function renderHistory() {
     const dates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
     const todayString = getTodayString();
 
+    // Aktuell geöffnete Tage im DOM ermitteln, um ihren Zustand zu bewahren
+    const currentlyOpenDates = new Set(
+        Array.from(ui.historyList.querySelectorAll('details.history-day[open]'))
+            .map((el) => el.dataset.date)
+            .filter(Boolean)
+    );
+
+    // Falls gar kein Tag geöffnet ist, öffnen wir im Löschmodus benutzerfreundlich den ersten/neuesten Tag
+    if (state.historyDeleteMode && currentlyOpenDates.size === 0 && dates.length > 0) {
+        currentlyOpenDates.add(dates[0]);
+    }
+
     const html = dates
         .map((date) => {
             const dayEntries = grouped[date];
             const isToday = date === todayString;
-            // Alle Tage standardmäßig zugeklappt (nur im Löschmodus zur Bearbeitung offen)
-            const shouldOpen = state.historyDeleteMode;
+            // Zustand beibehalten statt alle Tage ungefragt aufzureißen
+            const shouldOpen = currentlyOpenDates.has(date);
 
             const counts = { green: 0, orange: 0, red: 0 };
             dayEntries.forEach((e) => {
@@ -442,7 +454,7 @@ export function renderHistory() {
             const todayBadge = isToday ? '<span class="history-day-today-badge">Heute</span>' : '';
 
             return `
-        <details class="history-day" ${shouldOpen ? 'open' : ''}>
+        <details class="history-day" data-date="${escapeHtml(date)}" ${shouldOpen ? 'open' : ''}>
           <summary class="history-day-summary">
             <div class="history-day-title-wrap">
               <span class="history-day-chevron">▶</span>
