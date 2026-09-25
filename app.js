@@ -42,7 +42,6 @@ const ui = {
     foodSearch: document.getElementById('foodSearch'),
     suggestions: document.getElementById('suggestions'),
     selectedFoods: document.getElementById('selectedFoods'),
-    selectionWarnings: document.getElementById('selectionWarnings'),
     saveButton: document.getElementById('saveButton'),
     historyList: document.getElementById('historyList'),
     historyFilters: document.getElementById('historyFilters'),
@@ -67,6 +66,11 @@ const ui = {
     importMergeButton: document.getElementById('importMergeButton'),
     importReplaceButton: document.getElementById('importReplaceButton'),
     importCancelButton: document.getElementById('importCancelButton'),
+    confirmModal: document.getElementById('confirmModal'),
+    confirmModalText: document.getElementById('confirmModalText'),
+    confirmModalList: document.getElementById('confirmModalList'),
+    confirmProceedButton: document.getElementById('confirmProceedButton'),
+    confirmCancelButton: document.getElementById('confirmCancelButton'),
 };
 
 let deferredPrompt = null;
@@ -92,6 +96,39 @@ function updateSearchDoneButton() {
     ui.searchDoneButton.textContent = count > 0 ? `Fertig (${count})` : 'Fertig';
 }
 
+function renderFoodChipHtml(foodName, selectedDate) {
+    const food = getFoodByName(foodName);
+    const status = food ? food.status : 'green';
+    const warnings = getWarningsForFood(foodName, selectedDate);
+    const recentLabel = getRecentMealLabel(foodName, selectedDate);
+    const recentTitle = getRecentMealTitle(recentLabel);
+
+    let conflictClass = '';
+    let conflictBadge = '';
+
+    const hasIntolerance = status === 'orange' || status === 'red';
+    const hasRotation = Boolean(recentLabel);
+
+    if (hasIntolerance) {
+        conflictClass = 'has-conflict conflict-intolerance';
+        conflictBadge = `<span class="chip-conflict-badge chip-conflict-intolerance" title="Unverträglichkeit">!</span>`;
+    } else if (hasRotation) {
+        conflictClass = 'has-conflict conflict-rotation';
+        conflictBadge = `<span class="chip-conflict-badge chip-conflict-rotation" title="${recentTitle}">${recentLabel}</span>`;
+    }
+
+    const titleAttr = warnings.length ? ` title="${escapeHtml(warnings.map((w) => `${w.title}: ${w.text}`).join(' | '))}"` : '';
+
+    return `
+      <div class="selection-chip ${conflictClass}"${titleAttr}>
+        <span class="badge badge-${status}"></span>
+        <span class="chip-label">${escapeHtml(foodName)}</span>
+        ${conflictBadge}
+        <button type="button" class="remove-chip" data-name="${escapeHtml(foodName)}" aria-label="Entfernen">×</button>
+      </div>
+    `;
+}
+
 function updateOverlaySelectedFoods() {
     if (!ui.overlaySelectedFoods) {
         return;
@@ -102,18 +139,9 @@ function updateOverlaySelectedFoods() {
         return;
     }
 
+    const targetDate = ui.entryDate.value || state.selectedDate || getTodayString();
     const chips = state.selectedFoods
-        .map((foodName) => {
-            const food = getFoodByName(foodName);
-            const status = food ? food.status : 'green';
-            return `
-        <div class="selection-chip">
-          <span class="badge badge-${status}"></span>
-          <span>${escapeHtml(foodName)}</span>
-          <button type="button" class="remove-chip" data-name="${escapeHtml(foodName)}" aria-label="Entfernen">×</button>
-        </div>
-      `;
-        })
+        .map((foodName) => renderFoodChipHtml(foodName, targetDate))
         .join('');
 
     ui.overlaySelectedFoods.innerHTML = chips;
@@ -144,6 +172,101 @@ function closeSettingsModal() {
         return;
     }
     ui.settingsModal.classList.add('hidden');
+}
+
+let onConfirmSaveCallback = null;
+
+function openConfirmModal(conflicts, onProceed) {
+    if (!ui.confirmModal || !ui.confirmModalList) {
+        if (typeof onProceed === 'function') {
+            onProceed();
+        }
+        return;
+    }
+
+    onConfirmSaveCallback = onProceed;
+
+    const itemsCount = conflicts.length;
+    if (ui.confirmModalText) {
+        ui.confirmModalText.textContent = itemsCount === 1
+            ? 'Bei 1 ausgewählten Lebensmittel gibt es einen Hinweis (Rotation oder Unverträglichkeit). Möchtest du trotzdem speichern?'
+            : `Bei ${itemsCount} ausgewählten Lebensmitteln gibt es Hinweise (Rotation oder Unverträglichkeit). Möchtest du trotzdem speichern?`;
+    }
+
+    ui.confirmModalList.innerHTML = conflicts
+        .map((conflict) => {
+            const warningsText = conflict.warnings.map((w) => w.text).join('<br>');
+            const isRed = conflict.warnings.some((w) => w.kind === 'red');
+            const kindClass = isRed ? 'kind-red' : 'kind-yellow';
+            const icon = isRed ? '⚠️' : '⏱️';
+            return `
+        <div class="confirm-modal-item ${kindClass}">
+          <span class="confirm-item-icon">${icon}</span>
+          <div class="confirm-item-content">
+            <strong>${escapeHtml(conflict.name)}</strong>
+            <span>${warningsText}</span>
+          </div>
+        </div>
+      `;
+        })
+        .join('');
+
+    ui.confirmProceedButton.onclick = () => {
+        closeConfirmModal();
+        if (typeof onConfirmSaveCallback === 'function') {
+            onConfirmSaveCallback();
+            onConfirmSaveCallback = null;
+        }
+    };
+
+    ui.confirmModal.classList.remove('hidden');
+}
+
+function closeConfirmModal() {
+    if (!ui.confirmModal) {
+        return;
+    }
+    ui.confirmModal.classList.add('hidden');
+    onConfirmSaveCallback = null;
+}
+
+function showSaveConfirmationModal(conflicts, onProceed) {
+    openConfirmModal(conflicts, onProceed);
+}
+
+function executeSaveEntries() {
+    const date = ui.entryDate.value || state.selectedDate || getTodayString();
+    const existingNames = new Set(
+        state.entries
+            .filter((entry) => entry.date === date)
+            .map((entry) => entry.name.toLowerCase())
+    );
+
+    const newEntries = state.selectedFoods
+        .map((foodName) => getFoodByName(foodName))
+        .filter(Boolean)
+        .filter((food) => !existingNames.has(food.name.toLowerCase()))
+        .map((food) => ({
+            id: generateEntryId(),
+            date,
+            name: food.name,
+            category: food.category,
+            status: food.status,
+            createdAt: Date.now(),
+        }));
+
+    if (!newEntries.length) {
+        alert('Dieses Lebensmittel ist für das ausgewählte Datum bereits gespeichert.');
+        return;
+    }
+
+    state.entries.push(...newEntries);
+    state.entries.sort((a, b) => new Date(b.date) - new Date(a.date) || b.createdAt - a.createdAt);
+    persistEntries();
+    state.selectedFoods = [];
+    ui.foodSearch.value = '';
+    persistDraftState();
+    renderEverything();
 }
 
 async function initPersistentStorage() {
@@ -179,7 +302,7 @@ function updateStorageStatus(persisted) {
     }
 }
 
-function openSearchOverlay() {
+function openSearchOverlay(preventKeyboard = false) {
     if (isSearchOverlayOpen) {
         return;
     }
@@ -193,6 +316,10 @@ function openSearchOverlay() {
     updateOverlaySelectedFoods();
     updateSearchDoneButton();
     renderSuggestionList(ui.foodSearch.value.trim());
+
+    if (preventKeyboard && ui.foodSearch) {
+        ui.foodSearch.blur();
+    }
 
     try {
         window.history.pushState({ searchOverlay: true }, '');
@@ -274,17 +401,37 @@ function bindEvents() {
         debouncedSearch();
     });
 
+    let wasFocusedBeforeClick = false;
+
     ui.foodSearch.addEventListener('focus', () => {
         if (isMobileView()) {
-            openSearchOverlay();
+            openSearchOverlay(true);
         } else {
             renderSuggestionList(ui.foodSearch.value.trim());
         }
     });
 
+    ui.foodSearch.addEventListener('mousedown', () => {
+        wasFocusedBeforeClick = document.activeElement === ui.foodSearch;
+    });
+
+    ui.foodSearch.addEventListener('touchstart', () => {
+        wasFocusedBeforeClick = document.activeElement === ui.foodSearch;
+    }, { passive: true });
+
     ui.foodSearch.addEventListener('click', () => {
-        if (isMobileView() && !isSearchOverlayOpen) {
-            openSearchOverlay();
+        if (isMobileView()) {
+            if (!isSearchOverlayOpen) {
+                openSearchOverlay(true);
+            } else if (wasFocusedBeforeClick) {
+                // War bereits fokussiert (Tastatur aktiv) -> Klick schließt die Tastatur
+                ui.foodSearch.blur();
+                wasFocusedBeforeClick = false;
+            } else {
+                // War nicht fokussiert (Tastatur geschlossen) -> Klick öffnet Tastatur
+                ui.foodSearch.focus();
+                wasFocusedBeforeClick = true;
+            }
         }
     });
 
@@ -299,6 +446,8 @@ function bindEvents() {
             event.preventDefault();
             if (isSearchOverlayOpen) {
                 closeSearchOverlay();
+            } else if (ui.confirmModal && !ui.confirmModal.classList.contains('hidden')) {
+                closeConfirmModal();
             } else if (ui.settingsModal && !ui.settingsModal.classList.contains('hidden')) {
                 closeSettingsModal();
             } else {
@@ -404,38 +553,25 @@ function bindEvents() {
             return;
         }
 
-        const date = ui.entryDate.value || state.selectedDate;
-        const existingNames = new Set(
-            state.entries
-                .filter((entry) => entry.date === date)
-                .map((entry) => entry.name.toLowerCase())
-        );
+        const date = ui.entryDate.value || state.selectedDate || getTodayString();
+        const conflicts = [];
+        state.selectedFoods.forEach((foodName) => {
+            const warnings = getWarningsForFood(foodName, date);
+            if (warnings.length) {
+                conflicts.push({
+                    name: foodName,
+                    warnings,
+                });
+            }
+        });
 
-        const newEntries = state.selectedFoods
-            .map((foodName) => getFoodByName(foodName))
-            .filter(Boolean)
-            .filter((food) => !existingNames.has(food.name.toLowerCase()))
-            .map((food) => ({
-                id: generateEntryId(),
-                date,
-                name: food.name,
-                category: food.category,
-                status: food.status,
-                createdAt: Date.now(),
-            }));
-
-        if (!newEntries.length) {
-            alert('Dieses Lebensmittel ist für das ausgewählte Datum bereits gespeichert.');
-            return;
+        if (conflicts.length > 0) {
+            showSaveConfirmationModal(conflicts, () => {
+                executeSaveEntries();
+            });
+        } else {
+            executeSaveEntries();
         }
-
-        state.entries.push(...newEntries);
-        state.entries.sort((a, b) => new Date(b.date) - new Date(a.date) || b.createdAt - a.createdAt);
-        persistEntries();
-        state.selectedFoods = [];
-        ui.foodSearch.value = '';
-        persistDraftState();
-        renderEverything();
     });
 
     ui.entryDate.addEventListener('change', () => {
@@ -546,6 +682,20 @@ function bindEvents() {
 
         removeSelectedFood(button.dataset.name || '');
     });
+
+    if (ui.confirmCancelButton) {
+        ui.confirmCancelButton.addEventListener('click', () => {
+            closeConfirmModal();
+        });
+    }
+
+    if (ui.confirmModal) {
+        ui.confirmModal.addEventListener('click', (event) => {
+            if (event.target === ui.confirmModal) {
+                closeConfirmModal();
+            }
+        });
+    }
 
     ui.exportJsonButton.addEventListener('click', () => exportJsonBackup());
     ui.importFile.addEventListener('change', handleImport);
@@ -802,43 +952,15 @@ function renderEverything() {
 function renderSelectedFoods() {
     if (!state.selectedFoods.length) {
         ui.selectedFoods.innerHTML = '<div class="empty-state">Noch keine Lebensmittel ausgewählt.</div>';
-        ui.selectionWarnings.innerHTML = '';
         return;
     }
 
+    const targetDate = ui.entryDate.value || state.selectedDate || getTodayString();
     const chips = state.selectedFoods
-        .map((foodName) => {
-            const food = getFoodByName(foodName);
-            const status = food ? food.status : 'green';
-            return `
-        <div class="selection-chip">
-          <span class="badge badge-${status}"></span>
-          <span>${escapeHtml(foodName)}</span>
-          <button type="button" class="remove-chip" data-name="${escapeHtml(foodName)}" aria-label="Entfernen">×</button>
-        </div>
-      `;
-        })
+        .map((foodName) => renderFoodChipHtml(foodName, targetDate))
         .join('');
 
     ui.selectedFoods.innerHTML = `<div class="selection-chip-list">${chips}</div>`;
-
-    const warnings = state.selectedFoods.flatMap((foodName) => getWarningsForFood(foodName, ui.entryDate.value || state.selectedDate));
-    if (!warnings.length) {
-        ui.selectionWarnings.innerHTML = '';
-        return;
-    }
-
-    const warningHtml = warnings
-        .map((warning) => `
-      <div class="warning-box ${warning.kind}">
-        <strong>${warning.title}</strong>
-        <span>${warning.text}</span>
-      </div>
-    `)
-        .join('');
-
-    ui.selectionWarnings.innerHTML = warningHtml;
-
 }
 
 function removeSelectedFood(foodName) {
@@ -1219,7 +1341,7 @@ function addSelectedFood(foodName) {
         persistDraftState();
         renderSelectedFoods();
         if (ui.foodSearch) {
-            ui.foodSearch.focus();
+            ui.foodSearch.blur();
         }
         renderSuggestionList('');
     } else {

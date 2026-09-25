@@ -465,8 +465,13 @@ select:focus {
 }
 
 .suggestion-item.is-recent {
-  background: #f1f2f4;
-  color: #6b7280;
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--muted);
+  opacity: 0.55;
+}
+
+[data-theme="dark"] .suggestion-item.is-recent {
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .suggestion-item strong {
@@ -479,7 +484,7 @@ select:focus {
 }
 
 .suggestion-item.is-recent strong {
-  color: #6b7280;
+  color: var(--muted);
 }
 
 .suggestion-meta {
@@ -500,8 +505,9 @@ select:focus {
 }
 
 .suggestion-item.is-recent .tag {
-  background: #e7eaee;
-  color: #737b86;
+  background: transparent;
+  color: var(--muted);
+  opacity: 0.85;
 }
 
 .suggestion-item .recent-chip {
@@ -514,7 +520,13 @@ select:focus {
 .suggestion-item .recent-chip-alert {
   background: rgba(220, 38, 38, 0.12);
   border-color: rgba(220, 38, 38, 0.25);
-  color: #b91c1c;
+  color: var(--red);
+}
+
+[data-theme="dark"] .suggestion-item .recent-chip-alert {
+  background: var(--red-soft);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: var(--red);
 }
 
 .status-dot {
@@ -524,8 +536,14 @@ select:focus {
   display: inline-block;
   flex-shrink: 0;
   box-shadow:
-    0 0 0 2px rgba(255, 255, 255, 0.85),
+    0 0 0 2px var(--panel),
     0 0 0 1px rgba(17, 24, 39, 0.12);
+}
+
+[data-theme="dark"] .status-dot {
+  box-shadow:
+    0 0 0 2px var(--panel),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .status-green {
@@ -631,6 +649,70 @@ select:focus {
   gap: 8px;
   padding: 0.6rem 0.8rem;
   color: var(--text);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.selection-chip.has-conflict {
+  border-width: 1.5px;
+}
+
+.selection-chip.conflict-rotation {
+  border-color: rgba(245, 158, 11, 0.6);
+  background: #fff8eb;
+}
+
+[data-theme="dark"] .selection-chip.conflict-rotation {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.selection-chip.conflict-intolerance {
+  border-color: rgba(239, 68, 68, 0.65);
+  background: #fef2f2;
+}
+
+[data-theme="dark"] .selection-chip.conflict-intolerance {
+  border-color: rgba(239, 68, 68, 0.6);
+  background: rgba(239, 68, 68, 0.14);
+}
+
+.selection-chip .chip-label {
+  font-weight: 500;
+}
+
+.selection-chip .chip-conflict-badge {
+  font-size: 0.65rem;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.selection-chip .chip-conflict-rotation {
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #b45309;
+}
+
+[data-theme="dark"] .selection-chip .chip-conflict-rotation {
+  background: rgba(245, 158, 11, 0.25);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+
+.selection-chip .chip-conflict-intolerance {
+  background: rgba(220, 38, 38, 0.14);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #b91c1c;
+}
+
+[data-theme="dark"] .selection-chip .chip-conflict-intolerance {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #f87171;
 }
 
 .selection-chip .badge {
@@ -1119,6 +1201,75 @@ select:focus {
 .modal-btn-cancel:hover {
   color: var(--text);
   background: var(--border);
+}
+
+.modal-btn-confirm {
+  background: var(--primary);
+  color: #fff;
+}
+
+.modal-btn-confirm small {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.modal-btn-confirm:hover {
+  opacity: 0.92;
+}
+
+.confirm-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 4px 0 10px;
+  padding: 4px 0;
+}
+
+.confirm-modal-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+}
+
+.confirm-modal-item.kind-yellow {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.confirm-modal-item.kind-red {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.confirm-item-icon {
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.confirm-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.confirm-item-content strong {
+  color: var(--text);
+  font-size: 0.88rem;
+}
+
+.confirm-item-content span {
+  color: var(--muted);
+  font-size: 0.8rem;
 }
 
 @keyframes modalFadeIn {

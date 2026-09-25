@@ -120,7 +120,6 @@
           </div>
 
           <div id="selectedFoods" class="selected-foods" aria-live="polite"></div>
-          <div id="selectionWarnings" class="selection-warnings" aria-live="polite"></div>
 
           <button id="saveButton" class="primary-button wide-button" type="button">Einträge speichern</button>
         </section>
@@ -229,6 +228,23 @@
             <small>Alle bisherigen Einträge durch das Backup ersetzen</small>
           </button>
           <button id="importCancelButton" class="ghost-button modal-btn modal-btn-cancel" type="button">
+            <strong>Abbrechen</strong>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="confirmModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+      <div class="modal-card">
+        <h3 id="confirmModalTitle">Hinweise zu ausgewählten Lebensmitteln</h3>
+        <p id="confirmModalText" class="modal-description"></p>
+        <div id="confirmModalList" class="confirm-modal-list"></div>
+        <div class="modal-actions">
+          <button id="confirmProceedButton" class="primary-button modal-btn modal-btn-confirm" type="button">
+            <strong>Trotzdem speichern</strong>
+            <small>Die ausgewählten Lebensmittel jetzt eintragen</small>
+          </button>
+          <button id="confirmCancelButton" class="ghost-button modal-btn modal-btn-cancel" type="button">
             <strong>Abbrechen</strong>
           </button>
         </div>
