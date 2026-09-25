@@ -205,14 +205,12 @@ function executeSaveEntries() {
             createdAt: Date.now(),
         }));
 
-    if (!newEntries.length) {
-        alert('Dieses Lebensmittel ist für das ausgewählte Datum bereits gespeichert.');
-        return;
+    if (newEntries.length > 0) {
+        state.entries.push(...newEntries);
+        state.entries.sort((a, b) => new Date(b.date) - new Date(a.date) || b.createdAt - a.createdAt);
+        persistEntries();
     }
 
-    state.entries.push(...newEntries);
-    state.entries.sort((a, b) => new Date(b.date) - new Date(a.date) || b.createdAt - a.createdAt);
-    persistEntries();
     state.selectedFoods = [];
     ui.foodSearch.value = '';
     updateOverlaySelectedFoods();
