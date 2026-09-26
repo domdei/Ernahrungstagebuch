@@ -1,9 +1,9 @@
-const CACHE_NAME = 'ernaehrungstagebuch-pwa-v4';
+const CACHE_NAME = 'ernaehrungstagebuch-pwa-v5';
 const APP_SHELL = [
     './',
     './index.html',
-    './styles.css?v=1.1.4',
-    './app.js?v=1.1.4',
+    './styles.css?v=1.1.5',
+    './app.js?v=1.1.5',
     './src/utils.js',
     './src/state.js',
     './src/db.js',
