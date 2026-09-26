@@ -249,7 +249,7 @@ export async function loadFoodDatabase() {
             const defaultFoods = await response.json();
             const normalized = defaultFoods.map(normalizeFoodRecord);
             await idbSetAllFoods(normalized);
-            foods = normalized;
+            foods = await idbGetAllFoods();
             isFirstRun = true;
         } catch (error) {
             console.error('Standard-Lebensmittel konnten nicht geladen werden:', error);
@@ -273,7 +273,7 @@ export async function resetFoodTolerancesToDefault() {
         const defaultFoods = await response.json();
         const normalized = defaultFoods.map(normalizeFoodRecord);
         await idbSetAllFoods(normalized);
-        state.foods = normalized.map(normalizeFoodRecord);
+        state.foods = await idbGetAllFoods();
         return true;
     } catch (e) {
         console.error('Fehler beim Zurücksetzen der Lebensmittel:', e);

@@ -2131,3 +2131,50 @@ select:focus {
   color: var(--red);
   background: var(--red-soft);
 }
+
+/* -------------------------------------------------------------
+   Full-screen mobile modals (Settings, Food Manager)
+   Placed last so it wins over the earlier same-specificity rules
+   for .food-manager-modal-card / .food-item-name.
+------------------------------------------------------------- */
+@media (max-width: 760px), (max-height: 500px) {
+  .settings-modal-card,
+  .food-manager-modal-card {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100%;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    padding: calc(14px + env(safe-area-inset-top, 0px)) 16px calc(14px + env(safe-area-inset-bottom, 0px));
+    box-sizing: border-box;
+  }
+
+  .settings-modal-card .modal-header,
+  .food-manager-modal-card .modal-header {
+    flex-shrink: 0;
+  }
+
+  .settings-modal-card .settings-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .food-manager-modal-card .food-manager-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
+
+  /* Wrap long names instead of hiding them behind an ellipsis, since the
+     tolerance/edit/delete controls still leave a fairly narrow name column */
+  .food-item-name {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
