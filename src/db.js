@@ -20,6 +20,7 @@ import {
     getTodayString,
 } from './utils.js';
 import { state, ui } from './state.js';
+import { showConfirmDialog } from './modals.js';
 
 export function openDatabase() {
     return new Promise((resolve, reject) => {
@@ -222,7 +223,12 @@ export function restoreDraftState() {
 export function persistEntries() {
     idbSaveEntries(state.entries).catch((err) => {
         console.error('Speichern in IndexedDB fehlgeschlagen:', err);
-        alert('Das Speichern in der lokalen Datenbank ist fehlgeschlagen. Bitte prüfe den Gerätespeicher.');
+        showConfirmDialog({
+            title: 'Speichern fehlgeschlagen',
+            message: 'Das Speichern in der lokalen Datenbank ist fehlgeschlagen. Bitte prüfe den Gerätespeicher.',
+            confirmLabel: 'OK',
+            infoOnly: true,
+        });
     });
 }
 

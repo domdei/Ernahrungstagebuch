@@ -1,30 +1,64 @@
 # Persönliches Ernährungstagebuch
 
-Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft automatisch Rotationszeiten und persönliche Unverträglichkeiten. Sie läuft im Browser, funktioniert offline und speichert Daten lokal und dauerhaft in einer IndexedDB-Datenbank auf dem Gerät.
+Eine App zur Erfassung von Lebensmitteln, die automatisch prüft, ob du etwas zu früh wiederholt isst (Rotationsprinzip) oder ob ein Lebensmittel laut deiner eigenen Einstufung unverträglich ist. Sie funktioniert im Browser, auch offline, und lässt sich wie eine normale App auf dem Handy installieren.
 
-## Hauptfunktionen
+---
 
-- **4-Tage-Rotationswarnung:** Warnt, wenn ein Lebensmittel in den letzten 3 Tagen gegessen wurde. Ab Tag 5 ist es wieder ohne Warnung erlaubt.
-- **Unverträglichkeitsprüfung:** Markiert Lebensmittel nach eigener Einstufung farblich (Grün, Orange, Rot).
-- **Kompakter Smart-Date-Chip:** Zeigt das Erfassungsdatum platzsparend als interaktiven Button (`Heute (Fr., 25.09.) ▾`). Klick öffnet den Datepicker; bei abweichendem Datum erscheint ein Schnell-Reset-Button (`↺ Heute`).
-- **Aufgeräumte Hauptseite & Symmetrische Typografie:** Beide Bereiche (`Lebensmittel erfassen` und `Verlauf`) nutzen eine einheitliche, dezente Überschriftengröße. Auf der Hauptseite gibt es keine störenden Filter-Dropdowns mehr.
-- **Filterleiste in der Suche & Custom-Kategorie-Modal:** Die Kategorieauswahl (`🏷️ Alle Kategorien ▾`) und der Grün-Filter (`🟢`) sitzen direkt in der Suchleiste und erscheinen nur bei aktiver Suche. Ein Klick auf den Kategorie-Button öffnet ein elegantes, an das App-Design angepasstes Modal statt des nativen System-Auswahldialogs.
-- **Direktes Speichern & Idempotenz:** Zutaten werden direkt in der Suche gewählt und über `Speichern (X)` ohne Umwege im Tagebuch abgelegt. Lebensmittel, die am selben Tag bereits erfasst wurden, werden lautlos ignoriert (kein blockierendes Alert-Pop-up).
-- **Bereits erfasste Lebensmittel abgehakt:** Lebensmittel, die für den ausgewählten Tag bereits im Tagebuch stehen, werden in der Vorschlagsliste dezent abgeblendet (`opacity: 0.45`), mit einem grünen Haken (`✓`) markiert und können nicht versehentlich nochmals angeklickt werden.
-- **Mehrzeilige Tag-Cloud:** Ausgewählte Lebensmittel brechen bei Bedarf automatisch mehrzeilig um (`max-height: 120px` mit Scrollbalken), damit man immer den Überblick behält.
-- **Konflikt-Dialog beim Speichern:** Verletzt ein gewähltes Lebensmittel die Rotationsfrist oder eine Verträglichkeitsregel, erscheint beim Speichern ein Bestätigungs-Modal (Ja/Nein) mit genauer Begründung.
-- **Visuell optimierte Chips & Dark Mode:** Konfliktbehaftete Lebensmittel werden direkt am Chip durch Rahmen und Badges (`1T` / `!`) hervorgehoben. Gesperrte Lebensmittel treten im Dark Mode dezent in den Hintergrund, ohne zu blenden.
-- **Tastatur-Verhalten (Mobile):** Das mobile Vollbild-Such-Overlay öffnet sich standardmäßig ohne Bildschirmtastatur für freies Scrollen. Antippen des Suchfelds blendet die Tastatur ein/aus; nach dem Auswählen springt sie nicht ungewollt auf.
-- **Tag- und Nachtmodus (☾ / ☼):** Wechselt das Farbschema über die Einstellungen und speichert die Wahl.
-- **Tagesabstand-Badges:** Zeigt bei Vorschlägen an, vor wie vielen Tagen ein Lebensmittel gegessen wurde (`1T`, `2T`, `3T`).
-- **Kompaktes Verlaufs-Akkordeon (4 Tage Standard):** Zeigt standardmäßig die letzten 4 Tage (3 Tage Rotation + heute) zugeklappt als Einzeiler mit dezenter Ampel-Zusammenfassung (`14 · 2`). Ein Klick klappt die nach Kategorien gruppierten Details auf.
-- **Kompakte Werkzeuge & Modale Verlaufsfilter (🔍 / 🗑️):** Die Filterleiste im Verlauf bietet einheitliche App-Modals für Kategorie (`🏷️ Alle Kategorien ▾`) und Verträglichkeitsstatus (`🚦 Alle Status ▾`) jeweils mit Schnell-Reset (`✕`). Daneben sitzt der Löschmodus (`🗑️`) direkt neben der Überschrift „Verlauf“.
-- **Einstellungen & Backup (⚙):** Export und Import sowie Speicherstatus und Version sind aufgeräumt über das Zahnrad-Icon in der Topbar erreichbar.
-- **Intelligenter Import-Dialog:** Bietet die Wahl zwischen *Ergänzen* (mit Duplikaterkennung), *Ersetzen* und *Abbrechen* im einheitlichen App-Design.
-- **Moderne Browser-Datenbank (IndexedDB):** Zuverlässige, transaktionssichere Speicherung mit automatischem Schutz gegen Cache-Bereinigung (`navigator.storage.persist()`).
-- **Offlinefähig & Modular:** Vollwertige PWA mit modularem ES6-Code (`src/`) ohne Build-Tool-Ballast.
+## Für Einsteiger
 
-## Projektstruktur
+### App öffnen
+
+Rufe im Browser (Handy oder PC) diese Adresse auf:
+
+👉 **https://ernahrungstagebuch.pages.dev/**
+
+Auf dem Handy kannst du sie danach über das Browsermenü **„Zum Startbildschirm hinzufügen"** wie eine normale App installieren. Ein Symbol erscheint dann auf deinem Homescreen, ganz ohne App Store.
+
+### Wichtig: Vor der Nutzung Lebensmitteltoleranzen anpassen
+
+Die App liefert von Haus aus eine vorbefüllte Liste an Lebensmitteln inklusive Grün/Orange/Rot-Einstufung mit. **Diese Werte sind nur ein Beispiel und entsprechen nicht deiner persönlichen Verträglichkeit.**
+
+Bevor du beginnst, öffne daher einmal Zahnrad → **„Lebensmitteltoleranzen verwalten"** und passe die Einstufungen an deine eigenen, mit einem Arzt oder Test ermittelten Ergebnisse an. Nur so warnt dich die App auch wirklich zuverlässig vor Lebensmitteln, die *für dich* unverträglich sind.
+
+### So benutzt du sie
+
+1. **Datum wählen:** Standardmäßig ist „Heute" ausgewählt. Über den Datums-Button kannst du auch einen vergangenen Tag nachtragen.
+2. **Lebensmittel erfassen:** Tippe ins Suchfeld, wähle nacheinander alle gegessenen Zutaten aus und tippe auf „Speichern".
+3. **Warnungen beachten:** Wenn ein Lebensmittel kürzlich schon gegessen wurde oder als unverträglich markiert ist, fragt die App vor dem Speichern noch einmal nach.
+4. **Verlauf ansehen:** Unter „Verlauf" siehst du die letzten Tage. Ein Klick auf einen Tag zeigt die Details.
+5. **Lebensmitteltoleranzen verwalten:** Über das Zahnrad-Symbol oben rechts kannst du jederzeit eigene Lebensmittel hinzufügen, deren Verträglichkeit ändern (Grün/Orange/Rot) oder das Farbschema (hell/dunkel) wechseln.
+
+Der Rest der Bedienung ist bewusst einfach gehalten und erklärt sich beim Ausprobieren von selbst.
+
+### Wo werden meine Daten gespeichert?
+
+Das ist der wichtigste Punkt, den du verstehen solltest:
+
+- **Alles bleibt auf deinem Gerät.** Die App speichert alle Einträge direkt und ausschließlich in deinem Browser, lokal auf dem Handy oder PC, auf dem du sie benutzt.
+- **Es gibt keinen zentralen Server, der deine Daten kennt.** Der Betreiber der Webseite (Hoster) sieht und speichert deine Einträge zu keinem Zeitpunkt. Es findet keine Übertragung an irgendeinen Server statt.
+- **Deshalb gibt es auch keinen Login.** Ein Login wäre nur nötig, wenn deine Daten zentral gespeichert würden, um sie einem Konto zuzuordnen. Da das nicht passiert, kannst du die App sofort ohne Registrierung nutzen.
+- **Kehrseite: Ohne Backup ist nichts wiederherstellbar.** Weil nichts zentral gespeichert wird, kann auch niemand — auch nicht der Hoster oder Entwickler — deine Daten für dich wiederherstellen. Wenn du z. B.:
+  - den Browser-Speicher/-Cache leerst,
+  - die App-Daten in den Handy-Einstellungen löschst,
+  - das Gerät wechselst oder zurücksetzt,
+
+  sind deine bisherigen Einträge unwiederbringlich verloren.
+
+**Deshalb wichtig:** Nutze regelmäßig die Backup-Funktion (Zahnrad → Exportieren), um eine Sicherungsdatei auf deinem Gerät zu speichern. Über „Importieren" kannst du diese Datei jederzeit wieder einlesen — auch auf einem neuen Gerät, um deine Daten dorthin zu übertragen.
+
+---
+
+## Für Techniker
+
+Dieser Abschnitt richtet sich an Entwickler bzw. alle, die die App lokal ausführen, anpassen oder selbst hosten möchten.
+
+### Architektur im Überblick
+
+Eine Progressive Web App (PWA) auf Basis von reinem HTML/CSS/JavaScript (ES6-Module), ohne Build-Tool oder Framework. Persistenz erfolgt über die **IndexedDB** des Browsers (nicht LocalStorage), abgesichert zusätzlich per `navigator.storage.persist()` gegen automatische Cache-Bereinigung durch das Betriebssystem. Ein Service Worker sorgt für Offlinefähigkeit und Caching des App-Shells.
+
+Da alle Daten rein clientseitig verarbeitet werden, genügt für das Hosting ein einfacher statischer Webserver (z. B. Cloudflare Pages, GitHub Pages, Netlify) — es ist kein Backend, keine Datenbank und keine Authentifizierung nötig. Details dazu und zu Synchronisierungs-Optionen über mehrere Geräte hinweg siehe [README-hosting.md](README-hosting.md).
+
+### Projektstruktur
 
 - [index.html](index.html): HTML-Gerüst der App samt Modals für Suche, Backup und Einstellungen.
 - [styles.css](styles.css): Styles für mobile Geräte und Desktop (inklusive Theme-Variablen und Responsive-Layouts).
@@ -34,7 +68,7 @@ Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft a
   - [src/rotation.js](src/rotation.js): Rotationsregeln, Verträglichkeitsprüfung, Such-Scoring und Filter.
   - [src/db.js](src/db.js): IndexedDB-Zugriff, Draft-Persistenz, Backup-Export/Import und Versionierung.
   - [src/ui.js](src/ui.js): DOM-Rendering für Verlauf, Chips, Vorschläge, Filter und Theme-Verwaltung.
-  - [src/modals.js](src/modals.js): Bestätigungs- und Import-Dialoge.
+  - [src/modals.js](src/modals.js): Bestätigungs-, Auswahl- und Import-Dialoge.
   - [src/utils.js](src/utils.js): Datums- und Hilfsfunktionen, Formatierung und Konstanten.
 - [manifest.json](manifest.json): PWA-Konfiguration für die Installation.
 - [sw.js](sw.js): Service Worker für Caching und Offlinebetrieb.
@@ -44,7 +78,7 @@ Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft a
 - [food-tolerance.json](food-tolerance.json): Von der App geladene Lebensmittel-Datenbank.
 - icons/: App-Symbole für Mobilgeräte.
 
-## Lokale Ausführung
+### Lokale Ausführung
 
 Starte einen Webserver im Projektordner:
 
@@ -58,26 +92,16 @@ python -m http.server 8001
 http://localhost:8001/
 ```
 
-## Auf dem Handy im WLAN testen
+> Ein Service Worker benötigt zwingend `localhost` oder eine HTTPS-Verbindung — über `file://` funktioniert die App nicht vollständig.
 
-1. Starte den Server auf dem PC.
+### Auf dem Handy im lokalen WLAN testen
+
+1. Starte den Server auf dem PC (siehe oben).
 2. Ermittle die lokale IP-Adresse deines PCs (in Windows mit `ipconfig`).
 3. Öffne auf dem Handy die Adresse `http://<DEINE-IP>:8001/`.
 4. Installiere die App über das Browsermenü ("Zum Startbildschirm hinzufügen").
 
-## Bedienung
-
-1. **Datum anpassen:** Das Datum steht standardmäßig auf `Heute`. Bei Bedarf klickst du auf den Datums-Chip `Heute ▾`, um einen vergangenen Tag nachzutragen (über `↺ Heute` kommst du jederzeit zurück).
-2. **Lebensmittel erfassen:** Tippe in das Suchfeld:
-   - Auf dem Handy öffnet sich das Vollbild-Such-Overlay ohne störende Tastatur (freies Scrollen).
-   - In der Suche kannst du optional über `🏷️ Alle Kategorien ▾` (im App-Design) oder den Grün-Filter (`🟢`) filtern.
-   - Tippe nacheinander alle gegessenen Zutaten an.
-   - Tippe auf `Speichern (X)`, um alle Einträge sofort zu sichern.
-3. **Konfliktprüfung:** Falls ein Lebensmittel das Rotationsprinzip verletzt oder unverträglich ist, poppt beim Speichern ein Bestätigungsdialog (Ja/Nein) auf. Bereits erfasste Lebensmittel werden lautlos ignoriert.
-4. **Verlauf einsehen:** Der Verlauf zeigt standardmäßig die letzten 4 Tage zugeklappt an. Klicke auf einen Tag, um die Details zu sehen. Über `🔍` kannst du nach Zeiträumen sowie per Modal nach Kategorie (`🏷️`) und Verträglichkeitsstatus (`🚦`) filtern, über `🗑️` Einträge löschen.
-5. **Backups:** Über das Zahnrad `⚙` oben rechts kannst du jederzeit Backups als JSON exportieren oder importieren.
-
-## Datenbasis pflegen & Versionieren
+### Datenbasis pflegen & Versionieren
 
 1. Öffne [data.md](data.md) und passe die Tabelle an (`Kategorie,Lebensmittel,Status`).
 2. Führe das Build-Skript aus, um [food-tolerance.json](food-tolerance.json) zu aktualisieren:
@@ -94,11 +118,21 @@ python build_assets.py --bump
 
 Das Skript erhöht die Versionsnummer automatisch in [version.json](version.json), aktualisiert die Cache-Buster in [index.html](index.html) und passt den Cache-Namen in [sw.js](sw.js) an.
 
-## Hinweise
+### Hauptfunktionen (technische Details)
 
-- Alle Daten liegen in der lokalen Browser-Datenbank (`IndexedDB`).
-- Bei einem Gerätewechsel überträgst du die Daten über das Zahnrad `⚙` per Backup-Export und Import.
-- Ein Service Worker benötigt `localhost` oder eine HTTPS-Verbindung.
+- **4-Tage-Rotationswarnung:** Warnt, wenn ein Lebensmittel in den letzten 3 Tagen gegessen wurde. Ab Tag 5 ist es wieder ohne Warnung erlaubt.
+- **Unverträglichkeitsprüfung:** Markiert Lebensmittel nach eigener Einstufung farblich (Grün, Orange, Rot) über zentral definierte CSS-Farbpunkte.
+- **Konflikt-Dialog beim Speichern:** Verletzt ein gewähltes Lebensmittel die Rotationsfrist oder eine Verträglichkeitsregel, erscheint ein themenkonformes Bestätigungs-Modal (kein natives Browser-Popup) mit genauer Begründung.
+- **Intelligenter Import-Dialog:** Bietet die Wahl zwischen *Ergänzen* (mit Duplikaterkennung), *Ersetzen* und *Abbrechen*.
+- **Moderne Browser-Datenbank (IndexedDB):** Zuverlässige, transaktionssichere Speicherung mit automatischem Schutz gegen Cache-Bereinigung (`navigator.storage.persist()`).
+- **Offlinefähig & Modular:** Vollwertige PWA mit modularem ES6-Code (`src/`) ohne Build-Tool-Ballast.
+- **Einheitliches Dialog-System:** Alle Bestätigungen, Fehler- und Erfolgsmeldungen laufen über ein zentrales, themefähiges Modal (`showConfirmDialog` in [src/modals.js](src/modals.js)) statt über native `confirm()`/`alert()`-Popups.
+
+### Hinweise
+
+- Alle Daten liegen ausschließlich in der lokalen Browser-Datenbank (`IndexedDB`) des jeweiligen Geräts/Browserprofils.
+- Bei einem Gerätewechsel überträgst du die Daten über das Zahnrad → Backup-Export und -Import.
+- Zum Hosting im Internet und zu Optionen für echte Synchronisierung zwischen mehreren Geräten siehe [README-hosting.md](README-hosting.md).
 
 ## Lizenz
 

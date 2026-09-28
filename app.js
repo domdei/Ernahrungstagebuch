@@ -68,6 +68,7 @@ import {
     closeFoodForm,
     promptFoodDeleteConfirmation,
     promptTolerancesImportAction,
+    showConfirmDialog,
 } from './src/modals.js';
 import { bindInstallPrompt, registerServiceWorker } from './src/pwa.js';
 
@@ -254,13 +255,18 @@ function executeSaveEntries() {
     renderEverything(isSearchOverlayOpen);
 }
 
-function confirmDeleteEntry(entryId) {
+async function confirmDeleteEntry(entryId) {
     const target = state.entries.find((entry) => entry.id === entryId);
     if (!target) {
         return;
     }
 
-    const confirmed = window.confirm(`Möchtest du "${target.name}" wirklich aus dem Verlauf löschen?`);
+    const confirmed = await showConfirmDialog({
+        title: 'Eintrag löschen',
+        message: `Möchtest du "${target.name}" wirklich aus dem Verlauf löschen?`,
+        confirmLabel: 'Löschen',
+        danger: true,
+    });
     if (!confirmed) {
         return;
     }
@@ -285,7 +291,12 @@ async function handleImport(event) {
             .filter(Boolean);
 
         if (!imported.length && (!nextFoods || !nextFoods.length)) {
-            alert('Es wurden keine Einträge oder Lebensmittel gefunden, die importiert werden können.');
+            await showConfirmDialog({
+                title: 'Import nicht möglich',
+                message: 'Es wurden keine Einträge oder Lebensmittel gefunden, die importiert werden können.',
+                confirmLabel: 'OK',
+                infoOnly: true,
+            });
             return;
         }
 
@@ -330,7 +341,12 @@ async function handleImport(event) {
         renderEverything(isSearchOverlayOpen);
     } catch (error) {
         console.error('Fehler beim Import:', error);
-        alert('Die Datei konnte nicht importiert werden. Bitte prüfe das Format.');
+        await showConfirmDialog({
+            title: 'Import fehlgeschlagen',
+            message: 'Die Datei konnte nicht importiert werden. Bitte prüfe das Format.',
+            confirmLabel: 'OK',
+            infoOnly: true,
+        });
     } finally {
         event.target.value = '';
     }
@@ -347,11 +363,19 @@ async function handleTolerancesImport(event) {
         const importedFoods = parseImportedTolerancesJson(content);
 
         if (!importedFoods || !importedFoods.length) {
-            alert('Es wurden keine Lebensmittel in der Datei gefunden.');
+            await showConfirmDialog({
+                title: 'Import nicht möglich',
+                message: 'Es wurden keine Lebensmittel in der Datei gefunden.',
+                confirmLabel: 'OK',
+                infoOnly: true,
+            });
             return;
         }
 
         const choice = await promptTolerancesImportAction(importedFoods.length, state.foods.length);
+        if (choice === 'cancel') {
+            return;
+        }
         if (choice === 'replace') {
             await idbSetAllFoods(importedFoods);
             state.foods = importedFoods.map(normalizeFoodRecord);
@@ -368,10 +392,20 @@ async function handleTolerancesImport(event) {
         renderFoodManagerCategoryOptions();
         renderFoodManagerList();
         renderEverything(isSearchOverlayOpen);
-        alert(`${importedFoods.length} Lebensmittel erfolgreich importiert (${choice === 'replace' ? 'ersetzt' : 'ergänzt'}).`);
+        await showConfirmDialog({
+            title: 'Import abgeschlossen',
+            message: `${importedFoods.length} Lebensmittel erfolgreich importiert (${choice === 'replace' ? 'ersetzt' : 'ergänzt'}).`,
+            confirmLabel: 'OK',
+            infoOnly: true,
+        });
     } catch (error) {
         console.error('Fehler beim Importieren der Toleranzen:', error);
-        alert('Die Datei konnte nicht importiert werden. Bitte prüfe das Format.');
+        await showConfirmDialog({
+            title: 'Import fehlgeschlagen',
+            message: 'Die Datei konnte nicht importiert werden. Bitte prüfe das Format.',
+            confirmLabel: 'OK',
+            infoOnly: true,
+        });
     } finally {
         event.target.value = '';
     }
@@ -748,7 +782,7 @@ function bindEvents() {
     }
 
     if (ui.historyList) {
-        ui.historyList.addEventListener('click', (event) => {
+        ui.historyList.addEventListener('click', async (event) => {
             const button = event.target.closest('.delete-entry-button');
             if (!button) {
                 return;
@@ -757,7 +791,7 @@ function bindEvents() {
             if (!entryId) {
                 return;
             }
-            confirmDeleteEntry(entryId);
+            await confirmDeleteEntry(entryId);
         });
     }
 
@@ -783,6 +817,12 @@ function bindEvents() {
 
     if (ui.confirmCancelButton) {
         ui.confirmCancelButton.addEventListener('click', () => {
+            closeConfirmModal();
+        });
+    }
+
+    if (ui.confirmModalCloseButton) {
+        ui.confirmModalCloseButton.addEventListener('click', () => {
             closeConfirmModal();
         });
     }
@@ -839,9 +879,12 @@ function bindEvents() {
 
     if (ui.resetTolerancesButton) {
         ui.resetTolerancesButton.addEventListener('click', async () => {
-            const confirmed = window.confirm(
-                'Möchtest du alle Lebensmittel und Verträglichkeiten auf die Standardwerte aus der Datenbank zurücksetzen? Eigene Änderungen gehen dabei verloren.'
-            );
+            const confirmed = await showConfirmDialog({
+                title: 'Auf Standardwerte zurücksetzen',
+                message: 'Möchtest du alle Lebensmittel und Verträglichkeiten auf die Standardwerte aus der Datenbank zurücksetzen? Eigene Änderungen gehen dabei verloren.',
+                confirmLabel: 'Zurücksetzen',
+                danger: true,
+            });
             if (!confirmed) return;
             const success = await resetFoodTolerancesToDefault();
             if (success) {
@@ -850,15 +893,29 @@ function bindEvents() {
                 renderFoodManagerList();
                 renderEverything(isSearchOverlayOpen);
                 updateFoodCountBadge();
-                alert('Lebensmittel und Verträglichkeiten wurden auf die Standardwerte zurückgesetzt.');
+                await showConfirmDialog({
+                    title: 'Zurückgesetzt',
+                    message: 'Lebensmittel und Verträglichkeiten wurden auf die Standardwerte zurückgesetzt.',
+                    confirmLabel: 'OK',
+                    infoOnly: true,
+                });
             } else {
-                alert('Zurücksetzen fehlgeschlagen.');
+                await showConfirmDialog({
+                    title: 'Fehlgeschlagen',
+                    message: 'Zurücksetzen fehlgeschlagen.',
+                    confirmLabel: 'OK',
+                    infoOnly: true,
+                });
             }
         });
     }
 
     if (ui.foodManagerCloseButton) {
         ui.foodManagerCloseButton.addEventListener('click', closeFoodManagerModal);
+    }
+
+    if (ui.foodManagerCloseXButton) {
+        ui.foodManagerCloseXButton.addEventListener('click', closeFoodManagerModal);
     }
 
     if (ui.foodManagerModal) {
@@ -942,7 +999,12 @@ function bindEvents() {
             const tolerance = checkedRadio ? checkedRadio.value : 'green';
 
             if (!name) {
-                alert('Bitte gib einen Namen für das Lebensmittel ein.');
+                await showConfirmDialog({
+                    title: 'Name fehlt',
+                    message: 'Bitte gib einen Namen für das Lebensmittel ein.',
+                    confirmLabel: 'OK',
+                    infoOnly: true,
+                });
                 if (ui.foodFormName) ui.foodFormName.focus();
                 return;
             }
@@ -950,7 +1012,12 @@ function bindEvents() {
             const normName = normalizeText(name);
             const existing = state.foods.find((f) => normalizeText(f.name) === normName);
             if (existing && (!originalName || normalizeText(originalName) !== normName)) {
-                alert(`Ein Lebensmittel mit dem Namen "${existing.name}" existiert bereits.`);
+                await showConfirmDialog({
+                    title: 'Bereits vorhanden',
+                    message: `Ein Lebensmittel mit dem Namen "${existing.name}" existiert bereits.`,
+                    confirmLabel: 'OK',
+                    infoOnly: true,
+                });
                 return;
             }
 
@@ -961,7 +1028,12 @@ function bindEvents() {
 
             const saved = await idbPutFood({ name, category, tolerance });
             if (!saved) {
-                alert('Speichern in der Datenbank fehlgeschlagen.');
+                await showConfirmDialog({
+                    title: 'Fehlgeschlagen',
+                    message: 'Speichern in der Datenbank fehlgeschlagen.',
+                    confirmLabel: 'OK',
+                    infoOnly: true,
+                });
                 return;
             }
 

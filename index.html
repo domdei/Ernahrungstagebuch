@@ -15,7 +15,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.1.9" />
+    <link rel="stylesheet" href="./styles.css?v=1.2.0" />
     <script>
       (function() {
         try {
@@ -41,7 +41,13 @@
 
       <div id="firstRunNotice" class="first-run-notice hidden" role="alert">
         <div class="first-run-notice-content">
-          <span class="first-run-notice-icon">💡</span>
+          <span class="first-run-notice-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"></circle>
+              <line x1="12" y1="11" x2="12" y2="16"></line>
+              <circle cx="12" cy="8" r="0.6" fill="currentColor" stroke="none"></circle>
+            </svg>
+          </span>
           <div class="first-run-notice-text">
             <strong>Standard-Werte geladen</strong>
             <span>Lebensmittel-Verträglichkeiten wurden initialisiert. Passe sie an deine persönlichen Testergebnisse an.</span>
@@ -121,7 +127,6 @@
             <div class="search-filter-bar">
               <div class="category-chip-wrap">
                 <button id="categoryChipButton" class="category-chip-btn" type="button" aria-label="Kategorie filtern" title="Kategorie filtern">
-                  <span class="category-chip-icon">🏷️</span>
                   <span id="categoryChipText" class="category-chip-text">Alle Kategorien</span>
                   <span class="category-chip-arrow">▾</span>
                 </button>
@@ -138,7 +143,9 @@
                   ✕
                 </button>
               </div>
-              <button id="onlyFreshGreenFoods" class="icon-button green-filter-button" type="button" aria-pressed="false" aria-label="Nur grüne, noch nicht erfasste Lebensmittel" title="Nur grüne, noch nicht erfasste Lebensmittel">🟢</button>
+              <button id="onlyFreshGreenFoods" class="icon-button small-icon-button green-filter-button" type="button" aria-pressed="false" aria-label="Nur grüne, noch nicht erfasste Lebensmittel" title="Nur grüne, noch nicht erfasste Lebensmittel">
+                <span class="tolerance-dot dot-green" aria-hidden="true"></span>
+              </button>
             </div>
 
             <div id="overlaySelectedFoods" class="overlay-selected-foods hidden" aria-live="polite"></div>
@@ -158,7 +165,10 @@
                 aria-label="Historie filtern"
                 title="Historie filtern"
               >
-                🔍
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
               </button>
               <button
                 id="historyDeleteToggle"
@@ -168,7 +178,13 @@
                 aria-label="Löschmodus aktivieren"
                 title="Löschmodus aktivieren"
               >
-                🗑️
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                  <path d="M10 11v6"></path>
+                  <path d="M14 11v6"></path>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                </svg>
               </button>
             </div>
           </div>
@@ -186,7 +202,6 @@
               <span>Kategorie</span>
               <div class="category-chip-wrap">
                 <button id="historyCategoryChipButton" class="category-chip-btn" type="button" aria-label="Verlauf nach Kategorie filtern" title="Kategorie filtern">
-                  <span class="category-chip-icon">🏷️</span>
                   <span id="historyCategoryChipText" class="category-chip-text">Alle Kategorien</span>
                   <span class="category-chip-arrow">▾</span>
                 </button>
@@ -208,7 +223,6 @@
               <span>Status</span>
               <div class="category-chip-wrap">
                 <button id="historyStatusChipButton" class="category-chip-btn" type="button" aria-label="Verlauf nach Status filtern" title="Status filtern">
-                  <span class="category-chip-icon">🚦</span>
                   <span id="historyStatusChipText" class="category-chip-text">Alle Status</span>
                   <span class="category-chip-arrow">▾</span>
                 </button>
@@ -249,7 +263,7 @@
           <div class="settings-section">
             <h4>Lebensmittel &amp; Verträglichkeiten</h4>
             <button id="openFoodManagerButton" class="settings-tile-btn" type="button">
-              <span class="settings-tile-title">Lebensmittel verwalten</span>
+              <span class="settings-tile-title">Lebensmitteltoleranzen verwalten</span>
               <div class="settings-tile-end">
                 <span id="foodCountBadge" class="count-badge">0</span>
                 <span class="settings-tile-chevron">›</span>
@@ -295,8 +309,11 @@
     <div id="foodManagerModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="foodManagerModalTitle">
       <div class="modal-card food-manager-modal-card">
         <div class="modal-header">
-          <h3 id="foodManagerModalTitle">Lebensmittel verwalten</h3>
-          <button id="foodManagerCloseButton" class="modal-done-btn" type="button">Fertig</button>
+          <h3 id="foodManagerModalTitle">Lebensmitteltoleranzen verwalten</h3>
+          <div class="modal-header-actions">
+            <button id="foodManagerCloseButton" class="modal-done-btn" type="button">Fertig</button>
+            <button id="foodManagerCloseXButton" class="icon-button small-icon-button modal-close-btn" type="button" aria-label="Schließen" title="Schließen">✕</button>
+          </div>
         </div>
 
         <!-- Add / Edit Form (collapsible / toggleable) -->
@@ -353,7 +370,6 @@
           <div class="food-manager-filters-row">
             <div class="category-chip-wrap">
               <button id="foodManagerCategoryChipButton" class="category-chip-btn" type="button" aria-label="Lebensmittel nach Kategorie filtern" title="Kategorie filtern">
-                <span class="category-chip-icon">🏷️</span>
                 <span id="foodManagerCategoryChipText" class="category-chip-text">Alle Kategorien</span>
                 <span class="category-chip-arrow">▾</span>
               </button>
@@ -369,7 +385,6 @@
             </div>
             <div class="category-chip-wrap">
               <button id="foodManagerToleranceChipButton" class="category-chip-btn" type="button" aria-label="Lebensmittel nach Status filtern" title="Status filtern">
-                <span class="category-chip-icon">🚦</span>
                 <span id="foodManagerToleranceChipText" class="category-chip-text">Alle Status</span>
                 <span class="category-chip-arrow">▾</span>
               </button>
@@ -394,7 +409,10 @@
 
     <div id="importModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
       <div class="modal-card">
-        <h3 id="importModalTitle">Backup importieren</h3>
+        <div class="modal-header">
+          <h3 id="importModalTitle">Backup importieren</h3>
+          <button id="importCloseButton" class="icon-button small-icon-button modal-close-btn" type="button" aria-label="Schließen" title="Schließen">✕</button>
+        </div>
         <p id="importModalText" class="modal-description"></p>
         <div class="modal-actions">
           <button id="importMergeButton" class="modal-btn modal-btn-option" type="button">
@@ -414,7 +432,10 @@
 
     <div id="confirmModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
       <div class="modal-card">
-        <h3 id="confirmModalTitle">Hinweise zu ausgewählten Lebensmitteln</h3>
+        <div class="modal-header">
+          <h3 id="confirmModalTitle">Hinweise zu ausgewählten Lebensmitteln</h3>
+          <button id="confirmModalCloseButton" class="icon-button small-icon-button modal-close-btn" type="button" aria-label="Schließen" title="Schließen">✕</button>
+        </div>
         <p id="confirmModalText" class="modal-description"></p>
         <div id="confirmModalList" class="confirm-modal-list"></div>
         <div class="modal-actions">
@@ -440,10 +461,28 @@
       </div>
     </div>
 
+    <div id="genericConfirmModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="genericConfirmTitle">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="genericConfirmTitle">Bestätigen</h3>
+          <button id="genericConfirmCloseButton" class="icon-button small-icon-button modal-close-btn" type="button" aria-label="Schließen" title="Schließen">✕</button>
+        </div>
+        <p id="genericConfirmText" class="modal-description"></p>
+        <div class="modal-actions">
+          <button id="genericConfirmProceedButton" class="modal-btn modal-btn-confirm" type="button">
+            <strong id="genericConfirmProceedLabel">Bestätigen</strong>
+          </button>
+          <button id="genericConfirmCancelButton" class="ghost-button modal-btn modal-btn-cancel" type="button">
+            <strong id="genericConfirmCancelLabel">Abbrechen</strong>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <noscript>
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script type="module" src="./app.js?v=1.1.9"></script>
+    <script type="module" src="./app.js?v=1.2.0"></script>
   </body>
 </html>

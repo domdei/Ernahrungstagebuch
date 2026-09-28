@@ -291,11 +291,6 @@ button {
   font-weight: 700;
 }
 
-.category-chip-icon {
-  font-size: var(--fs-base);
-  line-height: 1;
-}
-
 .category-chip-arrow {
   font-size: 0.7rem;
   color: var(--muted);
@@ -403,28 +398,26 @@ button {
   color: var(--red);
 }
 
-.green-filter-button {
-  font-size: 1.1rem;
-  opacity: 0.45;
-  filter: grayscale(0.8);
-  transition:
-    opacity 0.15s ease,
-    filter 0.15s ease,
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.15s ease;
+.green-filter-button .tolerance-dot {
+  width: 12px;
+  height: 12px;
+  min-width: 12px;
+  min-height: 12px;
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
 }
 
-.green-filter-button:hover {
+.green-filter-button:hover .tolerance-dot {
   opacity: 0.8;
-  filter: grayscale(0.3);
 }
 
 .green-filter-button.active {
-  opacity: 1;
-  filter: none;
   background: var(--green-soft);
   border-color: var(--green);
+}
+
+.green-filter-button.active .tolerance-dot {
+  opacity: 1;
 }
 
 .field {
@@ -754,7 +747,8 @@ select:focus {
 
 .status-dot,
 .history-summary-dot,
-.tolerance-dot {
+.tolerance-dot,
+.badge {
   display: inline-block;
   flex-shrink: 0;
   border-radius: var(--radius-round);
@@ -905,23 +899,11 @@ select:focus {
 .selection-chip .badge {
   width: 10px;
   height: 10px;
-  border-radius: var(--radius-round);
-  display: inline-block;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="dark"] .selection-chip .badge {
   box-shadow: 0 0 4px currentColor;
-}
-
-.badge-green {
-  background: var(--green);
-}
-.badge-orange {
-  background: var(--orange);
-}
-.badge-red {
-  background: var(--red);
 }
 
 .remove-chip {
@@ -1359,6 +1341,20 @@ select:focus {
   opacity: 0.92;
 }
 
+.modal-btn-danger {
+  background: var(--red);
+  color: #fff;
+}
+
+.modal-btn-danger:hover {
+  opacity: 0.92;
+}
+
+#genericConfirmModal .modal-btn {
+  align-items: center;
+  text-align: center;
+}
+
 .category-modal-card {
   max-width: 480px;
   max-height: 85vh;
@@ -1439,16 +1435,28 @@ select:focus {
   background: rgba(245, 158, 11, 0.08);
 }
 
+.confirm-modal-item.kind-yellow .confirm-item-icon {
+  color: var(--warning-text);
+}
+
 .confirm-modal-item.kind-red {
   border-color: rgba(239, 68, 68, 0.35);
   background: rgba(239, 68, 68, 0.08);
 }
 
+.confirm-modal-item.kind-red .confirm-item-icon {
+  color: var(--red);
+}
+
 .confirm-item-icon {
-  font-size: var(--fs-md);
-  line-height: 1;
+  display: inline-flex;
   flex-shrink: 0;
   margin-top: 1px;
+}
+
+.confirm-item-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .confirm-item-content {
@@ -1660,9 +1668,14 @@ select:focus {
 }
 
 .first-run-notice-icon {
-  font-size: 1.3rem;
-  line-height: 1;
+  display: inline-flex;
   flex-shrink: 0;
+  color: var(--primary);
+}
+
+.first-run-notice-icon svg {
+  width: 22px;
+  height: 22px;
 }
 
 .first-run-notice-text {
@@ -2060,6 +2073,11 @@ select:focus {
 .empty-food-state p {
   margin: 0;
   font-size: 0.9rem;
+}
+
+.empty-state-icon svg {
+  width: 28px;
+  height: 28px;
 }
 
 .food-item-row {

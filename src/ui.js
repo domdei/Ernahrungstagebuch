@@ -202,7 +202,7 @@ export function renderFoodChipHtml(foodName, selectedDate) {
 
     return `
       <div class="selection-chip ${conflictClass}"${titleAttr}>
-        <span class="badge badge-${status}"></span>
+        <span class="badge dot-${status}"></span>
         <span class="chip-label">${escapeHtml(foodName)}</span>
         ${conflictBadge}
         <button type="button" class="remove-chip" data-name="${escapeHtml(foodName)}" aria-label="Entfernen">×</button>

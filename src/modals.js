@@ -39,7 +39,9 @@ export function openConfirmModal(conflicts, onProceed) {
             const warningsText = conflict.warnings.map((w) => w.text).join('<br>');
             const isRed = conflict.warnings.some((w) => w.kind === 'red');
             const kindClass = isRed ? 'kind-red' : 'kind-yellow';
-            const icon = isRed ? '⚠️' : '⏱️';
+            const icon = isRed
+                ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"></path><line x1="12" y1="9" x2="12" y2="14"></line><line x1="12" y1="17" x2="12" y2="17.01"></line></svg>'
+                : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg>';
             return `
         <div class="confirm-modal-item ${kindClass}">
           <span class="confirm-item-icon">${icon}</span>
@@ -69,6 +71,88 @@ export function closeConfirmModal() {
     }
     ui.confirmModal.classList.add('hidden');
     onConfirmSaveCallback = null;
+}
+
+let onGenericConfirmResolve = null;
+
+/** Reusable themed replacement for window.confirm/alert; falls back to native dialogs if the modal markup is missing. */
+export function showConfirmDialog({
+    title = 'Bestätigen',
+    message = '',
+    confirmLabel = 'Bestätigen',
+    cancelLabel = 'Abbrechen',
+    danger = false,
+    infoOnly = false,
+} = {}) {
+    if (!ui.genericConfirmModal) {
+        if (infoOnly) {
+            window.alert(message);
+            return Promise.resolve(true);
+        }
+        return Promise.resolve(window.confirm(message));
+    }
+
+    if (onGenericConfirmResolve) {
+        onGenericConfirmResolve(false);
+        onGenericConfirmResolve = null;
+    }
+
+    return new Promise((resolve) => {
+        onGenericConfirmResolve = resolve;
+
+        if (ui.genericConfirmTitle) ui.genericConfirmTitle.textContent = title;
+        if (ui.genericConfirmText) ui.genericConfirmText.textContent = message;
+        if (ui.genericConfirmProceedLabel) ui.genericConfirmProceedLabel.textContent = confirmLabel;
+        if (ui.genericConfirmCancelLabel) ui.genericConfirmCancelLabel.textContent = cancelLabel;
+        if (ui.genericConfirmProceedButton) {
+            ui.genericConfirmProceedButton.classList.toggle('modal-btn-danger', danger);
+            ui.genericConfirmProceedButton.classList.toggle('modal-btn-confirm', !danger);
+        }
+        if (ui.genericConfirmCancelButton) {
+            ui.genericConfirmCancelButton.classList.toggle('hidden', infoOnly);
+        }
+
+        ui.genericConfirmModal.classList.remove('hidden');
+
+        const cleanup = () => {
+            ui.genericConfirmModal.classList.add('hidden');
+            ui.genericConfirmProceedButton.removeEventListener('click', onConfirm);
+            ui.genericConfirmCancelButton.removeEventListener('click', onCancel);
+            ui.genericConfirmCloseButton?.removeEventListener('click', onCancel);
+            document.removeEventListener('keydown', onKeyDown);
+            ui.genericConfirmModal.removeEventListener('click', onBackdropClick);
+            onGenericConfirmResolve = null;
+        };
+
+        const onConfirm = () => {
+            cleanup();
+            resolve(true);
+        };
+
+        const onCancel = () => {
+            cleanup();
+            resolve(infoOnly);
+        };
+
+        const onKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                onCancel();
+            }
+        };
+
+        const onBackdropClick = (event) => {
+            if (event.target === ui.genericConfirmModal) {
+                onCancel();
+            }
+        };
+
+        ui.genericConfirmProceedButton.addEventListener('click', onConfirm);
+        ui.genericConfirmCancelButton.addEventListener('click', onCancel);
+        ui.genericConfirmCloseButton?.addEventListener('click', onCancel);
+        document.addEventListener('keydown', onKeyDown);
+        ui.genericConfirmModal.addEventListener('click', onBackdropClick);
+    });
 }
 
 export function openSelectionModal({
@@ -124,7 +208,7 @@ export function openCategoryModal(
     const items = categories.map((cat) => ({
         value: cat,
         label: cat === 'all' ? 'Alle Kategorien' : cat,
-        icon: '🏷️',
+        icon: '',
     }));
 
     openSelectionModal({
@@ -180,6 +264,7 @@ export function promptImportAction(importedCount, currentCount) {
             ui.importMergeButton.removeEventListener('click', onMerge);
             ui.importReplaceButton.removeEventListener('click', onReplace);
             ui.importCancelButton.removeEventListener('click', onCancel);
+            ui.importCloseButton?.removeEventListener('click', onCancel);
             document.removeEventListener('keydown', onKeyDown);
             ui.importModal.removeEventListener('click', onBackdropClick);
         };
@@ -217,6 +302,7 @@ export function promptImportAction(importedCount, currentCount) {
         ui.importMergeButton.addEventListener('click', onMerge);
         ui.importReplaceButton.addEventListener('click', onReplace);
         ui.importCancelButton.addEventListener('click', onCancel);
+        ui.importCloseButton?.addEventListener('click', onCancel);
         document.addEventListener('keydown', onKeyDown);
         ui.importModal.addEventListener('click', onBackdropClick);
     });
@@ -298,7 +384,12 @@ export function renderFoodManagerList() {
     if (filtered.length === 0) {
         ui.foodManagerList.innerHTML = `
           <div class="empty-food-state">
-            <span class="empty-state-icon">🔍</span>
+            <span class="empty-state-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
             <p>Keine passenden Lebensmittel gefunden.</p>
           </div>
         `;
@@ -321,7 +412,15 @@ export function renderFoodManagerList() {
               <button type="button" class="tolerance-pill pill-red ${tol === 'red' ? 'active' : ''}" data-name="${escapeHtml(food.name)}" data-tol="red" title="Unverträglich (Rot)"><span class="tolerance-dot dot-red" aria-hidden="true"></span></button>
             </div>
             <button type="button" class="icon-button small-icon-button edit-food-btn" data-name="${escapeHtml(food.name)}" title="Bearbeiten" aria-label="Bearbeiten">✎</button>
-            <button type="button" class="icon-button small-icon-button delete-food-btn" data-name="${escapeHtml(food.name)}" title="Löschen" aria-label="Löschen">🗑️</button>
+            <button type="button" class="icon-button small-icon-button delete-food-btn" data-name="${escapeHtml(food.name)}" title="Löschen" aria-label="Löschen">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+              </svg>
+            </button>
           </div>
         </div>
       `;
@@ -368,21 +467,76 @@ export function closeFoodForm() {
 }
 
 export function promptFoodDeleteConfirmation(foodName, usageCount) {
-    return new Promise((resolve) => {
-        let message = '';
-        if (usageCount > 0) {
-            const entryText = usageCount === 1 ? '1 Tagebucheintrag' : `${usageCount} Tagebucheinträgen`;
-            message = `Dieses Lebensmittel wurde in ${entryText} verwendet. Soll es wirklich aus der Liste der Lebensmittel gelöscht werden?\n\n(Historische Einträge bleiben erhalten)`;
-        } else {
-            message = `Möchtest du "${foodName}" wirklich aus der Liste der Lebensmittel löschen?`;
-        }
-        resolve(window.confirm(message));
+    let message = '';
+    if (usageCount > 0) {
+        const entryText = usageCount === 1 ? '1 Tagebucheintrag' : `${usageCount} Tagebucheinträgen`;
+        message = `Dieses Lebensmittel wurde in ${entryText} verwendet. Soll es wirklich aus der Liste der Lebensmittel gelöscht werden? (Historische Einträge bleiben erhalten)`;
+    } else {
+        message = `Möchtest du "${foodName}" wirklich aus der Liste der Lebensmittel löschen?`;
+    }
+    return showConfirmDialog({
+        title: 'Lebensmittel löschen',
+        message,
+        confirmLabel: 'Löschen',
+        danger: true,
     });
 }
 
 export function promptTolerancesImportAction(importedCount, currentCount) {
     return new Promise((resolve) => {
-        const text = `In der Datei wurden ${importedCount} Lebensmittel gefunden. Aktuell sind ${currentCount} vorhanden.\n\n[OK] = Ergänzen (Bestehendes behalten, neue/geänderte übernehmen)\n[Abbrechen] = Ersetzen (Alle bisherigen Lebensmittel durch den Import ersetzen)`;
-        resolve(window.confirm(text) ? 'merge' : 'replace');
+        if (!ui.importModal) {
+            const shouldMerge = window.confirm('Bestehende Lebensmittel behalten und importierte ergänzen?');
+            resolve(shouldMerge ? 'merge' : 'replace');
+            return;
+        }
+
+        ui.importModalText.textContent = `In der Datei wurden ${importedCount} Lebensmittel gefunden. Aktuell sind ${currentCount} vorhanden. Wie möchtest du fortfahren?`;
+
+        ui.importModal.classList.remove('hidden');
+
+        const cleanup = () => {
+            ui.importModal.classList.add('hidden');
+            ui.importMergeButton.removeEventListener('click', onMerge);
+            ui.importReplaceButton.removeEventListener('click', onReplace);
+            ui.importCancelButton.removeEventListener('click', onCancel);
+            ui.importCloseButton?.removeEventListener('click', onCancel);
+            document.removeEventListener('keydown', onKeyDown);
+            ui.importModal.removeEventListener('click', onBackdropClick);
+        };
+
+        const onMerge = () => {
+            cleanup();
+            resolve('merge');
+        };
+
+        const onReplace = () => {
+            cleanup();
+            resolve('replace');
+        };
+
+        const onCancel = () => {
+            cleanup();
+            resolve('cancel');
+        };
+
+        const onKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                onCancel();
+            }
+        };
+
+        const onBackdropClick = (event) => {
+            if (event.target === ui.importModal) {
+                onCancel();
+            }
+        };
+
+        ui.importMergeButton.addEventListener('click', onMerge);
+        ui.importReplaceButton.addEventListener('click', onReplace);
+        ui.importCancelButton.addEventListener('click', onCancel);
+        ui.importCloseButton?.addEventListener('click', onCancel);
+        document.addEventListener('keydown', onKeyDown);
+        ui.importModal.addEventListener('click', onBackdropClick);
     });
 }
