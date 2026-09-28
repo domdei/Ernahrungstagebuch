@@ -6,7 +6,7 @@ Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft a
 
 - **4-Tage-Rotationswarnung:** Warnt, wenn ein Lebensmittel in den letzten 3 Tagen gegessen wurde. Ab Tag 5 ist es wieder ohne Warnung erlaubt.
 - **Unverträglichkeitsprüfung:** Markiert Lebensmittel nach eigener Einstufung farblich (Grün, Orange, Rot).
-- **Kompakter Smart-Date-Chip:** Zeigt das Erfassungsdatum platzsparend als interaktiven Button (`📅 Heute (Fr., 25.09.) ▾`). Klick öffnet den Datepicker; bei abweichendem Datum erscheint ein Schnell-Reset-Button (`↺ Heute`).
+- **Kompakter Smart-Date-Chip:** Zeigt das Erfassungsdatum platzsparend als interaktiven Button (`Heute (Fr., 25.09.) ▾`). Klick öffnet den Datepicker; bei abweichendem Datum erscheint ein Schnell-Reset-Button (`↺ Heute`).
 - **Aufgeräumte Hauptseite & Symmetrische Typografie:** Beide Bereiche (`Lebensmittel erfassen` und `Verlauf`) nutzen eine einheitliche, dezente Überschriftengröße. Auf der Hauptseite gibt es keine störenden Filter-Dropdowns mehr.
 - **Filterleiste in der Suche & Custom-Kategorie-Modal:** Die Kategorieauswahl (`🏷️ Alle Kategorien ▾`) und der Grün-Filter (`🟢`) sitzen direkt in der Suchleiste und erscheinen nur bei aktiver Suche. Ein Klick auf den Kategorie-Button öffnet ein elegantes, an das App-Design angepasstes Modal statt des nativen System-Auswahldialogs.
 - **Direktes Speichern & Idempotenz:** Zutaten werden direkt in der Suche gewählt und über `Speichern (X)` ohne Umwege im Tagebuch abgelegt. Lebensmittel, die am selben Tag bereits erfasst wurden, werden lautlos ignoriert (kein blockierendes Alert-Pop-up).
@@ -67,7 +67,7 @@ http://localhost:8001/
 
 ## Bedienung
 
-1. **Datum anpassen:** Das Datum steht standardmäßig auf `Heute`. Bei Bedarf klickst du auf den Datums-Chip `📅 Heute ▾`, um einen vergangenen Tag nachzutragen (über `↺ Heute` kommst du jederzeit zurück).
+1. **Datum anpassen:** Das Datum steht standardmäßig auf `Heute`. Bei Bedarf klickst du auf den Datums-Chip `Heute ▾`, um einen vergangenen Tag nachzutragen (über `↺ Heute` kommst du jederzeit zurück).
 2. **Lebensmittel erfassen:** Tippe in das Suchfeld:
    - Auf dem Handy öffnet sich das Vollbild-Such-Overlay ohne störende Tastatur (freies Scrollen).
    - In der Suche kannst du optional über `🏷️ Alle Kategorien ▾` (im App-Design) oder den Grün-Filter (`🟢`) filtern.

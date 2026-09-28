@@ -61,7 +61,14 @@
 
           <div class="date-selector-bar">
             <button id="dateChipButton" class="date-chip-btn" type="button" aria-label="Datum ändern" title="Datum ändern">
-              <span class="date-chip-icon">📅</span>
+              <span class="date-chip-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </span>
               <span id="dateChipText" class="date-chip-text">Heute</span>
               <span class="date-chip-arrow">▾</span>
             </button>
@@ -233,19 +240,16 @@
       <div class="modal-card settings-modal-card">
         <div class="modal-header">
           <h3 id="settingsModalTitle">Einstellungen &amp; Backup</h3>
-          <button id="settingsCloseButton" class="icon-button small-icon-button modal-close-btn" type="button" aria-label="Schließen" title="Schließen">✕</button>
+          <div class="modal-header-actions">
+            <button id="themeToggle" class="icon-button small-icon-button modal-header-btn" type="button" aria-label="Farbschema wechseln" title="Farbschema wechseln">☾</button>
+            <button id="settingsCloseButton" class="icon-button small-icon-button modal-close-btn" type="button" aria-label="Schließen" title="Schließen">✕</button>
+          </div>
         </div>
         <div class="settings-content">
           <div class="settings-section">
             <h4>Lebensmittel &amp; Verträglichkeiten</h4>
             <button id="openFoodManagerButton" class="settings-tile-btn" type="button">
-              <div class="settings-tile-content">
-                <span class="settings-tile-icon">🏷️</span>
-                <div class="settings-tile-text">
-                  <strong>Lebensmittel verwalten</strong>
-                  <small>Verträglichkeiten anpassen, ergänzen &amp; löschen</small>
-                </div>
-              </div>
+              <span class="settings-tile-title">Lebensmittel verwalten</span>
               <div class="settings-tile-end">
                 <span id="foodCountBadge" class="count-badge">0</span>
                 <span class="settings-tile-chevron">›</span>
@@ -276,21 +280,6 @@
                 <input id="importFile" type="file" accept=".json" />
               </label>
             </div>
-          </div>
-          <div class="settings-section">
-            <h4>Erscheinungsbild</h4>
-            <button id="themeToggle" class="settings-tile-btn" type="button" aria-label="Erscheinungsbild wechseln">
-              <div class="settings-tile-content">
-                <span id="themeToggleIcon" class="settings-tile-icon">☾</span>
-                <div class="settings-tile-text">
-                  <strong id="themeToggleLabel">Dunkelmodus aktivieren</strong>
-                  <small id="themeToggleHint">Wechselt zwischen hellem und dunklem Design</small>
-                </div>
-              </div>
-              <div class="settings-tile-end">
-                <span id="themeToggleState" class="settings-status-badge">Aus</span>
-              </div>
-            </button>
           </div>
           <div class="settings-section">
             <h4>Info</h4>

@@ -24,18 +24,9 @@ export function applyTheme(theme, save = true) {
     }
     const isDark = theme === 'dark';
     if (ui.themeToggle) {
+        ui.themeToggle.textContent = isDark ? '☼' : '☾';
         ui.themeToggle.setAttribute('aria-label', isDark ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren');
         ui.themeToggle.setAttribute('title', isDark ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren');
-    }
-    if (ui.themeToggleIcon) {
-        ui.themeToggleIcon.textContent = isDark ? '☼' : '☾';
-    }
-    if (ui.themeToggleLabel) {
-        ui.themeToggleLabel.textContent = isDark ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren';
-    }
-    if (ui.themeToggleState) {
-        ui.themeToggleState.textContent = isDark ? 'Aktiv' : 'Aus';
-        ui.themeToggleState.classList.toggle('active', isDark);
     }
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
