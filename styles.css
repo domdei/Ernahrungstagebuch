@@ -752,12 +752,30 @@ select:focus {
   color: var(--red);
 }
 
+.status-dot,
+.history-summary-dot,
+.tolerance-dot {
+  display: inline-block;
+  flex-shrink: 0;
+  border-radius: var(--radius-round);
+}
+
+/* Single source of truth for tolerance colors, reused across history, suggestions & food manager */
+.dot-green {
+  background: var(--green);
+}
+
+.dot-orange {
+  background: var(--orange);
+}
+
+.dot-red {
+  background: var(--red);
+}
+
 .status-dot {
   width: 12px;
   height: 12px;
-  border-radius: var(--radius-round);
-  display: inline-block;
-  flex-shrink: 0;
   box-shadow:
     0 0 0 2px var(--panel),
     0 0 0 1px rgba(17, 24, 39, 0.12);
@@ -767,18 +785,6 @@ select:focus {
   box-shadow:
     0 0 0 2px var(--panel),
     0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-.status-green {
-  background: var(--green);
-}
-
-.status-orange {
-  background: var(--orange);
-}
-
-.status-red {
-  background: var(--red);
 }
 
 .primary-button,
@@ -1071,7 +1077,8 @@ select:focus {
 .history-stat-chip {
   display: inline-flex;
   align-items: center;
-  padding: 3px 9px;
+  gap: 5px;
+  padding: 3px 8px;
   background: var(--panel-alt);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
@@ -1079,6 +1086,36 @@ select:focus {
   font-weight: 700;
   color: var(--text);
   white-space: nowrap;
+}
+
+.history-stat-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.history-stat-count {
+  font-size: var(--fs-xs);
+  line-height: 1;
+}
+
+.history-stat-divider {
+  color: var(--muted);
+  opacity: 0.6;
+  font-weight: 400;
+}
+
+.history-summary-dot,
+.tolerance-dot {
+  width: 9px;
+  height: 9px;
+  min-width: 9px;
+  min-height: 9px;
+  vertical-align: middle;
+}
+
+.history-summary-dot {
+  opacity: 0.88;
 }
 
 .history-items {
@@ -1129,9 +1166,6 @@ select:focus {
 .history-item .status-dot {
   width: 10px;
   height: 10px;
-  border-radius: var(--radius-round);
-  display: inline-block;
-  flex-shrink: 0;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8);
 }
 
@@ -2084,24 +2118,30 @@ select:focus {
 }
 
 .tolerance-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  padding: 0;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: var(--fs-sm);
-  padding: 3px 6px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-round);
   line-height: 1;
   transition: background-color 0.15s ease, transform 0.12s ease, opacity 0.12s ease;
-  opacity: 0.35;
+  opacity: 0.45;
 }
 
 .tolerance-pill:hover {
-  opacity: 0.75;
+  opacity: 0.8;
 }
 
 .tolerance-pill.active {
   opacity: 1;
-  transform: scale(1.15);
+  transform: scale(1.08);
 }
 
 .tolerance-pill.pill-green.active {

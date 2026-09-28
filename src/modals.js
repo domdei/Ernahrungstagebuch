@@ -94,7 +94,7 @@ export function openSelectionModal({
             const isSelected = item.value === activeItem;
             return `
         <button type="button" class="category-modal-item ${isSelected ? 'selected' : ''}" data-value="${escapeHtml(item.value)}">
-          <span class="category-modal-item-name">${item.icon ? `<span style="margin-right:8px;">${item.icon}</span>` : ''}${escapeHtml(item.label)}</span>
+          <span class="category-modal-item-name">${item.icon ? `<span style="margin-right:8px; display:inline-flex; align-items:center;">${item.icon}</span>` : ''}${escapeHtml(item.label)}</span>
           ${isSelected ? '<span class="category-modal-check">✓</span>' : ''}
         </button>
       `;
@@ -138,10 +138,10 @@ export function openCategoryModal(
 
 export function openStatusModal(onSelectStatus, activeStatus = 'all') {
     const items = [
-        { value: 'all', label: 'Alle Status', icon: '🚦' },
-        { value: 'green', label: 'Grün (Verträglich)', icon: '🟢' },
-        { value: 'orange', label: 'Orange (Eingeschränkt)', icon: '🟠' },
-        { value: 'red', label: 'Rot (Unverträglich)', icon: '🔴' },
+        { value: 'all', label: 'Alle Status', icon: '' },
+        { value: 'green', label: 'Grün (Verträglich)', icon: '<span class="tolerance-dot dot-green" aria-hidden="true"></span>' },
+        { value: 'orange', label: 'Orange (Eingeschränkt)', icon: '<span class="tolerance-dot dot-orange" aria-hidden="true"></span>' },
+        { value: 'red', label: 'Rot (Unverträglich)', icon: '<span class="tolerance-dot dot-red" aria-hidden="true"></span>' },
     ];
 
     openSelectionModal({
@@ -316,9 +316,9 @@ export function renderFoodManagerList() {
           </div>
           <div class="food-item-controls">
             <div class="tolerance-segmented-toggle" role="radiogroup" aria-label="Verträglichkeit von ${escapeHtml(food.name)}">
-              <button type="button" class="tolerance-pill pill-green ${tol === 'green' ? 'active' : ''}" data-name="${escapeHtml(food.name)}" data-tol="green" title="Verträglich (Grün)">🟢</button>
-              <button type="button" class="tolerance-pill pill-orange ${tol === 'orange' ? 'active' : ''}" data-name="${escapeHtml(food.name)}" data-tol="orange" title="Eingeschränkt (Orange)">🟠</button>
-              <button type="button" class="tolerance-pill pill-red ${tol === 'red' ? 'active' : ''}" data-name="${escapeHtml(food.name)}" data-tol="red" title="Unverträglich (Rot)">🔴</button>
+              <button type="button" class="tolerance-pill pill-green ${tol === 'green' ? 'active' : ''}" data-name="${escapeHtml(food.name)}" data-tol="green" title="Verträglich (Grün)"><span class="tolerance-dot dot-green" aria-hidden="true"></span></button>
+              <button type="button" class="tolerance-pill pill-orange ${tol === 'orange' ? 'active' : ''}" data-name="${escapeHtml(food.name)}" data-tol="orange" title="Eingeschränkt (Orange)"><span class="tolerance-dot dot-orange" aria-hidden="true"></span></button>
+              <button type="button" class="tolerance-pill pill-red ${tol === 'red' ? 'active' : ''}" data-name="${escapeHtml(food.name)}" data-tol="red" title="Unverträglich (Rot)"><span class="tolerance-dot dot-red" aria-hidden="true"></span></button>
             </div>
             <button type="button" class="icon-button small-icon-button edit-food-btn" data-name="${escapeHtml(food.name)}" title="Bearbeiten" aria-label="Bearbeiten">✎</button>
             <button type="button" class="icon-button small-icon-button delete-food-btn" data-name="${escapeHtml(food.name)}" title="Löschen" aria-label="Löschen">🗑️</button>

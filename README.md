@@ -17,7 +17,7 @@ Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft a
 - **Tastatur-Verhalten (Mobile):** Das mobile Vollbild-Such-Overlay öffnet sich standardmäßig ohne Bildschirmtastatur für freies Scrollen. Antippen des Suchfelds blendet die Tastatur ein/aus; nach dem Auswählen springt sie nicht ungewollt auf.
 - **Tag- und Nachtmodus (☾ / ☼):** Wechselt das Farbschema über die Einstellungen und speichert die Wahl.
 - **Tagesabstand-Badges:** Zeigt bei Vorschlägen an, vor wie vielen Tagen ein Lebensmittel gegessen wurde (`1T`, `2T`, `3T`).
-- **Kompaktes Verlaufs-Akkordeon (4 Tage Standard):** Zeigt standardmäßig die letzten 4 Tage (3 Tage Rotation + heute) zugeklappt als Einzeiler mit Ampel-Zusammenfassung (`14 🟢 · 2 🟠`). Ein Klick klappt die nach Kategorien gruppierten Details auf.
+- **Kompaktes Verlaufs-Akkordeon (4 Tage Standard):** Zeigt standardmäßig die letzten 4 Tage (3 Tage Rotation + heute) zugeklappt als Einzeiler mit dezenter Ampel-Zusammenfassung (`14 · 2`). Ein Klick klappt die nach Kategorien gruppierten Details auf.
 - **Kompakte Werkzeuge & Modale Verlaufsfilter (🔍 / 🗑️):** Die Filterleiste im Verlauf bietet einheitliche App-Modals für Kategorie (`🏷️ Alle Kategorien ▾`) und Verträglichkeitsstatus (`🚦 Alle Status ▾`) jeweils mit Schnell-Reset (`✕`). Daneben sitzt der Löschmodus (`🗑️`) direkt neben der Überschrift „Verlauf“.
 - **Einstellungen & Backup (⚙):** Export und Import sowie Speicherstatus und Version sind aufgeräumt über das Zahnrad-Icon in der Topbar erreichbar.
 - **Intelligenter Import-Dialog:** Bietet die Wahl zwischen *Ergänzen* (mit Duplikaterkennung), *Ersetzen* und *Abbrechen* im einheitlichen App-Design.

@@ -15,7 +15,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1.1.8" />
+    <link rel="stylesheet" href="./styles.css?v=1.1.9" />
     <script>
       (function() {
         try {
@@ -322,15 +322,18 @@
               <div class="tolerance-radio-group">
                 <label class="tolerance-radio-option tolerance-option-green">
                   <input type="radio" name="foodFormTolerance" value="green" checked />
-                  <span>🟢 Grün</span>
+                  <span class="tolerance-dot dot-green" aria-hidden="true"></span>
+                  <span>Grün</span>
                 </label>
                 <label class="tolerance-radio-option tolerance-option-orange">
                   <input type="radio" name="foodFormTolerance" value="orange" />
-                  <span>🟠 Orange</span>
+                  <span class="tolerance-dot dot-orange" aria-hidden="true"></span>
+                  <span>Orange</span>
                 </label>
                 <label class="tolerance-radio-option tolerance-option-red">
                   <input type="radio" name="foodFormTolerance" value="red" />
-                  <span>🔴 Rot</span>
+                  <span class="tolerance-dot dot-red" aria-hidden="true"></span>
+                  <span>Rot</span>
                 </label>
               </div>
             </div>
@@ -441,6 +444,6 @@
       <div class="noscript-banner">JavaScript ist erforderlich, damit die App korrekt funktioniert.</div>
     </noscript>
 
-    <script type="module" src="./app.js?v=1.1.8"></script>
+    <script type="module" src="./app.js?v=1.1.9"></script>
   </body>
 </html>

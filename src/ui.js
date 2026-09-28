@@ -304,7 +304,7 @@ export function renderSuggestionList(query, isSearchOverlayOpen = false) {
             <span class="tag">${escapeHtml(food.category)}</span>
             ${statusChip}
           </div>
-          <span class="status-dot status-${getFoodTolerance(food)}" title="${toStatusLabel(getFoodTolerance(food))}"></span>
+          <span class="status-dot dot-${getFoodTolerance(food)}" title="${toStatusLabel(getFoodTolerance(food))}"></span>
         </button>
       `;
         })
@@ -407,10 +407,18 @@ export function renderHistory() {
             });
 
             const statParts = [];
-            if (counts.green > 0) statParts.push(`${counts.green} 🟢`);
-            if (counts.orange > 0) statParts.push(`${counts.orange} 🟠`);
-            if (counts.red > 0) statParts.push(`${counts.red} 🔴`);
-            const statChipText = statParts.join(' · ') || `${dayEntries.length} 🟢`;
+            if (counts.green > 0) {
+                statParts.push(`<span class="history-stat-group"><span class="history-stat-count">${counts.green}</span><span class="history-summary-dot dot-green" aria-hidden="true"></span></span>`);
+            }
+            if (counts.orange > 0) {
+                statParts.push(`<span class="history-stat-group"><span class="history-stat-count">${counts.orange}</span><span class="history-summary-dot dot-orange" aria-hidden="true"></span></span>`);
+            }
+            if (counts.red > 0) {
+                statParts.push(`<span class="history-stat-group"><span class="history-stat-count">${counts.red}</span><span class="history-summary-dot dot-red" aria-hidden="true"></span></span>`);
+            }
+            const statChipContent = statParts.length > 0
+                ? statParts.join('<span class="history-stat-divider">·</span>')
+                : `<span class="history-stat-group"><span class="history-stat-count">${dayEntries.length}</span><span class="history-summary-dot dot-green" aria-hidden="true"></span></span>`;
 
             const categoryGroups = dayEntries.reduce((acc, entry) => {
                 if (!acc[entry.category]) {
@@ -435,7 +443,7 @@ export function renderHistory() {
                             return `
                 <div class="history-item" title="${toStatusLabel(entryTol)}">
                   <span class="name">${escapeHtml(entry.name)}</span>
-                  <span class="status-dot status-${entryTol}" title="${toStatusLabel(entryTol)}" aria-label="${toStatusLabel(entryTol)}"></span>
+                  <span class="status-dot dot-${entryTol}" title="${toStatusLabel(entryTol)}" aria-label="${toStatusLabel(entryTol)}"></span>
                   ${deleteButton}
                 </div>
               `;
@@ -462,7 +470,7 @@ export function renderHistory() {
               ${todayBadge}
             </div>
             <div class="history-day-stats">
-              <span class="history-stat-chip">${statChipText}</span>
+              <span class="history-stat-chip">${statChipContent}</span>
             </div>
           </summary>
           <div class="history-items">${categoryMarkup}</div>
