@@ -22,11 +22,20 @@ export function applyTheme(theme, save = true) {
     if (save) {
         localStorage.setItem(THEME_STORAGE_KEY, theme);
     }
+    const isDark = theme === 'dark';
     if (ui.themeToggle) {
-        const isDark = theme === 'dark';
-        ui.themeToggle.textContent = isDark ? '☼' : '☾';
-        ui.themeToggle.setAttribute('aria-label', isDark ? 'Tagmodus aktivieren' : 'Nachtmodus aktivieren');
-        ui.themeToggle.setAttribute('title', isDark ? 'Tagmodus aktivieren' : 'Nachtmodus aktivieren');
+        ui.themeToggle.setAttribute('aria-label', isDark ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren');
+        ui.themeToggle.setAttribute('title', isDark ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren');
+    }
+    if (ui.themeToggleIcon) {
+        ui.themeToggleIcon.textContent = isDark ? '☼' : '☾';
+    }
+    if (ui.themeToggleLabel) {
+        ui.themeToggleLabel.textContent = isDark ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren';
+    }
+    if (ui.themeToggleState) {
+        ui.themeToggleState.textContent = isDark ? 'Aktiv' : 'Aus';
+        ui.themeToggleState.classList.toggle('active', isDark);
     }
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {

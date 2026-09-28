@@ -30,13 +30,9 @@
   <body>
     <div class="app-shell">
       <header class="topbar">
-        <div>
-          <p class="eyebrow">Persönlicher Tracker</p>
-          <h1>Ernährungstagebuch</h1>
-        </div>
+        <h1>Ernährungstagebuch</h1>
         <div class="topbar-actions">
-          <button id="themeToggle" class="icon-button" type="button" aria-label="Nachtmodus aktivieren" title="Nachtmodus aktivieren">☾</button>
-          <button id="settingsButton" class="icon-button" type="button" aria-label="Einstellungen & Backup" title="Einstellungen & Backup">⚙</button>
+          <button id="settingsButton" class="icon-button topbar-button" type="button" aria-label="Einstellungen & Backup" title="Einstellungen & Backup">⚙</button>
           <button id="installButton" class="secondary-button hidden" type="button" aria-label="App installieren">
             Installieren
           </button>
@@ -280,6 +276,21 @@
                 <input id="importFile" type="file" accept=".json" />
               </label>
             </div>
+          </div>
+          <div class="settings-section">
+            <h4>Erscheinungsbild</h4>
+            <button id="themeToggle" class="settings-tile-btn" type="button" aria-label="Erscheinungsbild wechseln">
+              <div class="settings-tile-content">
+                <span id="themeToggleIcon" class="settings-tile-icon">☾</span>
+                <div class="settings-tile-text">
+                  <strong id="themeToggleLabel">Dunkelmodus aktivieren</strong>
+                  <small id="themeToggleHint">Wechselt zwischen hellem und dunklem Design</small>
+                </div>
+              </div>
+              <div class="settings-tile-end">
+                <span id="themeToggleState" class="settings-status-badge">Aus</span>
+              </div>
+            </button>
           </div>
           <div class="settings-section">
             <h4>Info</h4>

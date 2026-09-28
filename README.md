@@ -15,7 +15,7 @@ Eine Progressive Web App (PWA) zur Erfassung von Lebensmitteln. Die App prüft a
 - **Konflikt-Dialog beim Speichern:** Verletzt ein gewähltes Lebensmittel die Rotationsfrist oder eine Verträglichkeitsregel, erscheint beim Speichern ein Bestätigungs-Modal (Ja/Nein) mit genauer Begründung.
 - **Visuell optimierte Chips & Dark Mode:** Konfliktbehaftete Lebensmittel werden direkt am Chip durch Rahmen und Badges (`1T` / `!`) hervorgehoben. Gesperrte Lebensmittel treten im Dark Mode dezent in den Hintergrund, ohne zu blenden.
 - **Tastatur-Verhalten (Mobile):** Das mobile Vollbild-Such-Overlay öffnet sich standardmäßig ohne Bildschirmtastatur für freies Scrollen. Antippen des Suchfelds blendet die Tastatur ein/aus; nach dem Auswählen springt sie nicht ungewollt auf.
-- **Tag- und Nachtmodus (☾ / ☼):** Wechselt das Farbschema über die Kopfzeile und speichert die Wahl.
+- **Tag- und Nachtmodus (☾ / ☼):** Wechselt das Farbschema über die Einstellungen und speichert die Wahl.
 - **Tagesabstand-Badges:** Zeigt bei Vorschlägen an, vor wie vielen Tagen ein Lebensmittel gegessen wurde (`1T`, `2T`, `3T`).
 - **Kompaktes Verlaufs-Akkordeon (4 Tage Standard):** Zeigt standardmäßig die letzten 4 Tage (3 Tage Rotation + heute) zugeklappt als Einzeiler mit Ampel-Zusammenfassung (`14 🟢 · 2 🟠`). Ein Klick klappt die nach Kategorien gruppierten Details auf.
 - **Kompakte Werkzeuge & Modale Verlaufsfilter (🔍 / 🗑️):** Die Filterleiste im Verlauf bietet einheitliche App-Modals für Kategorie (`🏷️ Alle Kategorien ▾`) und Verträglichkeitsstatus (`🚦 Alle Status ▾`) jeweils mit Schnell-Reset (`✕`). Daneben sitzt der Löschmodus (`🗑️`) direkt neben der Überschrift „Verlauf“.
